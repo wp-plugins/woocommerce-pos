@@ -15,7 +15,7 @@ class WooCommerce_POS {
 	/**
 	 * Version numbers
 	 */
-	const VERSION 			= '0.2.2';
+	const VERSION 			= '0.2.5';
 	const JQUERY 			= '2.1.0'; // http://jquery.com/
 
 	/**
@@ -28,6 +28,12 @@ class WooCommerce_POS {
 	 * @var object
 	 */
 	protected static $instance = null;
+
+	/**
+	 * WooCommerce API endpoint
+	 */
+	public $wc_api_endpoint = '/wc-api/v1/';
+	public $wc_api_url;
 
 	/**
 	 * Plugin variables
@@ -59,6 +65,8 @@ class WooCommerce_POS {
 		// include required files
 		$this->includes();
 
+		$this->wc_api_url = get_home_url().$this->wc_api_endpoint;
+
 		$this->plugin_path = trailingslashit( dirname( dirname(__FILE__) ) );
 		$this->plugin_dir = trailingslashit( basename( $this->plugin_path ) );
 		$this->plugin_url = plugins_url().'/'.$this->plugin_dir;
@@ -66,6 +74,9 @@ class WooCommerce_POS {
 		// Load plugin text domain
 		//add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'init', array( $this, 'init' ), 0 );
+
+		// allow access to the WC REST API 
+		add_filter( 'woocommerce_api_check_authentication', array( $this, 'wc_api_authentication' ) );
 
 		// Set up templates
 		add_filter('generate_rewrite_rules', array( $this, 'pos_generate_rewrite_rules') );
@@ -176,26 +187,44 @@ class WooCommerce_POS {
 	}
 
 	/**
-	 * Redirect to POS templates
+	 * Display POS page or login screen
 	 */
 	public function pos_login() {
-		
-		// $pagename = $this->options['pagename']; TODO: set custom pagename as an option
-		global $wp_query;
-		$custom_page = isset($wp_query->query_vars['custom_page']) ? $wp_query->query_vars['custom_page'] : null;
-		
-		// make sure administrator has logged in
-		if ($custom_page == 'pos' && current_user_can('manage_woocommerce_pos')) {
+
+		// check page and credentials
+		if ($this->is_pos() && current_user_can('manage_woocommerce_pos')) {
 			
 			// we've good to go, render the page
 			include_once( 'views/pos.php' );
 			exit;
 
-		} elseif ($custom_page == 'pos' && !current_user_can('manage_woocommerce_pos')) {
+		} elseif ($this->is_pos() && !current_user_can('manage_woocommerce_pos')) {
 
 			// redirect to login page
 			auth_redirect();
 		}
+	}
+
+	/**
+	 * Are we using point of sale front-end?
+	 * @return boolean
+	 */
+	public function is_pos() {
+		// $pagename = $this->options['pagename']; TODO: set custom url as an option
+		global $wp_query;
+		$custom_page = isset($wp_query->query_vars['custom_page']) ? $wp_query->query_vars['custom_page'] : null;
+		return ($custom_page == 'pos') ?  true : false ;
+	}
+
+	/**
+	 * Bypass authenication for WC REST API
+	 * @return WP_User object
+	 */
+	public function wc_api_authentication() {
+		// giving admin and shop manager full access to WC API
+		// TODO: check this is a good approach
+		if(current_user_can('manage_woocommerce_pos'))
+			return new WP_User(get_current_user_id());
 	}
 	
 	/**
@@ -226,16 +255,7 @@ class WooCommerce_POS {
 			do_action( 'pos_add_to_footer' );
 			$this->pos_localize_script();
 			$html = '
-	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'/public/assets/js/lib/mediator.js"></script>
-	<script type="text/javascript">
-	var mediator = new Mediator();
-	</script>
-	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'/public/assets/js/lib/underscore.js"></script>
-	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'/public/assets/js/lib/backbone.js"></script>
-	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'/public/assets/js/lib/backbone-pageable.js"></script>
-	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'/public/assets/js/lib/backgrid.js"></script>
-	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'/public/assets/js/lib/backgrid-paginator.js"></script>
-	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'/public/assets/js/lib/backgrid-filter.js"></script>
+	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'/public/assets/js/lib.min.js"></script>
 	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'/public/assets/js/plugins.min.js"></script>
 	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'/public/assets/js/pos.min.js"></script>
 			';
@@ -249,9 +269,15 @@ class WooCommerce_POS {
 	 */
 	public function pos_localize_script() {
 		;
+		// get thumbnail size set in woocommerce settings
+		// print_r(get_option( 'shop_thumbnail_image_size'));
+		$thumb_size = get_option( 'shop_thumbnail_image_size', array( 'width'=>90, 'height'=> 90 ) );
+		$thumb_suffix = '-'.$thumb_size['width'].'x'.$thumb_size['height'];
 		$js_vars = array(
 				'ajax_url' => admin_url( 'admin-ajax.php', 'relative' ),
 				'loading_icon' => $this->plugin_url . '/assets/ajax-loader.gif',
+				'placeholder' => $this->plugin_url . '/assets/placeholder.png',
+				'thumb_suffix' => $thumb_suffix,
 			);
 		$html = '
 			<script type="text/javascript">
