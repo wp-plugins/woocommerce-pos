@@ -26,6 +26,7 @@ class WooCommerce_POS_AJAX {
 		$ajax_events = array(
 			'add_to_cart'             	=> true,
 			'remove_item'             	=> true,
+			'update_cart'				=> true,
 			'get_cart_items'			=> true,
 			'get_cart_totals'			=> true,
 			'process_order'             => true,
@@ -39,7 +40,7 @@ class WooCommerce_POS_AJAX {
 		}
 	}
 
-		/**
+	/**
 	 * Add item to cart
 	 * @return  Object JSON
 	 */
@@ -75,6 +76,15 @@ class WooCommerce_POS_AJAX {
 
 		// set product quantity to zero
 		WC()->cart->set_quantity( $_REQUEST['remove_item'], 0 );
+
+		// send back new cart
+		$this->get_cart_items();
+	}
+
+	public function update_cart() {
+
+		// update the cart
+		WC_POS()->cart->update_cart();
 
 		// send back new cart
 		$this->get_cart_items();
@@ -160,29 +170,16 @@ class WooCommerce_POS_AJAX {
 	}
 
 	/**
-	 * Process the order 
+	 * Process the order
+	 * TODO: validation
 	 * @return 
 	 */
 	public function process_order() {
-		global $woocommerce;
 
-		// no action
-		if( !empty( $_REQUEST['pos_checkout'] ) ) 
-			exit();
-
-		// no nonce
-		parse_str($_REQUEST['cart'], $cart); // $cart is now an array of form data
-		// if( !wp_verify_nonce( $cart['woocommerce-pos_checkout'], 'checkout') ) 
-		// 	exit();
-
-		// // woocommerce wants to see the nonce
-		// $_POST['_wpnonce'] = $cart['woocommerce-pos_checkout'];
-
-		// process order 
-		$order_id = WC_POS()->checkout->create_order();
+		// create order 
+		$checkout = new WooCommerce_POS_Checkout();
+		$order_id = $checkout ->create_order();
 		$order = new WC_Order( $order_id );
-
-		// get the order id
 
 		// return the receipt screen
 		ob_start();
