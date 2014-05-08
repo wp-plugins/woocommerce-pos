@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=paul%
 Tags: woocommerce, pos, point-of-sale, vend, e-commerce
 Requires at least: 3.8
 Tested up to: 3.9
-Stable tag: 0.2.10
+Stable tag: 0.2.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,11 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 1. WooCommerce POS main screen
 
 == Changelog ==
+
+= 0.2.11 =
+* Fix: Bug caused WC REST API authentication problems
+* Fix: Bug caused no shipping fees for all users
+* Tweak: Back to server side filtering until localstorage is complete
 
 = 0.2.10 =
 * New: Update cart quanitity
