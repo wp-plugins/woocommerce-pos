@@ -1,10 +1,9 @@
 === WooCommerce POS (beta) ===
 Contributors: kilbot
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=paul%40kilbot%2ecom%2eau
 Tags: woocommerce, pos, point-of-sale, vend, e-commerce
 Requires at least: 3.8
 Tested up to: 3.9
-Stable tag: 0.2.11
+Stable tag: 0.2.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +22,12 @@ This plugin has only just been released and should **not** be used on a producti
 = DEMO = 
 You can see a demo of the WooCommerce POS plugin in action by going to [http://woopos.com.au/pos](http://woopos.com.au/pos) with `login/pass` : `demo/demo`
 
+= REQUIREMENTS =
+WooCommerce POS uses IndexedDB to persist the product database on your computer or device. [IndexedDB](http://www.w3.org/TR/IndexedDB/) is currently a 'Candidate Recommendation' specification by the W3C and is not implemented by all browsers. To see if your browser is compatible please check [caniuse.com](http://caniuse.com/indexeddb).
+
+If your browser does not support IndexedDB, WooCommerce POS will degrade to using the product database on your server via the WooCommerce REST API. The Point of Sale system will still function but searching and filtering will be slower. Some planned features for WooCommerce POS will also only be available for browsers that support IndexdedDB.
+
+** For the best experience please use a modern browser such as [Chrome](http://www.google.com/chrome) or [Firefox](http://getfirefox.com) **
 
 == Installation ==
 
@@ -41,10 +46,6 @@ To install a WordPress Plugin manually:
 4. Go to Plugins screen and find the newly uploaded Plugin in the list.
 5. Click Activate Plugin to activate it.
 
-= Bleeding Edge = 
-1. Install WooCommerce POS as described above.
-2. Install [Wordpress Github Plugin Updater](https://github.com/jkudish/WordPress-GitHub-Plugin-Updater).
-3. Check for updates in your WordPress dashboard.
 
 == Frequently Asked Questions ==
 
@@ -60,13 +61,21 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 
 == Changelog ==
 
+= 0.2.12 =
+* Improved: Product list now uses local IndexedDB for fast searching and filtering. Fallback to server-side filtering for browsers which do not support [IndexedDB](http://caniuse.com/indexeddb)
+* Improved: Cart logic now handled client-side, no more waiting for the server to respond
+* New: Pagination info and last update time added to the product list
+* New: Cart item price can now be changed
+* New: Print receipt
+* New: Added text domain, readying the plugin for translation
+
 = 0.2.11 =
 * Fix: Bug caused WC REST API authentication problems
 * Fix: Bug caused no shipping fees for all users
 * Tweak: Back to server side filtering until localstorage is complete
 
 = 0.2.10 =
-* New: Update cart quanitity
+* New: Update cart quantity
 * Tweak: Improvement to cart load time
 * Tweak: Prevent New Order emails to admin
 * Fix: No shipping fees on cart items

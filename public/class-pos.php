@@ -4,7 +4,7 @@
  * The main POS Class
  * 
  * @class 	  WooCommerce_POS
- * @version   0.2.10
+ * @version   0.2.12
  * @package   WooCommerce POS
  * @author    Paul Kilmurray <paul@kilbot.com.au>
  * @link      http://www.woopos.com.au
@@ -15,8 +15,7 @@ class WooCommerce_POS {
 	/**
 	 * Version numbers
 	 */
-	const VERSION 	= '0.2.11';
-	const JQUERY 	= '2.1.0';
+	const VERSION 	= '0.2.12';
 
 	/**
 	 * Unique identifier
@@ -49,11 +48,6 @@ class WooCommerce_POS {
 	public $product = null;
 
 	/**
-	 * @var WooCommerce_POS_Cart $cart
-	 */
-	public $cart = null;
-
-	/**
 	 * Initialize WooCommerce_POS
 	 */
 	private function __construct() {
@@ -69,7 +63,7 @@ class WooCommerce_POS {
 		$this->includes();
 
 		// Load plugin text domain
-		//add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
+		add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
 		add_action( 'init', array( $this, 'init' ), 0 );
 
 		// Set up templates
@@ -123,7 +117,8 @@ class WooCommerce_POS {
 	public static function activate( ) {
 		// Refresh the rewrite rule cache
 		global $wp_rewrite;
-		add_rewrite_rule('pos','index.php?pos=1','top');
+		add_rewrite_rule('^pos/?$','index.php?pos=1','top');
+		add_rewrite_rule('^pos/([^/]+)/?$','index.php?pos=1&pos-template=$matches[1]','top');
 		$wp_rewrite->flush_rules( false ); // false will not overwrite .htaccess
 
 		// add the manage_woocommerce_pos capability to administrator and shop_manager
@@ -149,7 +144,6 @@ class WooCommerce_POS {
 
 	private function includes() {
 		include_once( 'includes/class-pos-product.php' );
-		include_once( 'includes/class-pos-cart.php' );
 		include_once( 'includes/class-pos-checkout.php' );
 		if ( defined( 'DOING_AJAX' ) ) {
 			include_once( 'includes/class-pos-ajax.php' );
@@ -158,7 +152,6 @@ class WooCommerce_POS {
 
 	public function init() {
 		$this->product  = new WooCommerce_POS_Product();
-		$this->cart     = new WooCommerce_POS_Cart();
 	}
 
 	/**
@@ -167,7 +160,8 @@ class WooCommerce_POS {
 	 */
 	public function generate_rewrite_rules( $wp_rewrite ) {
 		$custom_page_rules = array(
-			'pos' => 'index.php?pos=1',
+			'^pos/?$' => 'index.php?pos=1',
+			'^pos/([^/]+)/?$' => 'index.php?pos=1&pos-template='.$wp_rewrite->preg_index(1)
 		);
 		$wp_rewrite->rules = $custom_page_rules + $wp_rewrite->rules;
 	}
@@ -178,7 +172,8 @@ class WooCommerce_POS {
 	 * @return array
 	 */
 	public function add_query_vars( $public_query_vars ) {
-		$public_query_vars[] = "pos";
+		$public_query_vars[] = 'pos';
+		$public_query_vars[] = 'pos-template';
 		return $public_query_vars;
 	}
 
@@ -189,14 +184,20 @@ class WooCommerce_POS {
 
 		// check page and credentials
 		if ($this->is_pos() && current_user_can('manage_woocommerce_pos')) {
-			
-			// we've good to go, render the page
-			include_once( 'views/pos.php' );
+
+			// check for template request
+			$template = get_query_var( 'pos-template' );
+			if( $template != '' && file_exists( $this->plugin_path . 'public/views/' . $template . '.php' ) ) {
+				include_once( 'views/' . $template . '.php' );
+			}
+			// else: default to main page
+			else {
+				include_once( 'views/pos.php' );
+			}			
 			exit;
 
+		// else: redirect to login page
 		} elseif ($this->is_pos() && !current_user_can('manage_woocommerce_pos')) {
-
-			// redirect to login page
 			auth_redirect();
 		}
 	}
@@ -249,7 +250,7 @@ class WooCommerce_POS {
 		$admins = get_users( 'role=administrator&number=1' );
 		return $admins[0];
 
-		// // this doesn't work!! WC API has set current_user to 0?! 
+		// this doesn't work!! WC API has set current_user to 0?! 
 		// if( current_user_can( 'manage_woocommerce_pos' ) ) {
 		// 	return new WP_User( get_current_user_id() );
 		// } else {
@@ -265,6 +266,7 @@ class WooCommerce_POS {
 	public function pos_print_css() {
 		$html = '
 	<link rel="stylesheet" href="'. $this->plugin_url .'public/assets/css/pos.min.css?ver='. self::VERSION .'" type="text/css" media="all" />
+	<link rel="stylesheet" href="'. $this->plugin_url .'assets/css/font-awesome.min.css" type="text/css" media="all" />
 		';
 		echo $html;
 	}
@@ -276,20 +278,16 @@ class WooCommerce_POS {
 	public function pos_print_js ($section = '') {
 		if($section == 'head') {
 			$html = '
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/'.self::JQUERY.'/jquery.min.js"></script>
-	<!-- Modernizr: uses CSS 3D Transforms -->
-	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'public/assets/js/vendor/modernizr.custom.js"></script>
+	<!-- Modernizr: checks: indexeddb, websql, localstrorage and CSS 3D transforms -->
+	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'public/assets/js/vendor/modernizr.custom.min.js"></script>
 			';
 			echo $html;
 		}
 		if($section == 'footer') {
 			do_action( 'pos_add_to_footer' );
 			$this->pos_localize_script();
-			$html = '
-	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'public/assets/js/lib.min.js?ver='. self::VERSION .'"></script>
-	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'public/assets/js/plugins.min.js?ver='. self::VERSION .'"></script>
-	<script type="text/javascript" charset="utf8" src="'. $this->plugin_url .'public/assets/js/pos.min.js?ver='. self::VERSION .'"></script>
-			';
+	// $html = '<script data-main="'. $this->plugin_url .'public/assets/js/main" src="'. $this->plugin_url .'public/assets/js/require.js"></script>';
+	$html = '<script src="'. $this->plugin_url .'public/assets/js/scripts.min.js"></script>';
 			echo $html;
 		}
 	}
@@ -299,15 +297,55 @@ class WooCommerce_POS {
 	 * @return [type] [description]
 	 */
 	public function pos_localize_script() {
+		$currency_pos = get_option( 'woocommerce_currency_pos' );
+		switch ( $currency_pos ) {
+			case 'left' :
+				$format = array('pos' => '%s%v', 'neg' => '- %s%v', 'zero' => '%s%v');
+			break;
+			case 'right' :
+				$format = array('pos' => '%v%s', 'neg' => '- %v%s', 'zero' => '%v%s');
+			break;
+			case 'left_space' :
+				$format = array('pos' => '%s&nbsp;%v', 'neg' => '- %s&nbsp;%v', 'zero' => '%s&nbsp;%v');
+			break;
+			case 'right_space' :
+				$format = array('pos' => '%v&nbsp;%s', 'neg' => '- %v&nbsp;%s', 'zero' => '%v&nbsp;%s');
+			break;
+		}
+
 		$js_vars = array(
-				'ajax_url' => admin_url( 'admin-ajax.php', 'relative' ),
-				'loading_icon' => $this->plugin_url . '/assets/ajax-loader.gif',
-			);
-		$html = '
-			<script type="text/javascript">
-			var pos_cart_params = ' . json_encode($js_vars) . ';
-			</script>
-		';
+			'ajax_url' => admin_url( 'admin-ajax.php', 'relative' ),
+			'loading_icon' => $this->plugin_url . '/assets/ajax-loader.gif',
+			'accounting' => array(
+				'settings' => array(
+					'currency' => array(
+						'symbol' => get_woocommerce_currency_symbol( get_woocommerce_currency() ),   
+						'format' => $format,
+						'decimal' => get_option( 'woocommerce_price_decimal_sep' ),  
+						'thousand'=> get_option( 'woocommerce_price_thousand_sep' ),  
+						'precision' => get_option( 'woocommerce_price_num_decimals' ),
+					),
+					'number' => array(
+						'precision' => get_option( 'woocommerce_price_num_decimals' ),  
+						'thousand'	=> '',
+						'decimal' 	=> get_option( 'woocommerce_price_decimal_sep' ),
+					)
+				)
+			),
+			'wc' => array(
+				'tax_label' => WC()->countries->tax_or_vat(), 
+				'calc_taxes' => get_option( 'woocommerce_calc_taxes' ),
+				'prices_include_tax' => get_option( 'woocommerce_prices_include_tax' ),
+				'tax_round_at_subtotal' => get_option( 'woocommerce_tax_round_at_subtotal' ),
+				'tax_display_cart' => get_option( 'woocommerce_tax_display_cart' ),
+				'tax_total_display' => get_option( 'woocommerce_tax_total_display' ),
+			),
+		);
+	$html = '
+	<script type="text/javascript">
+	var pos_params = ' . json_encode($js_vars) . '
+	</script>
+	';
 		echo $html;
 	}
 }

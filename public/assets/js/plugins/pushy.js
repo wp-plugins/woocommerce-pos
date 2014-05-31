@@ -3,6 +3,10 @@
 * https://github.com/christophery/pushy/
 * by Christopher Yee */
 
+/**
+ * kilbot: changed container class to #page
+ */
+
 $(function() {
 	var pushy = $('.pushy'), //menu css class
 		body = $('body'),
