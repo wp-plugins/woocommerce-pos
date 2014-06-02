@@ -301,7 +301,7 @@ class WooCommerce_POS {
 
 		$js_vars = array(
 			'ajax_url' => admin_url( 'admin-ajax.php', 'relative' ),
-			'worker' => $this->plugin_url .'public/assets/js/worker.min.js',
+			'worker' => $this->plugin_url .'public/assets/js/src/worker.min.js',
 			'accounting' => array(
 				'settings' => array(
 					'currency' => array(
