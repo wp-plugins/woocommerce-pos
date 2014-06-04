@@ -111,7 +111,12 @@ global $wp_rewrite; if($wp_rewrite->permalink_structure != ''): ?>
 
 <?php // check variation orphans 
 if( $orphans = find_orphans_variations() ): ?>
-					<tr class="alternate form-invalid"><td class="row-title">Orphaned Variations</td><td>Some of your variations are orphaned :( ... the post ids of the orphans are: <code style="font-size:0.8em"><?= $orphans ?></code></td></tr>
+					<tr class="alternate form-invalid">
+					<td class="row-title">Orphaned Variations</td>
+					<td>Some of your variations are orphaned :( ... the post ids of the orphans are: <code style="font-size:0.8em"><?= $orphans ?></code><br>
+					<a href="?page=woocommerce-pos&amp;action=remove_orphans" class="button">Remove orphans</a>
+					</td>
+					</tr>
 <?php else: ?>
 					<tr><td class="alternate row-title">Orphaned Variations</td><td>No orphans. That's a good thing.</td></tr>
 <?php endif; 
