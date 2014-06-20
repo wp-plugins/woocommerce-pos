@@ -58,11 +58,17 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 
 == Changelog ==
 
+= 0.2.16 =
+TODO: support.js uses /wc-api .. need support for subfolder installs
+TODO: everytime there is a change of stock the update time needs a bump
+TODO: everytime a parent is updated, the variatants need a update bump
+TODO: get server to trigger a sync, eg: update price via WP heartbeat api
+
 = 0.2.15 =
 * New: [website](http://woopos.com.au)!
 * New: Multisite support: visit [http://demo.woopos.com.au/pos](http://demo.woopos.com.au/pos) to see WooCommerce POS in different languages using multisite
 * New: nl_NL translation thanks to Egbert Jan! [http://nl.woopos.com.au/pos](http://nl.woopos.com.au/pos)
-* New: nn_NO translation thanks to Olav Solvang! [http://no.woopos.com.au/pos](http://no.woopos.com.au/pos)
+* New: nb_NO translation thanks to Olav Solvang! [http://no.woopos.com.au/pos](http://no.woopos.com.au/pos)
 * Visit: [http://translate.woopos.com.au](http://translate.woopos.com.au) if you would like to translate WooCommerce POS into your language
 * Improved: Search field now reset after successful barcode search
 * Fix: Bug with multiple tax rates and compound tax rates
