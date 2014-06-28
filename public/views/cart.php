@@ -84,6 +84,12 @@
 		<th colspan="3"><?php _e( 'Order Total', 'woocommerce-pos' ); ?>:</th>
 		<td colspan="2">{{{money total}}}</td>
 	</tr>
+	<tr class="customer">
+		<td colspan="5">
+			<?php _e( 'Customer', 'woocommerce-pos' ); ?>:
+			<input type="hidden" id="select-customer" style="width:200px" value="{{ customer_id }}" data-customer="{{ customer_name }}" data-nonce="<?= wp_create_nonce( 'search-customers' ) ?>">
+		</td>
+	</tr>
 	<tr class="actions">
 		<td colspan="5">
 			<button class="btn btn-danger action-void alignleft">

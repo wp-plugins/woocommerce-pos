@@ -1,9 +1,9 @@
-=== WooCommerce POS ===
+=== WooCommerce Point of Sale (POS) ===
 Contributors: kilbot
 Tags: cart, e-commerce, ecommerce, inventory, point-of-sale, pos, sales, sell, shop, shopify, store, vend, woocommerce,  wordpress-ecommerce
 Requires at least: 3.8
 Tested up to: 3.9
-Stable tag: 0.2.15
+Stable tag: 0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,6 +21,8 @@ You can see a demo of the WooCommerce POS plugin in action by going to [http://d
 * GitHub: https://github.com/kilbot/WooCommerce-POS/
 
 = REQUIREMENTS =
+* WooCommerce >= 2.1.0
+
 WooCommerce POS uses IndexedDB to persist the product database on your computer or device. [IndexedDB](http://www.w3.org/TR/IndexedDB/) is currently a 'Candidate Recommendation' specification by the W3C and is not implemented by all browsers. To see if your browser is compatible please check [caniuse.com](http://caniuse.com/indexeddb).
 
 If your browser does not support IndexedDB, WooCommerce POS will fallback to using the product database on your server via the WooCommerce REST API. The Point of Sale system will still function but searching and filtering will be slower. Some planned features for WooCommerce POS will also only be available for browsers that support IndexdedDB.
@@ -58,11 +60,16 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 
 == Changelog ==
 
-= 0.2.16 =
-TODO: support.js uses /wc-api .. need support for subfolder installs
-TODO: everytime there is a change of stock the update time needs a bump
-TODO: everytime a parent is updated, the variatants need a update bump
-TODO: get server to trigger a sync, eg: update price via WP heartbeat api
+= 0.3 =
+* New: Set default POS customer on new settings page
+* New: Add customer to order
+* New: Documentation for third party developers [http://kilbot.github.io/WooCommerce-POS/](http://kilbot.github.io/WooCommerce-POS/)
+* New: pt_BR translation thanks to Hermes Alves Dias Souza! [http://pt.woopos.com.au/pos](http://pt.woopos.com.au/pos)
+* New: Icons for mobile devices. Thanks [@sixthcore](https://github.com/kilbot/WooCommerce-POS/issues/11)!
+* Fix: stock is now synced after each order
+* Fix: Add-to-cart bug for particular tax settings (tax enabled + prices exclusive from tax + no tax rates set)
+* Fix: product display for sites where home_url != site_url
+* Fix: authentication test for subfolder wordpress installs
 
 = 0.2.15 =
 * New: [website](http://woopos.com.au)!

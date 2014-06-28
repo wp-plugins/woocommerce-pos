@@ -14,7 +14,7 @@ class WooCommerce_POS {
 	/**
 	 * Version numbers
 	 */
-	const VERSION = '0.2.16';
+	const VERSION = '0.3';
 	const JQUERY_VERSION = '2.1.1';
 
 	/**
@@ -264,6 +264,28 @@ class WooCommerce_POS {
 	}
 
 	/**
+	 * Get the default customer
+	 * @return object $customer
+	 */
+	public function get_default_customer() {
+		$id 	= get_option( 'woocommerce_pos_default_customer', 0 );
+		$user 	= get_userdata( $id );
+		if( $user ) {
+			$first_name = esc_html( $user->first_name );
+			$last_name 	= esc_html( $user->last_name );
+			$name		= $first_name .' '. $last_name;
+			if ( trim($name) == '' ) $name = esc_html( $user->display_name );
+		} else {
+			$name = __( 'Guest', 'woocommerce-pos' );
+		}
+		$customer = array(
+			'default_id' => $id,
+			'default_name' => $name
+		);
+		return $customer;
+	}
+
+	/**
 	 * Get the accounting format from user settings
 	 * POS uses a plugin to format currency: http://josscrowcroft.github.io/accounting.js/
 	 * @return array $settings
@@ -314,6 +336,22 @@ class WooCommerce_POS {
 		return $format;
 	}
 
+
+	public function select2_settings() {
+		$settings = array(
+			'no_matches'=> __( 'No matches found', 'woocommerce-pos' ),
+			'too_short'	=> __( 'Please enter 1 more character', 'woocommerce-pos' ),
+			'too_shorts'=> __( 'Please enter %d more characters', 'woocommerce-pos' ),
+			'too_long' 	=> __( 'Please delete 1 character', 'woocommerce-pos' ),
+			'too_longs' => __( 'Please delete %d characters', 'woocommerce-pos' ),
+			'too_big' 	=> __( 'You can only select 1 item', 'woocommerce-pos' ),
+			'too_bigs' 	=> __( 'You can only select %d items', 'woocommerce-pos' ),
+			'load_more' => __( 'Loading more results', 'woocommerce-pos' ).'&hellip;',
+			'searching' => __( 'Searching', 'woocommerce-pos' ).'&hellip;'
+		);
+		return $settings;
+	}
+
 	/**
 	 * Add variables for use by js scripts
 	 * @return [type] [description]
@@ -325,6 +363,8 @@ class WooCommerce_POS {
 		$js_vars['wc_api_url']	= $this->wc_api_url;
 		$js_vars['accounting'] 	= $this->accounting_settings();
 		$js_vars['wc'] 			= $this->wc_settings();
+		$js_vars['select'] 		= $this->select2_settings();
+		$js_vars['customer'] 	= $this->get_default_customer();
 
 		// switch for development
 		if( $this->development ) {
