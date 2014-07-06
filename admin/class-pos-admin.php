@@ -14,8 +14,6 @@ class WooCommerce_POS_Admin {
 	/**
 	 * Instance of this class.
 	 *
-	 * @since    0.0.1
-	 *
 	 * @var      object
 	 */
 	protected static $instance = null;
@@ -28,8 +26,6 @@ class WooCommerce_POS_Admin {
 	/**
 	 * Initialize the plugin by loading admin scripts & styles and adding a
 	 * settings page and menu.
-	 *
-	 * @since     0.0.1
 	 */
 	private function __construct() {
 
@@ -45,17 +41,14 @@ class WooCommerce_POS_Admin {
 		// Activate plugin when new blog is added
 		add_action( 'wpmu_new_blog', array( $this, 'activate_new_site' ) );
 
-		/*
-		 * Call $plugin_slug from public plugin class.
-		 */
+		// Call $plugin_slug from public plugin class.
 		$this->plugin_slug = WC_POS()->get_plugin_slug();
 
-		// Load admin style sheet and JavaScript.
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+		// includes 
+		add_action( 'init', array( $this, 'includes' ) );
 
 		// check version
-		add_action('admin_init', array( $this, 'run_checks') );
+		add_action( 'admin_init', array( $this, 'run_checks' ) );
 
 		// add the options page and menu item.
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
@@ -66,6 +59,10 @@ class WooCommerce_POS_Admin {
 		// Add an action link pointing to the options page.
 		$plugin_basename = plugin_basename( plugin_dir_path( realpath( dirname( __FILE__ ) ) ) . $this->plugin_slug . '.php' );
 		add_filter( 'plugin_action_links_' . $plugin_basename, array( $this, 'add_action_links' ) );
+
+				// Load admin style sheet and JavaScript.
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
 	}
 
@@ -89,6 +86,14 @@ class WooCommerce_POS_Admin {
 		}
 
 		return self::$instance;
+	}
+
+	/**
+	 * includes
+	 */
+	public function includes() {
+
+		include_once( 'includes/class-pos-product-admin.php' );
 	}
 
 	/**
@@ -333,7 +338,7 @@ class WooCommerce_POS_Admin {
 		$screen = get_current_screen();
 
 		if ( in_array( $screen->id, $this->screen_ids() ) ) {
-			// wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.min.js', __FILE__ ), array( 'jquery' ), WooCommerce_POS::VERSION );
+			wp_enqueue_script( $this->plugin_slug . '-admin-script', plugins_url( 'assets/js/admin.min.js', __FILE__ ), array( 'jquery' ), WooCommerce_POS::VERSION );
 		
 			// register WC scripts
 			wp_register_script( 'woocommerce_admin', WC()->plugin_url() . '/assets/js/admin/woocommerce_admin.min.js', array( 'jquery', 'jquery-blockui', 'jquery-ui-sortable', 'jquery-ui-widget', 'jquery-ui-core', 'jquery-tiptip' ), WC_VERSION );
@@ -358,6 +363,9 @@ class WooCommerce_POS_Admin {
 		global $menu;
 		global $submenu;
 
+		if( !current_user_can( 'manage_woocommerce_pos' ) )
+			return;
+
 		add_menu_page( 
 			__( 'POS', 'woocommerce-pos' ),
 			__( 'POS', 'woocommerce-pos' ), 
@@ -377,7 +385,7 @@ class WooCommerce_POS_Admin {
 			array( $this, 'display_settings_page' )
 		);
 
-		$submenu[$this->plugin_slug][0][0] = 'Upgrade to Pro';
+		$submenu[$this->plugin_slug][0][0] = __( 'Upgrade to Pro', 'woocommerce-pos' );
 
 	}
 

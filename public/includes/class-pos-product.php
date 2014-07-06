@@ -22,32 +22,15 @@ class WooCommerce_POS_Product {
 
 	public function __construct() {
 
-		// try and increase server timeout
-		$this->increase_timeout();
-
 		// init variables
 		$this->thumb_size = get_option( 'shop_thumbnail_image_size', array( 'width' => 90, 'height' => 90 ) );
 
-		// we're going to manipulate the wp_query to display products
-		add_action( 'pre_get_posts', array( $this, 'get_product_variations' ) );
+		// we're going to manipulate the wp_query to display POS products
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 
 		// and we're going to filter on the way out
-		add_filter( 'woocommerce_api_product_response', array( $this, 'filter_product_response' ) );
+		add_filter( 'woocommerce_api_product_response', array( $this, 'filter_product_response' ), 10, 4 );
 
-	}
-
-	/**
-	 * WC REST API can timeout on some servers
-	 * This is an attempt t o increase the timeout limit
-	 * TODO: is there a better way?
-	 */
-	public function increase_timeout() { 
-		$timeout = 600;
-		if( !ini_get( 'safe_mode' ) )
-			@set_time_limit( $timeout );
-
-		@ini_set( 'memory_limit', WP_MAX_MEMORY_LIMIT );
-		@ini_set( 'max_execution_time', (int)$timeout );
 	}
 
 	/**
@@ -59,38 +42,30 @@ class WooCommerce_POS_Product {
 	 */
 	public function get_all_ids() {
 
-		// set up the args
+		// get all the ids
 		$args = array(
-			'posts_per_page' =>  -1,
-			'post_type' => array( 'product', 'product_variation' ),
-			'tax_query' => array(
-				array(
-					'taxonomy' 	=> 'product_type',
-					'field' 	=> 'slug',
-					'terms' 	=> array( 'variable' ),
-					'operator'	=> 'NOT IN'
-				)
-			),
-			'fields'        => 'ids', // only get post IDs.
+			'posts_per_page'=>  -1,
+			'fields'		=> 'ids',
 		);
 
-		return(get_posts( $args ));
-
+		// init WP_QUERY: uses pre_get_posts
+		$query = new WP_Query( $args );
+		return array_map( 'intval', $query->posts );
 	}
 
 	/**
-	 * Get all the things
+	 * Make changes to the product query for POS
+	 * TODO: pre_get_posts action vs filter?
 	 * @param  $query 		the wordpress query
 	 */
-	public function get_product_variations( $query ) {
+	public function pre_get_posts( $query ) {
 
-		// show all products
-		// $query->set( 'posts_per_page', -1 ); 
+		// get array of 
 
-		// plus variations
+		// add variations
 		$query->set( 'post_type', array( 'product', 'product_variation' ) );
 
-		// minus variable products
+		// remove variable products
 		$tax_query =  array(
 			array(
 				'taxonomy' 	=> 'product_type',
@@ -104,18 +79,26 @@ class WooCommerce_POS_Product {
 		// fix for earlier versions of WC REST API
 		$query->set( 'post_parent', '' );
 
-        // error_log( print_R( $query, TRUE ) ); //debug
+		// remove product_variations where post_status != publish
+		add_filter( 'posts_where', array( $this, 'posts_where' ) );
         
 	}
 
+	public function posts_where( $where = '' ) {
+		global $wpdb;
+		$where .= " AND ( post_parent NOT IN ( SELECT id FROM $wpdb->posts WHERE post_status != 'publish' ) )";
+		return $where;
+	}
+
 	/**
-	 * Filter product response from WC REST API for easier handling by backbone.js
+	 * Filter product response from WC REST API for easier handling by the POS
+	 * - separate variations from variable products
+	 * - remove variable products
 	 * - unset unnecessary data
-	 * - flatten some nested arrays
 	 * @param  array $product_data
 	 * @return array modified data array $product_data
 	 */
-	public function filter_product_response( $product_data ) {
+	public function filter_product_response( $product_data, $product, $fields, $server ) {
 
 		// flatten variable data
 		if( $product_data['type'] == 'variation' ) {
@@ -128,14 +111,6 @@ class WooCommerce_POS_Product {
 				if ( $product_data['parent']['featured_src'] ) 
 					$product_data['featured_src'] = $product_data['parent']['featured_src'];
 			}
-
-			// turn variations into a html string
-			$product_data['variation_html'] = '<dl>';
-			foreach ( $product_data['attributes'] as $variation ) {
-				$product_data['variation_html'] .= '<dt>'.$variation['name'] .':</dt>';
-				$product_data['variation_html'] .= '<dd>'.$variation['option'] .'</dd>';
-			}
-			$product_data['variation_html'] .= '</dl>';
 
 		}
 
