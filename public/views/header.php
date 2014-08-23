@@ -29,21 +29,20 @@
 	<meta name="msapplication-TileColor" content="#323A46">
 	<meta name="msapplication-TileImage" content="<?= WC_POS()->plugin_url ?>assets/favicon-144.png">
 
-	<?php WooCommerce_POS::pos_print_css(); ?>
-	<?php WooCommerce_POS::pos_print_js('head'); ?>
+	<?php do_action('woocommerce_pos_head'); ?>
 	
 </head>
-<body>
+<?php do_action('woocommerce_pos_before'); ?>
 <div id="page" class="site">
 	<header id="masthead" role="banner" class="site-header">
-		<a href="#menu" id="menu-btn" class="btn-header alignleft"><i class="fa fa-bars"></i> <span><?php _e( 'Menu', 'woocommerce-pos' ); ?></span></a>
-		<div class="dropdown alignright">
+		<a href="#" id="menu-btn" class="btn-header pull-left"><i class="icon icon-bars"></i> <span><?php _e( 'Menu', 'woocommerce-pos' ); ?></span></a>
+		<div class="dropdown pull-right">
 			<a href="#" class="btn-header" data-toggle="dropdown">
-				<i class="fa fa-cog"></i> <span><?php _e( 'Howdy', 'woocommerce-pos' ); ?>, <?= $current_user->display_name ?></span>
+				<i class="icon icon-cog"></i> <span><?php _e( 'Howdy', 'woocommerce-pos' ); ?>, <?= $current_user->display_name ?></span>
 			</a>
 			<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
 				<li><a href="<?php echo wp_logout_url( home_url() ); ?>" title="Logout"><?php _e( 'Logout', 'woocommerce-pos' ); ?></a></li>
 			</ul>
 		</div>
-		<h1><?php bloginfo( 'name' ); ?></h1>
+		<h1 class="center-block"><?php bloginfo( 'name' ); ?></h1>
 	</header><!-- /header -->

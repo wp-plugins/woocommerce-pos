@@ -21,10 +21,13 @@ class WooCommerce_POS_AJAX {
 
 		// woocommerce_EVENT => nopriv
 		$ajax_events = array(
-			'process_order'             => true,
-			'get_product_ids'			=> true,
-			'get_modal'					=> true,
-			'json_search_customers'		=> true,
+			'process_order'             => false,
+			'get_product_ids'			=> false,
+			'get_modal'					=> false,
+			'json_search_customers'		=> false,
+			'set_product_visibilty' 	=> false,
+			'email_receipt' 			=> false,
+			'get_print_template' 		=> false
 		);
 
 		foreach ( $ajax_events as $ajax_event => $nopriv ) {
@@ -43,13 +46,32 @@ class WooCommerce_POS_AJAX {
 	 */
 	public function process_order() {
 
+		// security
+		check_ajax_referer( 'woocommerce-pos', 'security' );
+
+		// if there is no cart, there is nothing to process!
+		if( empty( $_REQUEST['line_items'] ) ) 
+			wp_die('There are no cart items');
+
 		// create order 
-		$checkout = new WooCommerce_POS_Checkout();
-		$order = $checkout->create_order();
+		$response = WC_POS()->checkout->create_order();
 
 		$this->json_headers();
-		echo json_encode( $order );
+		echo json_encode( $response );
 		
+		die();
+	}
+
+	public function email_receipt() {
+
+		// security
+		check_ajax_referer( 'woocommerce-pos', 'security' );
+
+		// update order with email
+		$response = WC_POS()->checkout->email_receipt();
+
+		$this->json_headers();
+		echo json_encode( $response );
 		die();
 	}
 
@@ -59,9 +81,14 @@ class WooCommerce_POS_AJAX {
 	 */
 	public function get_product_ids() {
 
+		// security
+		check_ajax_referer( 'woocommerce-pos', 'security' );
+
+		// this is a POS request
+		if( isset($_REQUEST['pos']) && $_REQUEST['pos'] == 1 ) WC_POS()->is_pos = true;
+
 		// get an array of product ids
-		$products = new WooCommerce_POS_Product();
-		$ids = $products->get_all_ids();
+		$ids = WC_POS()->product->get_all_ids();
 
 		$this->json_headers();
 		echo json_encode( $ids );
@@ -70,10 +97,27 @@ class WooCommerce_POS_AJAX {
 
 	public function get_modal() {
 
+		// security
+		check_ajax_referer( 'woocommerce-pos', 'security' );
+
 		if( isset( $_REQUEST['data']) ) 
 			extract( $_REQUEST['data'] );
 
 		include_once( dirname(__FILE__) . '/../views/modal/' . $_REQUEST['template'] . '.php' );
+		die();
+	}
+
+	public function get_print_template() {
+
+		// security
+		check_ajax_referer( 'woocommerce-pos', 'security' );
+
+		// check for custom template
+		$template_path_theme = '/woocommerce-pos/';
+		$template_path_plugin = WC_POS()->plugin_path. 'public/views/print/';
+
+		wc_get_template( $_REQUEST['template'] . '.php', null, $template_path_theme, $template_path_plugin );
+
 		die();
 	}
 
@@ -83,9 +127,9 @@ class WooCommerce_POS_AJAX {
 	 * with a few changes to display more info
 	 */
 	public function json_search_customers() {
-		check_ajax_referer( 'search-customers', 'security' );
-
-		self::json_headers();
+		
+		// security
+		check_ajax_referer( 'json-search-customers', 'security' );
 
 		$term = wc_clean( stripslashes( $_GET['term'] ) );
 
@@ -108,32 +152,24 @@ class WooCommerce_POS_AJAX {
 			);
 			$default->init( (object)$data );
 		}
-
-		// we need to do three queries due to performance issues with WP
-		// see: https://core.trac.wordpress.org/ticket/24093
 		
 		// query the users table
 		$users_query = new WP_User_Query( apply_filters( 'woocommerce_pos_json_search_customers_query', array(
 			'fields'         => 'all',
 			'orderby'        => 'display_name',
 			'search'         => '*' . $term . '*',
-			'search_columns' => array( 'ID', 'user_login', 'user_email', 'user_nicename' )
+			'search_columns' => array( 'ID', 'user_login', 'user_email', 'user_nicename' ),
 		) ) );
 
 		// query the usermeta table
-		$first_name_query = new WP_User_Query( apply_filters( 'woocommerce_pos_json_search_customers_query', array(
+		$usermeta_query = new WP_User_Query( apply_filters( 'woocommerce_pos_json_search_customers_query', array(
 			'meta_query' => array(
+				'relation' 	  => 'OR',
 				array(
 					'key'     => 'first_name',
 					'value'   => $term,
 					'compare' => 'LIKE'
 				),
-			)
-		) ) );
-
-		// query the usermeta table
-		$last_name_query = new WP_User_Query( apply_filters( 'woocommerce_pos_json_search_customers_query', array(
-			'meta_query' => array(
 				array(
 					'key'     => 'last_name',
 					'value'   => $term,
@@ -143,7 +179,7 @@ class WooCommerce_POS_AJAX {
 		) ) );
 
 		// merge the two results
-		$customers = array_merge( $users_query->get_results(), $first_name_query->get_results(), $last_name_query->get_results() );
+		$customers = array_merge( $users_query->get_results(), $usermeta_query->get_results() );
 		
 		// add the default customer to the results
 		array_unshift( $customers, $default );
@@ -162,6 +198,37 @@ class WooCommerce_POS_AJAX {
 
 		$this->json_headers();
 		echo json_encode( $found_customers );
+		die();
+	}
+
+	/**
+	 * Update POS visibilty option
+	 */
+	public function set_product_visibilty() {
+
+		if( !isset( $_REQUEST['post_id'] ) ) 
+			wp_die('Product ID required');
+
+		// security
+		check_ajax_referer( 'set-product-visibilty-'.$_REQUEST['post_id'], 'security' );
+
+		// set the post_meta field
+		if( update_post_meta( $_REQUEST['post_id'], '_pos_visibility', $_REQUEST['_pos_visibility'] ) ) {
+			$post_modified     = current_time( 'mysql' );
+			$post_modified_gmt = current_time( 'mysql', 1 );
+			wp_update_post( array(
+				'ID' 				=> $_REQUEST['post_id'],
+				'post_modified' 	=> $post_modified,
+				'post_modified_gmt' => $post_modified_gmt
+			));
+			$response = array('success' => true);
+		}
+		else {
+			wp_die('Failed to update post meta table');
+		}	
+
+		$this->json_headers();
+		echo json_encode( $response );
 		die();
 	}
 

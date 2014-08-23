@@ -50,6 +50,9 @@ class WooCommerce_POS_Admin {
 		// check version
 		add_action( 'admin_init', array( $this, 'run_checks' ) );
 
+		// add pos_params to admin head
+		add_action('admin_head', array( $this, 'admin_head' ) );
+
 		// add the options page and menu item.
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 
@@ -93,6 +96,7 @@ class WooCommerce_POS_Admin {
 	 */
 	public function includes() {
 
+		include_once( 'includes/class-pos-admin-hooks.php' );
 		include_once( 'includes/class-pos-product-admin.php' );
 	}
 
@@ -237,6 +241,7 @@ class WooCommerce_POS_Admin {
 		$this->permalink_check();
 		$this->version_check();
 		$this->welcome_screen();
+		$this->gateway_check();
 	}
 
 	/**
@@ -314,6 +319,20 @@ class WooCommerce_POS_Admin {
 	}
 
 	/**
+	 * Set default Payment Gateways if not set already
+	 */
+	public function gateway_check() {
+		$defaults = array( 'pos_cash', 'pos_card', 'paypal' );
+		if( !get_option('woocommerce_pos_default_gateway') ) 
+			update_option( 'woocommerce_pos_default_gateway', 'pos_cash' );
+		if( $enabled = get_option('woocommerce_pos_enabled_gateways' ) ) {
+			update_option( 'woocommerce_pos_enabled_gateways', array_intersect( $enabled, $defaults ) );
+		} elseif( false === $enabled ) {
+			update_option( 'woocommerce_pos_enabled_gateways', array_slice( $defaults, 0, -1 ) );
+		}
+	}
+
+	/**
 	 * Register and enqueue admin-specific style sheet.
 	 */
 	public function enqueue_admin_styles() {
@@ -323,11 +342,19 @@ class WooCommerce_POS_Admin {
 		if ( in_array( $screen->id, $this->screen_ids() ) ) {
 			wp_enqueue_style( $this->plugin_slug .'-admin', plugins_url( 'assets/css/admin.min.css', __FILE__ ), array(), WooCommerce_POS::VERSION );
 			wp_enqueue_style( 'woocommerce_admin_styles', WC()->plugin_url() . '/assets/css/admin.css', array(), WC_VERSION );
+		}
 
+		if( in_array( $screen->id, array( 'pos_page_wc-pos-settings', 'woocommerce_page_wc-settings' ) )  ) {
+			$css = '
+				table.wc_gateways .pos_status, table.wc_gateways .pos_enabled { text-align: center; }
+				table.wc_gateways .pos_status .tips, table.wc_gateways .pos_enabled .tips { margin: 0 auto; }
+				.status-disabled:before { font-family:WooCommerce; speak:none; font-weight:400; font-variant:normal; text-transform:none; line-height:1; -webkit-font-smoothing:antialiased; margin:0; text-indent:0; position:absolute; top:0;left:0; width:100%; height:100%; text-align:center; content: "\e602"; color:#E0E0E0; }
+			';
+			wp_add_inline_style( 'wp-admin', $css );
 		}
 
 		wp_enqueue_style( $this->plugin_slug .'-dashicons', plugins_url( 'assets/css/dashicons.min.css', __FILE__ ), array(), WooCommerce_POS::VERSION );
-
+		
 	}
 
 	/**
@@ -352,6 +379,12 @@ class WooCommerce_POS_Admin {
 			wp_enqueue_script( 'jquery-tiptip' );
 			wp_enqueue_script( 'ajax-chosen' );
 	    	wp_enqueue_script( 'chosen' );
+	    	wp_enqueue_script( 'jquery-ui-sortable' );
+		}
+
+		// js for product page
+		if ( in_array( $screen->id, array( 'product' ) ) ) {
+			wp_enqueue_script( $this->plugin_slug . '-admin-products', plugins_url( 'assets/js/products.min.js', __FILE__ ), array( 'jquery', 'backbone', 'underscore' ), WooCommerce_POS::VERSION );
 		}
 
 	}
@@ -458,6 +491,13 @@ class WooCommerce_POS_Admin {
 				</div>';
 			} 
 		} 
+	}
+
+	/**
+	 * Add pos_params global variable for js
+	 */
+	public function admin_head() {
+		echo '<script type="text/javascript">window.pos_params={};</script>';
 	}
 
 }

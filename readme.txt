@@ -40,6 +40,15 @@ If your browser does not support IndexedDB, WooCommerce POS will fallback to usi
 3. Install the plugin
 4. Click Activate Plugin to activate it.
 
+= Pro installation = 
+If you have purchased a license for [WooCommerce POS Pro](http://woopos.com.au/pro) please follow the steps below to install and activate the plugin:
+
+1. Go to: http://woopos.com.au/my-account/
+2. Under My Downloads, click the download link and save the plugin to your desktop.
+3. Then go to your site, login and go to the Add New Plugin page, eg: http://<yourstore.com>/wp-admin/plugin-install.php?tab=upload
+4. Upload the plugin zip file from your desktop and activate.
+5. Next, go to the POS Settings page and enter your License Key and License Email to complete the activation.
+
 = Manual installation = 
 To install a WordPress Plugin manually:
 
@@ -52,7 +61,17 @@ To install a WordPress Plugin manually:
 == Frequently Asked Questions ==
 
 = Where can I find more information on WooCommerce POS? =
-There is more information on our website at [woopos.com.au](http://woopos.com.au)
+There is more information on our website at [woopos.com.au](http://woopos.com.au).
+Try:
+* [FAQ](http://woopos.com.au/faq)
+* [Documentation](http://woopos.com.au/docs)
+* [Blog](http://woopos.com.au/blog)
+
+= Where can I request a feature? =
+Visit the [Roadmap](http://woopos.com.au/roadmap) for information on what is coming in the next version of WooCommerce POS. If your feature isn't mentioned leave a request in the comments.
+
+= Where can I get support? =
+WooCommerce POS has a support page within the plugin (eg: http://*<yourstore>*/pos/support). If you are experiencing an error or problem please visit this support page and send a message using the form provided. This form will attach important information we need to assist you.
 
 = Where can I report bugs? =
 Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.com/kilbot/WooCommerce-POS/issues).
@@ -63,21 +82,30 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 
 == Changelog ==
 
-= 0.3.1 =
+= 0.3.1 - [read blog post](http://woopos.com.au/2014/08/version-0-3-1-released/) =
 * New: choose which user roles have access to POS
-* TODO: settings: choose which field is used for barcode (PRO USERS)
-* New: POS only products
-* TODO: settings: payment tab, select which payment gateways to use
-* TODO: ui: payment options during checkout
+* New: set products as visible to POS Only or Online Only
+* New: filter products in WP-Admin by POS Only or Online Only
+* New: filter orders in WP-Admin by POS or Online
+* New: hierarchical UI for variable products, improves experience for products with large number of variations
+* New: product filters, filter by category ( eg: cat:music ) or any attribute ( eg: in_stock:true )
+* New: quick tabs for filtering products All, Featured ( featured:true ) and On Sale ( on_sale:true )
+* New: Payment Gateway settings, enable POS only gateways and reorder through new settings tab
+* TODO: Payment Gateway processing, experimental
 * TODO: ui: change calculator
-* TODO: ui: numpad module
+* New: Numpad
 * TODO: send order meta: user_id, payment_type
-* TODO: look at this authentication issue with network installs, Scotts issue.
-* Improved: Initial download of products, improved performance for large stores and slow servers
+* TODO: Add menu link directly to POS
+* New: Debug flag for Javascript console logging
+* Improved: Most JS has been rewritten to improve performance and extensibility
+* Improved: Initial download of products, improved performance for large stores and/or slow servers
 * New: Greek translation thanks to Marios Polycarpou! [http://el.woopos.com.au/pos](http://el.woopos.com.au/pos)
 * New: German translation thanks to Simon Potye! [http://de.woopos.com.au/pos](http://de.woopos.com.au/pos)
+* New: Danish translation thanks to Thomas Clausen! [http://da.woopos.com.au/pos](http://da.woopos.com.au/pos)
+* Fix: Authenication no longer relies on cookies, should fix authentication issues for some users
+* Fix: Bug preventing product display on Safari for subfolder installs of WordPress
 
-* Pro Only:  
+* Pro Feature: Pro users can enable any Payment Gateway. (Upgrade to Pro)[http://woopos.com.au/pro].
 
 = 0.3 =
 * New: Set default POS customer on new settings page
