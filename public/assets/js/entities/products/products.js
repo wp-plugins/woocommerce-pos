@@ -21,17 +21,34 @@ define([
 			},
 			
 			initialize: function(models, options) {
-				this.on('all', function(e) { console.log("Product Collection event: " + e); }); // debug
+				// this.on('all', function(e) { console.log("Product Collection event: " + e); }); // debug
 
-				var filterCollection = Entities.channel.request('product:filtercollection', options);
+				this.options = options || (options = {});
 
-				this.on('sync', function() {
-					filterCollection.reset( this.fullCollection.models, { silent: true } );
+				this.filterCollection = Entities.channel.request('product:filtercollection', options);
+
+				// init filterCollection
+				this.once('sync', function () {
+					this.filterCollection.reset( this.fullCollection.models );
+									
+					// sort list by user setting (default: updated_at)
+					this.setSorting('updated_at', 1);
+					this.fullCollection.sort();
 				});
 
-				this.listenTo( filterCollection, 'reset', function( collection ){
-					this.getFirstPage({ silent: true });
-					this.fullCollection.reset(collection, { reindex: false });			
+				// update filterCollection after serverSync
+				this.on('update:filter:collection', function() {
+					this.filterCollection.reset( this.fullCollection.models );
+					this.filterCollection._filterProducts(); // honor active filters
+				});
+
+				// update fullCollection with filterCollection
+				this.listenTo( this.filterCollection, 'filter:products', function (collection, options){
+					this.fullCollection.reset(collection);
+
+					// sort list by user setting (default: updated_at)
+					this.setSorting('updated_at', 1);
+					this.fullCollection.sort();
 				});
 
 				Entities.channel.comply('product:sync', this.serverSync, this );
@@ -45,12 +62,23 @@ define([
 			 */
 			serverSync: function() {
 				var self = this;
-				
+
 				// make sure a sync is not already in progress
 				if( POS.Entities.channel.request('options:get', '_syncing') ) { 
-					if(POS.debug) console.warn('Sync already in progress');
-					return; 
+
+					// if it's been longer than 10 mins, force sync
+					var last_update = POS.Entities.channel.request('options:get', 'last_update');
+					if( Date.now() - last_update > 600000 ) {
+						POS.Entities.channel.command('options:delete', '_syncing');
+					} else {
+						if(POS.debug) console.warn('Sync already in progress');
+						return; 
+					}
+
 				}
+
+				// fullcollection may be filtered, so reset before syncing
+				this.fullCollection.reset( this.filterCollection.models, { silent: true });
 
 				// start the sync
 				POS.Entities.channel.command('options:set', '_syncing', 1);
@@ -65,12 +93,20 @@ define([
 					if(POS.debug) console.warn('Product audit & update failed');
 				})
 				.always( function() {
+					self.trigger('update:filter:collection');
 					POS.Entities.channel.command('options:set', 'last_update', Date.now() );
 					POS.Entities.channel.command('options:delete', '_syncing');
-					self.fetch();
 					$('#products-pagination').removeClass('working');
 				});
 
+			},
+
+			destroy: function() {
+				var self = this,
+					ids = this.fullCollection.pluck('id');
+				$.when( this._removeProducts(ids) ).done( function() {
+					self.fullCollection.reset();
+				});
 			},
 
 			// web worker to get updated products
@@ -144,8 +180,9 @@ define([
 					if(POS.debug) console.log(server_ids.length + ' products stored on server');
 
 				 	var diff = _.difference( local_ids, server_ids );
+				 	
 				 	if( diff.length > 0 ) {
-						return self._removeProducts( diff );
+				 		return $.when( self._removeProducts( diff ) );
 				 	} else {
 				 		if(POS.debug) console.log('0 products need to be removed');
 				 		return;
@@ -189,16 +226,26 @@ define([
 			 * @return null
 			 */
 			_removeProducts: function(ids) {
+				var defer = $.Deferred();
 
-				_.each( ids, function(id) {
+				_.each( ids, function(id, index) {
 					var model = this.fullCollection.get(id);
-					model.destroy();
+					model.destroy({
+						silent: true,
+						success: function() {
+							if( ( index + 1 ) === ids.length ) {
+								if(POS.debug) console.log(ids.length + ' products removed');
+								defer.resolve();
+							}
+						},
+						error: function(model, response) {
+							if(POS.debug) console.warn('problem deleting ' + response.title);
+							defer.resolve();
+						}
+					});
 				}, this);
 
-				if(POS.debug) console.log(ids.length + ' products removed');
-
-				return;
-
+				return defer.promise();
 			},
 
 			/**
@@ -215,7 +262,6 @@ define([
 					// save each product
 					if( i < products.length ) {
 						var product = products[i];
-
 						self.fullCollection.create( product, {
 							merge: true,
 							silent: true, // reset after loop
@@ -230,7 +276,6 @@ define([
 					// update progress when finished
 					else {
 						if(POS.debug) console.log(products.length + ' products saved');
-						self.trigger('sync');
 						defer.resolve();
 					}
 

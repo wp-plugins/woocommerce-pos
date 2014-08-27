@@ -36,7 +36,7 @@ define(['app', 'apps/products/list/view', 'entities/products'], function(POS, Vi
 
 			},
 
-			_showProductsRegion: function( products ) {				
+			_showProductsRegion: function( products ) {		
 				var view = new View.Products({
 					collection: products
 				});
@@ -140,8 +140,7 @@ define(['app', 'apps/products/list/view', 'entities/products'], function(POS, Vi
 				this.listenTo( view, 'pagination:clear:clicked', function(args) {
 					POS.Entities.channel.command('options:set', 'last_update', '' );
 					POS.Entities.channel.command('options:delete', '_syncing' );
-					products.fullCollection.reset();
-					args.view.render();
+					products.destroy();
 				});
 				
 				// show
