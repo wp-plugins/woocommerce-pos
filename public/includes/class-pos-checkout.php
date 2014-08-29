@@ -26,7 +26,7 @@ class WooCommerce_POS_Checkout {
 		add_action( 'woocommerce_reduce_order_stock', array( $this, 'stock_modified' ), 10, 1 );
 
 		// add payment info to order response
-		add_filter( 'woocommerce_api_order_response', array( $this, 'add_payment_fields' ), 10, 4 );
+		add_filter( 'woocommerce_api_order_response', array( $this, 'add_receipt_fields' ), 10, 4 );
 
 	}
 
@@ -36,6 +36,7 @@ class WooCommerce_POS_Checkout {
 	 * @return {int} $order_id
 	 */
 	public function create_order() {
+		global $wpdb;
 
 		// create empty order
 		$order_data = apply_filters( 'woocommerce_new_order_data', array(
@@ -68,6 +69,12 @@ class WooCommerce_POS_Checkout {
 
 		// now process the payment
 		$gateway_response = $this->process_payment( $order_id, $customer_id );
+
+		if( $gateway_response['result'] === 'success' ) {
+			$wpdb->query( 'COMMIT' );
+		} else {
+			$wpdb->query( 'ROLLBACK' );
+		}
 
 		// return gateway response
 		return $gateway_response;
@@ -220,6 +227,25 @@ class WooCommerce_POS_Checkout {
 			$response['messages'] = ob_get_contents();
 			ob_end_clean();
 
+			// check if redirect is needed
+			if( $response['redirect'] ) {
+
+				// 
+				$success_url = wc_get_endpoint_url( 'order-received', $order_id, get_permalink( wc_get_page_id( 'checkout' ) ) );
+				$success_frag = parse_url( $success_url );
+				
+				// 
+				$redirect_frag = parse_url( $response['redirect'] );
+
+				if( $success_frag['host'] !== $redirect_frag['host'] ) {
+					$response['redirect_required'] = true;
+				} elseif( $success_frag['path'] !== $redirect_frag['path'] && $response['messages'] == '' ) {
+					$response['messages'] = sprintf( __('You are now being redirected offsite to complete the payment.<br><a target="_blank" href="%s" data-redirect="true">Click here</a> if you are not redirected automatically.', 'woocommerce-pos'), $response['redirect'] );
+					$response['redirect_required'] = true;
+				}
+
+			}
+
 			// store message for display
 			if( $response['messages'] !== '' ) {
 				update_post_meta( $order_id, '_pos_payment_message', $response['messages'] );
@@ -238,7 +264,7 @@ class WooCommerce_POS_Checkout {
 
 		} else {
 
-			// payment failed
+			// default error message
 			$default = array(
 				'result'	=> 'failure',
 				'messages' 	=> wc_get_notices( 'error' ),
@@ -246,14 +272,17 @@ class WooCommerce_POS_Checkout {
 				'reload'    => false
 			);
 
+			// merge with actual response
 			if( is_array( $response) ) {
 				$response = array_merge($default, $response);
 			} else {
 				$response = $default;
 			}
 
-			// delete the post
-			wp_delete_post( $order_id, true );
+			// if messages empty give generic response
+			if( empty( $response['messages'] ) ) {
+				$response['messages'] = __( 'There was an error processing the payment', 'woocommerce-pos');
+			}
 			
 		}
 
@@ -274,7 +303,7 @@ class WooCommerce_POS_Checkout {
 		update_post_meta( $order_id, '_order_total', 		wc_format_decimal( $_REQUEST['total'] ) );
 		update_post_meta( $order_id, '_order_key', 			'wc_' . apply_filters('woocommerce_generate_order_key', uniqid('order_') ) );
 		update_post_meta( $order_id, '_order_currency', 	get_woocommerce_currency() );
-		update_post_meta( $order_id, '_prices_include_tax', get_option( 'woocommerce_prices_include_tax' ) );
+		// update_post_meta( $order_id, '_prices_include_tax', get_option( 'woocommerce_prices_include_tax' ) );
 
 		// itemized tax totals
 		if( isset($_REQUEST['itemized_tax']) ) {
@@ -305,13 +334,26 @@ class WooCommerce_POS_Checkout {
 
 	/**
 	 * Add any payment messages to API response
+	 * Also add subtotal_tax to receipt which is not included for some reason
 	 */
-	public function add_payment_fields( $order_data, $order, $fields, $server ) {
+	public function add_receipt_fields( $order_data, $order, $fields, $server ) {
 		if( WC_POS()->is_pos ) {
+
+			// add any payment messages
 			$message = get_post_meta( $order->id, '_pos_payment_message', true );
 			if($message) {
 				$order_data['payment_details']['message'] = $message;
 			}
+
+			// add subtotal_tax
+			$subtotal_tax = 0;
+			foreach( $order_data['line_items'] as &$item ) {
+				$line_subtotal_tax = wc_get_order_item_meta( $item['id'], '_line_subtotal_tax', true );
+				$item['subtotal_tax'] = wc_format_decimal( $line_subtotal_tax, 2 );
+				$subtotal_tax += $line_subtotal_tax;
+			}
+			$order_data['subtotal_tax'] = wc_format_decimal( $subtotal_tax, 2 );
+			
 			return $order_data;
 		}
 	}
