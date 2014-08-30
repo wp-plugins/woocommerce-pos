@@ -430,7 +430,7 @@ class WooCommerce_POS_Admin {
 		$pos_screen_id = sanitize_title( __( 'POS', 'woocommerce-pos' ) );
 
 		$screen_ids = array(
-			'toplevel_page_' . $pos_screen_id,
+			'toplevel_page_woocommerce-pos',
 			$pos_screen_id . '_page_wc-pos-settings'
 		);
 		
