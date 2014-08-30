@@ -108,7 +108,7 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 * Fix: Bug preventing product display on Safari for subfolder installs of WordPress
 * Fix: Bug effecting admin settings for translation users
 
-* Pro Feature: Pro users can enable any Payment Gateway. (Upgrade to Pro)[http://woopos.com.au/pro].
+* Pro Feature: Pro users can enable any Payment Gateway. [Upgrade to Pro](http://woopos.com.au/pro).
 
 = 0.3 =
 * New: Set default POS customer on new settings page
