@@ -13,12 +13,6 @@
 
 class WooCommerce_POS_Product {
 
-	/** @var string Contains the thumbnail size. */
-	private $thumb_suffix = null;
-
-	/** @var string Contains placeholder image src. */
-	private $placeholder_img = null;
-
 	/** @var array Contains an array of tax rates, by tax class. */
 	private $tax_rates = array();
 
@@ -28,25 +22,37 @@ class WooCommerce_POS_Product {
 	public function __construct() {
 
 		// hooks
-		add_filter( 'posts_where', array( $this, 'posts_where' ), 10 , 2 );
+		add_filter( 'posts_where', array( $this, 'posts_where' ), 10, 2 );
 		add_filter( 'woocommerce_api_product_response', array( $this, 'filter_product_response' ), 10, 4 );
 
 		// server fallback, depreciate asap
 		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
-
 	}
 
 	/**
 	 * Show/hide POS products
+	 *
+	 * @param $where
+	 * @param $query
+	 *
+	 * @return string
 	 */
 	public function posts_where( $where, $query ) {
 		global $wpdb;
 
-		// only alter product queries
-		if( is_array( $query->get('post_type') ) && !in_array( 'product', $query->get('post_type') ) )
-			return $where;
+		// check for post_type = product
+		// post_type could be part of an array
+		if( is_array( $query->get('post_type') ) ) {
+			$product_query = in_array( 'product', $query->get('post_type') );
+		} else {
+			$product_query = $query->get('post_type') == 'product';
+		}
 
-		if( !is_array( $query->get('post_type') ) && $query->get('post_type') !== 'product' )
+		// only alter product queries
+		if( !$product_query &&
+		    !is_post_type_archive( 'product' ) &&
+		    !is_tax( 'product_cat' ) &&
+		    !is_tax( 'product_tag' ) )
 			return $where;
 
 		// don't alter product queries in the admin
@@ -68,6 +74,8 @@ class WooCommerce_POS_Product {
 
 	/**
 	 * Filter products, server fallback
+	 *
+	 * @param $query
 	 */
 	public function pre_get_posts( $query ) {
 
@@ -116,7 +124,10 @@ class WooCommerce_POS_Product {
 	 * - use the thumbnails rather than fullsize
 	 * - add tax rates & barcode field
 	 * - unset unnecessary data
+	 *
 	 * @param  array $product_data
+	 * @param $product
+	 *
 	 * @return array modified data array $product_data
 	 */
 	public function filter_product_response( $product_data, $product, $fields, $server ) {
@@ -157,20 +168,13 @@ class WooCommerce_POS_Product {
 			unset($product_data[$key]);
 		}
 
-		// set thumb_suffix
-		if( $this->thumb_suffix === null ) {
-			$thumb_size = get_option( 'shop_thumbnail_image_size', array( 'width' => 90, 'height' => 90 ) );
-			$this->thumb_suffix = '-'.$thumb_size['width'].'x'.$thumb_size['height'];
-		}
-
-		// set placeholder
-		if( $this->placeholder_img === null ) {
-			$this->placeholder_img = wc_placeholder_img_src();
-		}
-
 		// use thumbnails for images
-		$xpath = new DOMXPath(@DOMDocument::loadHTML($product->get_image()));
-		$product_data['featured_src'] = $xpath->evaluate("string(//img/@src)");
+		if( $thumb_id = get_post_thumbnail_id( $product_data['id'] ) ) {
+			$image = wp_get_attachment_image_src( $thumb_id, 'shop_thumbnail' );
+			$product_data['featured_src'] = $image[0];
+		} else {
+			$product_data['featured_src'] = wc_placeholder_img_src();
+		}
 
 		// if taxable, get the tax_rates array
 		if( $product_data['taxable'] ) {
@@ -197,10 +201,9 @@ class WooCommerce_POS_Product {
 				}
 
 				// add featured_src
-				if ( has_post_thumbnail( $variation['id'] ) ) {
-					$image = get_the_post_thumbnail( $variation['id'], 'shop_thumbnail' );
-					$xpath = new DOMXPath(@DOMDocument::loadHTML($image));
-					$variation['featured_src'] = $xpath->evaluate("string(//img/@src)");
+				if( $thumb_id = get_post_thumbnail_id( $variation['id'] ) ) {
+					$image = wp_get_attachment_image_src( $thumb_id, 'shop_thumbnail' );
+					$variation['featured_src'] = $image[0];
 				} else {
 					$variation['featured_src'] = $product_data['featured_src'];
 				}
@@ -220,7 +223,9 @@ class WooCommerce_POS_Product {
 
 	/**
 	 * [get_tax_rates description]
-	 * @return [type] [description]
+	 *
+	 * @param string $tax_class
+	 * @return array [type] [description]
 	 */
 	public function get_tax_rates( $tax_class = '' ) {
 
@@ -245,5 +250,3 @@ class WooCommerce_POS_Product {
 	}
 
 }
-
-new WooCommerce_POS_Product();

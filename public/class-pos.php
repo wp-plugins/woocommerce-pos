@@ -12,7 +12,7 @@
 class WooCommerce_POS {
 
 	/** Version numbers */
-	const VERSION = '0.3.3';
+	const VERSION = '0.3.4';
 	const JQUERY_VERSION = '2.1.1';
 
 	/** Development flag */
@@ -43,7 +43,7 @@ class WooCommerce_POS {
 	public $checkout = null;
 
 	/** @var object WooCommerce_POS_Currency */
-	public $currency = null;	
+	public $currency = null;
 
 	/** @var cache logged in user id */
 	private $logged_in_user = false;

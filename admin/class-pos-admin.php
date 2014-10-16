@@ -306,7 +306,7 @@ class WooCommerce_POS_Admin {
 			// alert the user about order-status change
 			$error = array (
 				'msg_type' 	=> 'update-nag',
-				'msg' 		=> sprintf( __('WooCommerce 2.2 changed the way order statuses are handled which affected the display of POS orders in the admin. Please update any orders with status <em>published</em> to the correct status (eg: <em>completed</em>). <a class="button-primary" href="%s">Check your POS orders</a>', 'woocommerce-pos'), admin_url('edit.php?post_status=publish&post_type=shop_order') )
+				'msg' 		=> sprintf( __('WooCommerce 2.2 changed the way order statuses are handled which affected the display of POS orders in the admin. Please update any orders with status <em>Published</em> to the correct status (eg: <em>Completed</em>). <a class="button-primary" href="%s">Check your POS orders</a>', 'woocommerce-pos'), admin_url('edit.php?post_status=publish&post_type=shop_order') )
 			);
 			array_push( $this->notices, $error );
 		}
@@ -410,14 +410,14 @@ class WooCommerce_POS_Admin {
 		if( !current_user_can( 'manage_woocommerce_pos' ) )
 			return;
 
-		add_menu_page( 
+		add_menu_page(
 			__( 'POS', 'woocommerce-pos' ),
-			__( 'POS', 'woocommerce-pos' ), 
-			'manage_woocommerce_pos', 
-			$this->plugin_slug, 
-			array( $this, 'display_upgrade_page' ), 
-			null, 
-			56 
+			__( 'POS', 'woocommerce-pos' ),
+			'manage_woocommerce_pos',
+			$this->plugin_slug,
+			array( $this, 'display_upgrade_page' ),
+			null,
+			'55.55'
 		);
 
 		add_submenu_page(

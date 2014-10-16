@@ -3,7 +3,7 @@ Contributors: kilbot
 Tags: cart, e-commerce, ecommerce, inventory, point-of-sale, pos, sales, sell, shop, shopify, store, vend, woocommerce,  wordpress-ecommerce
 Requires at least: 3.8 & WooCommerce 2.1
 Tested up to: 4.0
-Stable tag: 0.3.3
+Stable tag: 0.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,11 +82,18 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 
 == Changelog ==
 
+= 0.3.4 =
+* Urgent Fix: performance issue downloading products
+* Fix: potential clash for admin menu position
+* Fix: bug affecting woocommerce_api_order_response
+* Fix: cashback entry on receipt
+* Improved: POS Only products
+
 = 0.3.3 =
 * Urgent Fix: Compatibility with new order-status introduced in WooCommerce > 2.2
 * Fix: POS Only products improved, fixes 404 errors on imported products
 * Fix: IndexedDB now available on Safari 7.1, compatibility update to db
-* Fix: bug affecting default customer setting
+* Fix: bug effecting default customer setting
 * Fix: added support for Simplify Commerce by Mastercard
 * Improved: product thumbnails, support for non-cropped thumbs
 * Improved: clearing local database improved for large stores
