@@ -1,8 +1,8 @@
 === WooCommerce Point of Sale (POS) ===
 Contributors: kilbot
 Tags: cart, e-commerce, ecommerce, inventory, point-of-sale, pos, sales, sell, shop, shopify, store, vend, woocommerce,  wordpress-ecommerce
-Requires at least: 3.8 & WooCommerce 2.1
-Tested up to: 4.1
+Requires at least: 4.0 & WooCommerce 2.2
+Tested up to: 4.2
 Stable tag: 0.3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -24,7 +24,7 @@ You can see a demo of the WooCommerce POS plugin in action by going to [http://d
 * Upgrade to Pro: http://woopos.com.au/pro
 
 = REQUIREMENTS =
-* WooCommerce >= 2.1.0
+* WooCommerce >= 2.2.0
 
 WooCommerce POS uses IndexedDB to persist the product database on your computer or device. [IndexedDB](http://www.w3.org/TR/IndexedDB/) is currently a 'Candidate Recommendation' specification by the W3C and is not implemented by all browsers. To see if your browser is compatible please check [caniuse.com](http://caniuse.com/indexeddb).
 
@@ -81,6 +81,31 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 1. WooCommerce POS main screen
 
 == Changelog ==
+
+= 0.4 =
+* TODO: floating point numbers as qty
+* TODO: custom receipts
+* TODO: add Cash and Card to order drop down
+* TODO: custom barcode field
+* TODO: fix customer search for network blogs
+* TODO: https support
+* TODO: check email template, customer name
+* TODO: check stock reduction
+* TODO: percentage bug
+* TODO: support for Simplify Commerce by MasterCard
+* TODO: look at POS Only issue with categories
+* TODO: POS orders in trash
+* TODO: pos only where called twice?
+* TODO: change change bug 1,000+
+* TODO: make image src protocol-relative
+* TODO: strip script tags from checkout template: using
+* TODO: remove 0.00 discount from receipt
+* TODO: two tabs open, remove database, both try to update
+* TODO: harden against CORS w/ relative urls
+* TODO: add amount tendered and change to receipt
+* TODO: price set to 0.001 with 3 decimal precision shows 0.00 in cart
+* New: set custom permalink for POS front-end, eg: http://yourstore.com/custom-slug/
+* Fix: removed all cases of php echo shorthand for short_open_tag=off
 
 = 0.3.5 =
 * Note: this is a minor compatibility update for WooCommerce 2.3
