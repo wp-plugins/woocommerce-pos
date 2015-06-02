@@ -1,9 +1,9 @@
-=== WooCommerce Point of Sale (POS) ===
+=== WooCommerce POS ===
 Contributors: kilbot
 Tags: cart, e-commerce, ecommerce, inventory, point-of-sale, pos, sales, sell, shop, shopify, store, vend, woocommerce,  wordpress-ecommerce
 Requires at least: 4.0 & WooCommerce 2.2
 Tested up to: 4.2
-Stable tag: 0.3.5
+Stable tag: 0.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,12 +25,7 @@ You can see a demo of the WooCommerce POS plugin in action by going to [http://d
 
 = REQUIREMENTS =
 * WooCommerce >= 2.2.0
-
-WooCommerce POS uses IndexedDB to persist the product database on your computer or device. [IndexedDB](http://www.w3.org/TR/IndexedDB/) is currently a 'Candidate Recommendation' specification by the W3C and is not implemented by all browsers. To see if your browser is compatible please check [caniuse.com](http://caniuse.com/indexeddb).
-
-If your browser does not support IndexedDB, WooCommerce POS will fallback to using the product database on your server via the WooCommerce REST API. The Point of Sale system will still function but searching and filtering will be slower. Some planned features for WooCommerce POS will also only be available for browsers that support IndexdedDB.
-
-** For the best experience please use a modern browser such as [Chrome](http://www.google.com/chrome) **
+* [A modern browser](http://woopos.com.au/faq/browser-compatibility/)
 
 == Installation ==
 
@@ -83,29 +78,33 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 == Changelog ==
 
 = 0.4 =
-* TODO: floating point numbers as qty
-* TODO: custom receipts
-* TODO: add Cash and Card to order drop down
-* TODO: custom barcode field
-* TODO: fix customer search for network blogs
-* TODO: https support
-* TODO: check email template, customer name
-* TODO: check stock reduction
-* TODO: percentage bug
-* TODO: support for Simplify Commerce by MasterCard
-* TODO: look at POS Only issue with categories
-* TODO: POS orders in trash
-* TODO: pos only where called twice?
-* TODO: change change bug 1,000+
-* TODO: make image src protocol-relative
-* TODO: strip script tags from checkout template: using
-* TODO: remove 0.00 discount from receipt
-* TODO: two tabs open, remove database, both try to update
-* TODO: harden against CORS w/ relative urls
-* TODO: add amount tendered and change to receipt
-* TODO: price set to 0.001 with 3 decimal precision shows 0.00 in cart
-* New: set custom permalink for POS front-end, eg: http://yourstore.com/custom-slug/
-* Fix: removed all cases of php echo shorthand for short_open_tag=off
+* Note: this is a major code refactor, almost every line of code has been rewritten
+* Please check your POS admin after upgrade as many settings have changed
+-
+* Products: Variation popover/drawer
+* Products: Infinite scroll
+* Products: Hotkey for barcode search
+* Products: Attributes now show in tooltip
+* Cart: Tax settings can now be changed per cart item
+* Cart: Meta data can be added to cart items
+* Cart: Ability to add shipping line item
+* Cart: Ability to fee line item
+* Hotkeys: Use hotkey '?' to display a list of available hotkeys
+* Translations: WooCommerce POS now uses automatic downloads
+* New: Set custom permalink for POS front-end
+* Improved: Responsive design for tablets & mobile
+-
+* Pro: Add customer during checkout
+* Pro: Open multiple carts
+* Pro: Hotkey for credit card readers
+* Pro: New product page for quick product management
+* Pro: New customer page for quick add/edit customers
+* Pro: New order page
+* Pro: New coupon page
+* Pro: Multiple stores
+* Pro: Compatibility fix for Stripe gateway
+-
+* Fix: all the things
 
 = 0.3.5 =
 * Note: this is a minor compatibility update for WooCommerce 2.3

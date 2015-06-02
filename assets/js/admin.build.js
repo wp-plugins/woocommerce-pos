@@ -104,7 +104,7 @@
 	var Gateways = __webpack_require__(34);
 	var Variations = __webpack_require__(35);
 	var FilteredCollection = __webpack_require__(36);
-	var debug = __webpack_require__(72)('entities');
+	var debug = __webpack_require__(73)('entities');
 	var POS = __webpack_require__(2);
 	//var $ = require('jquery');
 	var _ = __webpack_require__(19);
@@ -288,7 +288,7 @@
 
 	var version = version || '';
 	var _ = __webpack_require__(19);
-	var debugFunc = __webpack_require__(72);
+	var debugFunc = __webpack_require__(73);
 	var $ = __webpack_require__(20);
 	var Radio = __webpack_require__(21);
 
@@ -334,7 +334,7 @@
 	var _ = __webpack_require__(19);
 
 	_.mixin({
-	  merge : __webpack_require__(73)
+	  merge : __webpack_require__(72)
 	});
 
 /***/ },
@@ -488,8 +488,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Service = __webpack_require__(26);
-	var TabsView = __webpack_require__(41);
-	var TabsCollection = __webpack_require__(42);
+	var TabsView = __webpack_require__(45);
+	var TabsCollection = __webpack_require__(46);
 	//var _ = require('lodash');
 
 	module.exports = Service.extend({
@@ -525,7 +525,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Service = __webpack_require__(26);
-	var View = __webpack_require__(43);
+	var View = __webpack_require__(47);
 
 	module.exports = Service.extend({
 
@@ -556,15 +556,15 @@
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Application = __webpack_require__(45);
+	var Application = __webpack_require__(41);
 	var bb = __webpack_require__(25);
 	//var _ = require('lodash');
 	var LayoutView = __webpack_require__(63);
-	var debug = __webpack_require__(72)('admin');
+	var debug = __webpack_require__(73)('admin');
 	var accounting = __webpack_require__(23);
 	var Radio = __webpack_require__(21);
 	var routerChannel = Radio.channel('router');
-	var polyglot = __webpack_require__(47);
+	var polyglot = __webpack_require__(43);
 
 	module.exports = Application.extend({
 
@@ -775,6 +775,10 @@
 	          icon      : 'append'
 	        },{
 	          type: 'message'
+	        },{
+	          action    : 'restore',
+	          className : 'button-secondary alignright',
+	          icon      : 'prepend'
 	        }
 	      ]
 	    });
@@ -889,7 +893,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var DualCollection = __webpack_require__(74);
-	var Model = __webpack_require__(75);
+	var Model = __webpack_require__(83);
 
 	module.exports = DualCollection.extend({
 	  model: Model,
@@ -901,9 +905,10 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var DualCollection = __webpack_require__(74);
-	var Model = __webpack_require__(76);
+	var Model = __webpack_require__(75);
 	var $ = __webpack_require__(20);
 	var _ = __webpack_require__(19);
+	var bb = __webpack_require__(25);
 
 	module.exports = DualCollection.extend({
 	  model: Model,
@@ -941,7 +946,11 @@
 
 	    if(!this.active){
 	      this.create().then(function(order){
+	        order.cart.order_id = order.id;
 	        self.active = order;
+	        if(bb.history.getHash() === 'cart/new') {
+	          bb.history.navigate('cart/' + order.id);
+	        }
 	        deferred.resolve(order);
 	      });
 	    } else {
@@ -961,12 +970,12 @@
 	  create: function(){
 	    var deferred = new $.Deferred();
 
-	    DualCollection.prototype.create.call(this, {}, {
+	    // Safari has a problem with create, perhaps an autoincrement problem?
+	    // Set local_id as timestamp milliseconds
+	    DualCollection.prototype.create.call(this, { local_id: Date.now() }, {
 	      wait: true,
-	      success: function(order){
-	        order.cart.order_id = order.id;
-	        deferred.resolve(order);
-	      }
+	      success: deferred.resolve,
+	      error: deferred.reject
 	    });
 
 	    return deferred.promise();
@@ -987,9 +996,10 @@
 /* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var IndexedDBCollection = __webpack_require__(77);
-	var Model = __webpack_require__(78);
+	var IndexedDBCollection = __webpack_require__(76);
+	var Model = __webpack_require__(77);
 	var _ = __webpack_require__(19);
+	var bb = __webpack_require__(25);
 
 	module.exports = IndexedDBCollection.extend({
 	  model: Model,
@@ -1061,7 +1071,10 @@
 	  /* jshint -W071, -W074 */
 	  addToCart: function(options){
 	    options = options || {};
-	    var model, attributes = options.model ? options.model.toJSON() : options;
+	    var model, attributes = options.model || options;
+	    if(attributes instanceof bb.Model){
+	      attributes = attributes.toJSON();
+	    }
 
 	    if(attributes.id){
 	      model = this.findWhere({ product_id: attributes.id });
@@ -1126,7 +1139,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Collection = __webpack_require__(60);
-	var Model = __webpack_require__(79);
+	var Model = __webpack_require__(84);
 	var Radio = __webpack_require__(21);
 
 	module.exports = Collection.extend({
@@ -1158,7 +1171,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Collection = __webpack_require__(60);
-	var Model = __webpack_require__(80);
+	var Model = __webpack_require__(85);
 
 	module.exports = Collection.extend({
 	  model: Model
@@ -1168,7 +1181,7 @@
 /* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DeepModel = __webpack_require__(81);
+	var DeepModel = __webpack_require__(78);
 	var Radio = __webpack_require__(21);
 
 	module.exports = DeepModel.extend({
@@ -1261,7 +1274,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Collection = __webpack_require__(60);
-	var Model = __webpack_require__(82);
+	var Model = __webpack_require__(79);
 	var $ = __webpack_require__(20);
 
 	var gateways = [];
@@ -1301,7 +1314,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Collection = __webpack_require__(60);
-	var Model = __webpack_require__(83);
+	var Model = __webpack_require__(80);
 	//var ? = require('lodash');
 	var Radio = __webpack_require__(21);
 
@@ -1333,8 +1346,8 @@
 	var SortedCollection = __webpack_require__(131);
 	var PaginatedCollection = __webpack_require__(132);
 	var proxyCollection = __webpack_require__(133);
-	var proxyEvents = __webpack_require__(84);
-	var query = __webpack_require__(85);
+	var proxyEvents = __webpack_require__(81);
+	var query = __webpack_require__(82);
 
 	// extend FilteredCollection with query methods
 	_.extend(FilteredCollection.prototype, query);
@@ -1593,9 +1606,9 @@
 	var _ = __webpack_require__(19);
 	var $ = __webpack_require__(20);
 	var Radio = __webpack_require__(21);
-	var debug = __webpack_require__(72)('modalLayout');
-	__webpack_require__(159);
-	__webpack_require__(160);
+	var debug = __webpack_require__(73)('modalLayout');
+	__webpack_require__(157);
+	__webpack_require__(158);
 
 	module.exports = LayoutView.extend({
 	  template: function(){
@@ -1731,7 +1744,7 @@
 
 	var View = __webpack_require__(88);
 	var hbs = __webpack_require__(22);
-	var Tmpl = __webpack_require__(139);
+	var Tmpl = __webpack_require__(138);
 
 	module.exports = View.extend({
 	  template: hbs.compile(Tmpl),
@@ -1782,8 +1795,36 @@
 /* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CollectionView = __webpack_require__(89);
-	var Tab = __webpack_require__(90);
+	var Mn = __webpack_require__(70);
+	var POS = __webpack_require__(2);
+	var Radio = __webpack_require__(21);
+	var _ = __webpack_require__(19);
+
+	module.exports = POS.Application = Mn.Application.extend({
+	  _initChannel: function () {
+	    this.channelName = _.result(this, 'channelName') || 'global';
+	    this.channel = _.result(this, 'channel') ||
+	    Radio.channel(this.channelName);
+	  }
+	});
+
+/***/ },
+/* 42 */,
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Polyglot = __webpack_require__(134);
+	var POS = __webpack_require__(2);
+	var polyglot = new Polyglot();
+	module.exports = POS.polyglot = polyglot;
+
+/***/ },
+/* 44 */,
+/* 45 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var CollectionView = __webpack_require__(95);
+	var Tab = __webpack_require__(96);
 
 	var View = CollectionView.extend({
 	  tagName: 'ul',
@@ -1812,11 +1853,11 @@
 	module.exports = View;
 
 /***/ },
-/* 42 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Collection = __webpack_require__(60);
-	var Model = __webpack_require__(91);
+	var Model = __webpack_require__(94);
 
 	var TabsCollection = Collection.extend({
 	  model: Model,
@@ -1848,15 +1889,15 @@
 	module.exports = TabsCollection;
 
 /***/ },
-/* 43 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ItemView = __webpack_require__(88);
 	var hbs = __webpack_require__(22);
 	var _ = __webpack_require__(19);
-	var tmpl = __webpack_require__(140);
-	var polyglot = __webpack_require__(47);
-	var ButtonsBehavior = __webpack_require__(92);
+	var tmpl = __webpack_require__(139);
+	var polyglot = __webpack_require__(43);
+	var ButtonsBehavior = __webpack_require__(89);
 
 	module.exports = ItemView.extend({
 
@@ -1891,34 +1932,6 @@
 	  }
 
 	});
-
-/***/ },
-/* 44 */,
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Mn = __webpack_require__(70);
-	var POS = __webpack_require__(2);
-	var Radio = __webpack_require__(21);
-	var _ = __webpack_require__(19);
-
-	module.exports = POS.Application = Mn.Application.extend({
-	  _initChannel: function () {
-	    this.channelName = _.result(this, 'channelName') || 'global';
-	    this.channel = _.result(this, 'channel') ||
-	    Radio.channel(this.channelName);
-	  }
-	});
-
-/***/ },
-/* 46 */,
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Polyglot = __webpack_require__(134);
-	var POS = __webpack_require__(2);
-	var polyglot = new Polyglot();
-	module.exports = POS.polyglot = polyglot;
 
 /***/ },
 /* 48 */,
@@ -2104,12 +2117,7 @@
 	    var view = new View({
 	      model: this.model
 	    });
-	    this.listenTo(view, 'action:save', this.saveModel);
 	    this.container.show(view);
-	  },
-
-	  saveModel: function(){
-	    this.model.save();
 	  }
 
 	});
@@ -2306,6 +2314,66 @@
 /* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var baseMerge = __webpack_require__(136),
+	    createAssigner = __webpack_require__(137);
+
+	/**
+	 * Recursively merges own enumerable properties of the source object(s), that
+	 * don't resolve to `undefined` into the destination object. Subsequent sources
+	 * overwrite property assignments of previous sources. If `customizer` is
+	 * provided it is invoked to produce the merged values of the destination and
+	 * source properties. If `customizer` returns `undefined` merging is handled
+	 * by the method instead. The `customizer` is bound to `thisArg` and invoked
+	 * with five arguments: (objectValue, sourceValue, key, object, source).
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The destination object.
+	 * @param {...Object} [sources] The source objects.
+	 * @param {Function} [customizer] The function to customize assigned values.
+	 * @param {*} [thisArg] The `this` binding of `customizer`.
+	 * @returns {Object} Returns `object`.
+	 * @example
+	 *
+	 * var users = {
+	 *   'data': [{ 'user': 'barney' }, { 'user': 'fred' }]
+	 * };
+	 *
+	 * var ages = {
+	 *   'data': [{ 'age': 36 }, { 'age': 40 }]
+	 * };
+	 *
+	 * _.merge(users, ages);
+	 * // => { 'data': [{ 'user': 'barney', 'age': 36 }, { 'user': 'fred', 'age': 40 }] }
+	 *
+	 * // using a customizer callback
+	 * var object = {
+	 *   'fruits': ['apple'],
+	 *   'vegetables': ['beet']
+	 * };
+	 *
+	 * var other = {
+	 *   'fruits': ['banana'],
+	 *   'vegetables': ['carrot']
+	 * };
+	 *
+	 * _.merge(object, other, function(a, b) {
+	 *   if (_.isArray(a)) {
+	 *     return a.concat(b);
+	 *   }
+	 * });
+	 * // => { 'fruits': ['apple', 'banana'], 'vegetables': ['beet', 'carrot'] }
+	 */
+	var merge = createAssigner(baseMerge);
+
+	module.exports = merge;
+
+
+/***/ },
+/* 73 */
+/***/ function(module, exports, __webpack_require__) {
+
 	
 	/**
 	 * This is the web browser implementation of `debug()`.
@@ -2313,7 +2381,7 @@
 	 * Expose `debug()` as the module.
 	 */
 
-	exports = module.exports = __webpack_require__(136);
+	exports = module.exports = __webpack_require__(141);
 	exports.log = log;
 	exports.formatArgs = formatArgs;
 	exports.save = save;
@@ -2484,66 +2552,6 @@
 
 
 /***/ },
-/* 73 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseMerge = __webpack_require__(137),
-	    createAssigner = __webpack_require__(138);
-
-	/**
-	 * Recursively merges own enumerable properties of the source object(s), that
-	 * don't resolve to `undefined` into the destination object. Subsequent sources
-	 * overwrite property assignments of previous sources. If `customizer` is
-	 * provided it is invoked to produce the merged values of the destination and
-	 * source properties. If `customizer` returns `undefined` merging is handled
-	 * by the method instead. The `customizer` is bound to `thisArg` and invoked
-	 * with five arguments: (objectValue, sourceValue, key, object, source).
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The destination object.
-	 * @param {...Object} [sources] The source objects.
-	 * @param {Function} [customizer] The function to customize assigned values.
-	 * @param {*} [thisArg] The `this` binding of `customizer`.
-	 * @returns {Object} Returns `object`.
-	 * @example
-	 *
-	 * var users = {
-	 *   'data': [{ 'user': 'barney' }, { 'user': 'fred' }]
-	 * };
-	 *
-	 * var ages = {
-	 *   'data': [{ 'age': 36 }, { 'age': 40 }]
-	 * };
-	 *
-	 * _.merge(users, ages);
-	 * // => { 'data': [{ 'user': 'barney', 'age': 36 }, { 'user': 'fred', 'age': 40 }] }
-	 *
-	 * // using a customizer callback
-	 * var object = {
-	 *   'fruits': ['apple'],
-	 *   'vegetables': ['beet']
-	 * };
-	 *
-	 * var other = {
-	 *   'fruits': ['banana'],
-	 *   'vegetables': ['carrot']
-	 * };
-	 *
-	 * _.merge(object, other, function(a, b) {
-	 *   if (_.isArray(a)) {
-	 *     return a.concat(b);
-	 *   }
-	 * });
-	 * // => { 'fruits': ['apple', 'banana'], 'vegetables': ['beet', 'carrot'] }
-	 */
-	var merge = createAssigner(baseMerge);
-
-	module.exports = merge;
-
-
-/***/ },
 /* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -2554,8 +2562,8 @@
 
 	var Backbone = __webpack_require__(25);
 	var Radio = Backbone.Radio;
-	var debug = __webpack_require__(72)('dualCollection');
-	var IDBCollection = __webpack_require__(77);
+	var debug = __webpack_require__(73)('dualCollection');
+	var IDBCollection = __webpack_require__(76);
 	var POS = __webpack_require__(2);
 	var _ = __webpack_require__(19);
 	var $ = __webpack_require__(20);
@@ -2876,169 +2884,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var DualModel = __webpack_require__(142);
-	var _ = __webpack_require__(19);
-	var Radio = __webpack_require__(21);
-
-	module.exports = DualModel.extend({
-	  name: 'product',
-
-	  // this is an array of fields used by FilterCollection.matchmaker()
-	  fields: ['title'],
-
-	  // the REST API gives string values for some attributes
-	  // this can cause confusion, so parse to float
-	  parse: function(resp){
-	    resp = resp.product || resp;
-	    _.each(['price', 'regular_price', 'sale_price'], function(attr){
-	      if( _.isString(resp[attr]) ){
-	        resp[attr] = parseFloat(resp[attr]);
-	      }
-	    });
-	    return resp;
-	  },
-
-	  /**
-	   * Helper functions for variation prices
-	   */
-	  min: function(attr){
-	    var variations = this.get('variations');
-	    if(attr === 'sale_price'){
-	      variations = _.where(variations, {on_sale: true});
-	    }
-	    var attrs = _.pluck(variations, attr);
-	    if(attrs.length > 0){
-	      return _(attrs).compact().min();
-	    }
-	    return this.get(attr);
-	  },
-
-	  max: function(attr){
-	    var attrs = _.pluck(this.get('variations'), attr);
-	    if(attrs.length > 0){
-	      return _(attrs).compact().max();
-	    }
-	    return this.get(attr);
-	  },
-
-	  range: function(attr){
-	    if(attr === 'sale_price'){
-	      var min = _.min([this.min('sale_price'), this.min('price')]);
-	      var max = _.max([this.max('sale_price'), this.max('price')]);
-	      return _.uniq([min, max]);
-	    }
-	    return _.uniq([this.min(attr), this.max(attr)]);
-	  },
-
-	  /**
-	   * Helper functions to display attributes vs variations
-	   */
-	  productAttributes: function(){
-	    return _.chain(this.get('attributes'))
-	      .where({variation: false})
-	      .where({visible: true})
-	      .value();
-	  },
-
-	  productVariations: function(){
-	    return _.where(this.get('attributes'), {variation: true});
-	  },
-
-	  /**
-	   * Special cases for product model filter
-	   * @param {Array} tokens An array of query tokens, see QParser
-	   * @param {Object} methods Helper match methods
-	   * @param {Function} callback
-	   */
-	  matchMaker: function(tokens, methods, callback){
-
-	    var match = _.all(tokens, function(token){
-
-	      // barcode
-	      if( token.type === 'prefix' && token.prefix === 'barcode' ){
-	        if(token.query){ return this.barcodeMatch(token.query); }
-	      }
-
-	      // cat
-	      if( token.type === 'prefix' && token.prefix === 'cat' ){
-	        token.prefix = 'categories';
-	        return methods.prefix(token, this);
-	      }
-
-	    }, this);
-
-	    if(match){
-	      return match;
-	    }
-
-	    // the original matchMaker
-	    return callback(tokens, this);
-
-	  },
-
-	  barcodeMatch: function(barcode){
-	    var type = this.get('type'),
-	        test = this.get('barcode').toLowerCase(),
-	        value = barcode.toString().toLowerCase();
-
-	    if(test === value) {
-	      this.trigger('found:barcode', this);
-	      Radio.command('router', 'add:to:cart', {model: this});
-	      return true;
-	    }
-
-	    if(type !== 'variable'){
-	      return this.partialBarcodeMatch(test, value);
-	    }
-
-	    return this.variableBarcodeMatch(test, value);
-	  },
-
-	  partialBarcodeMatch: function(test, value){
-	    if(test.indexOf( value ) !== -1) {
-	      return true;
-	    }
-	    return false;
-	  },
-
-	  variableBarcodeMatch: function(test, value){
-	    var variations = this.get('variations'),
-	        match;
-
-	    _.each(variations, function(variation){
-	      if(variation.barcode){
-	        var vtest = variation.barcode.toLowerCase();
-	        if(vtest === value){
-	          match = variation;
-	          return;
-	        }
-	        if(vtest.indexOf( value ) !== -1) {
-	          match = 'partial';
-	          return;
-	        }
-	      }
-	    });
-
-	    if(match){
-	      if(match !== 'partial'){
-	        this.trigger('found:barcode', match, this);
-	        Radio.command('router', 'add:to:cart', {model: this});
-	      }
-	      return true;
-	    }
-
-	    return this.partialBarcodeMatch(test, value);
-	  }
-
-	});
-
-/***/ },
-/* 76 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var DualModel = __webpack_require__(142);
 	var Radio = __webpack_require__(21);
 	var Utils = __webpack_require__(37);
-	var debug = __webpack_require__(72)('order');
+	var debug = __webpack_require__(73)('order');
 	var POS = __webpack_require__(2);
 	var $ = __webpack_require__(20);
 
@@ -3306,7 +3154,7 @@
 	POS.attach('Entities.Order.Model', Model);
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3316,7 +3164,7 @@
 	var Collection = __webpack_require__(60);
 	//var debug = require('debug')('idbCollection');
 	var POS = __webpack_require__(2);
-	var IndexedDB = __webpack_require__(143);
+	var IndexedDB = __webpack_require__(145);
 	var Radio = __webpack_require__(21);
 
 	module.exports = POS.IndexedDBCollection = Collection.extend({
@@ -3365,11 +3213,11 @@
 	});
 
 /***/ },
-/* 78 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Model = __webpack_require__(144);
-	var debug = __webpack_require__(72)('cartItem');
+	var Model = __webpack_require__(143);
+	var debug = __webpack_require__(73)('cartItem');
 	var Utils = __webpack_require__(37);
 	var _ = __webpack_require__(19);
 	var Radio = __webpack_require__(21);
@@ -3635,38 +3483,20 @@
 	});
 
 /***/ },
-/* 79 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Model = __webpack_require__(144);
-
-	module.exports = Model.extend({
-	  name: 'customer'
-	});
-
-/***/ },
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Model = __webpack_require__(144);
-
-	module.exports = Model.extend({});
-
-/***/ },
-/* 81 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var POS = __webpack_require__(2);
-	var Model = __webpack_require__(144);
-	var DeepModel = __webpack_require__(145);
+	var Model = __webpack_require__(143);
+	var DeepModel = __webpack_require__(144);
 
 	module.exports = POS.DeepModel = Model.extend(DeepModel);
 
 /***/ },
-/* 82 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Model = __webpack_require__(144);
+	var Model = __webpack_require__(143);
 
 	module.exports = Model.extend({
 	  idAttribute: 'method_id',
@@ -3676,10 +3506,10 @@
 	});
 
 /***/ },
-/* 83 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Model = __webpack_require__(144);
+	var Model = __webpack_require__(143);
 	var _ = __webpack_require__(19);
 
 	module.exports = Model.extend({
@@ -3718,7 +3548,7 @@
 	});
 
 /***/ },
-/* 84 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(19);
@@ -3736,7 +3566,7 @@
 	module.exports = proxyEvents;
 
 /***/ },
-/* 85 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3799,6 +3629,184 @@
 	};
 
 /***/ },
+/* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var DualModel = __webpack_require__(142);
+	var _ = __webpack_require__(19);
+	var Radio = __webpack_require__(21);
+
+	module.exports = DualModel.extend({
+	  name: 'product',
+
+	  // this is an array of fields used by FilterCollection.matchmaker()
+	  fields: ['title'],
+
+	  // the REST API gives string values for some attributes
+	  // this can cause confusion, so parse to float
+	  parse: function(resp){
+	    resp = resp.product || resp;
+	    _.each(['price', 'regular_price', 'sale_price'], function(attr){
+	      if( _.isString(resp[attr]) ){
+	        resp[attr] = parseFloat(resp[attr]);
+	      }
+	    });
+	    return resp;
+	  },
+
+	  /**
+	   * Helper functions for variation prices
+	   */
+	  min: function(attr){
+	    var variations = this.get('variations');
+	    if(attr === 'sale_price'){
+	      variations = _.where(variations, {on_sale: true});
+	    }
+	    var attrs = _.pluck(variations, attr);
+	    if(attrs.length > 0){
+	      return _(attrs).compact().min();
+	    }
+	    return this.get(attr);
+	  },
+
+	  max: function(attr){
+	    var attrs = _.pluck(this.get('variations'), attr);
+	    if(attrs.length > 0){
+	      return _(attrs).compact().max();
+	    }
+	    return this.get(attr);
+	  },
+
+	  range: function(attr){
+	    if(attr === 'sale_price'){
+	      var min = _.min([this.min('sale_price'), this.min('price')]);
+	      var max = _.max([this.max('sale_price'), this.max('price')]);
+	      return _.uniq([min, max]);
+	    }
+	    return _.uniq([this.min(attr), this.max(attr)]);
+	  },
+
+	  /**
+	   * Helper functions to display attributes vs variations
+	   */
+	  productAttributes: function(){
+	    return _.chain(this.get('attributes'))
+	      .where({variation: false})
+	      .where({visible: true})
+	      .value();
+	  },
+
+	  productVariations: function(){
+	    return _.where(this.get('attributes'), {variation: true});
+	  },
+
+	  /**
+	   * Special cases for product model filter
+	   * @param {Array} tokens An array of query tokens, see QParser
+	   * @param {Object} methods Helper match methods
+	   * @param {Function} callback
+	   */
+	  matchMaker: function(tokens, methods, callback){
+
+	    var match = _.all(tokens, function(token){
+
+	      // barcode
+	      if( token.type === 'prefix' && token.prefix === 'barcode' ){
+	        if(token.query){ return this.barcodeMatch(token.query); }
+	      }
+
+	      // cat
+	      if( token.type === 'prefix' && token.prefix === 'cat' ){
+	        token.prefix = 'categories';
+	        return methods.prefix(token, this);
+	      }
+
+	    }, this);
+
+	    if(match){
+	      return match;
+	    }
+
+	    // the original matchMaker
+	    return callback(tokens, this);
+
+	  },
+
+	  barcodeMatch: function(barcode){
+	    var type = this.get('type'),
+	        test = this.get('barcode').toLowerCase(),
+	        value = barcode.toString().toLowerCase();
+
+	    if(test === value) {
+	      if(type !== 'variable'){
+	        this.trigger('match:barcode', this);
+	      }
+	      return true;
+	    }
+
+	    if(type !== 'variable'){
+	      return this.partialBarcodeMatch(test, value);
+	    }
+
+	    return this.variableBarcodeMatch(test, value);
+	  },
+
+	  partialBarcodeMatch: function(test, value){
+	    if(test.indexOf( value ) !== -1) {
+	      return true;
+	    }
+	    return false;
+	  },
+
+	  variableBarcodeMatch: function(test, value){
+	    var match, variations = Radio.request('entities', 'get', {
+	      type: 'variations',
+	      parent: this
+	    });
+
+	    variations.superset().each(function(variation){
+	      var vtest = variation.get('barcode').toLowerCase();
+	      if(vtest === value){
+	        match = variation;
+	        return;
+	      }
+	      if(vtest.indexOf( value ) !== -1) {
+	        match = 'partial';
+	        return;
+	      }
+	    });
+
+	    if(match){
+	      if(match !== 'partial'){
+	        this.trigger('match:barcode', match, this);
+	      }
+	      return true;
+	    }
+
+	    return this.partialBarcodeMatch(test, value);
+	  }
+
+	});
+
+/***/ },
+/* 84 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Model = __webpack_require__(143);
+
+	module.exports = Model.extend({
+	  name: 'customer'
+	});
+
+/***/ },
+/* 85 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Model = __webpack_require__(143);
+
+	module.exports = Model.extend({});
+
+/***/ },
 /* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -3824,7 +3832,7 @@
 	var ItemView = __webpack_require__(88);
 	var hbs = __webpack_require__(22);
 	var _ = __webpack_require__(19);
-	var polyglot = __webpack_require__(47);
+	var polyglot = __webpack_require__(43);
 
 	module.exports = ItemView.extend({
 	  template: hbs.compile('' +
@@ -3867,90 +3875,10 @@
 /* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Mn = __webpack_require__(70);
-	var POS = __webpack_require__(2);
-
-	module.exports = POS.CollectionView = Mn.CollectionView.extend({
-	  //// Marionette's default implementation ignores the index, always
-	  //// appending the new view to the end. Let's be a little more clever.
-	  //appendHtml: function(collectionView, itemView, index){
-	  //  if (!index) {
-	  //    collectionView.$el.prepend(itemView.el);
-	  //  } else {
-	  //    $(collectionView.$('li')[index - 1]).after(itemView.el);
-	  //  }
-	  //}
-	});
-
-/***/ },
-/* 90 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var hbs = __webpack_require__(22);
-	var ItemView = __webpack_require__(88);
-	var Tmpl = __webpack_require__(158);
-
-	var View = ItemView.extend({
-	  tagName: 'li',
-	  template: hbs.compile(Tmpl),
-
-	  className: function () {
-	    if (this.model.get('active')) {
-	      return 'active';
-	    }
-	  },
-
-	  modelEvents: {
-	    'change:active': 'toggleActive',
-	    'change:label' : 'render' // why does this not auto render?!
-	  },
-
-	  toggleActive: function(){
-	    this.$el.toggleClass('active', this.model.get('active'));
-	  },
-
-	  triggers: {
-	    'click': 'tab:clicked',
-	    'click *[data-action="remove"]': 'remove:tab'
-	  },
-
-	  onTabClicked: function () {
-	    this.model.set({active: true});
-	  },
-
-	  onRemoveTab: function(){
-	    this.model.collection.remove(this.model);
-	  }
-
-	});
-
-	module.exports = View;
-
-/***/ },
-/* 91 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Model = __webpack_require__(144);
-
-	var TabModel = Model.extend({
-	  defaults: {
-	    id: '',
-	    label: 'Tab',
-	    active: false,
-	    fixed: true
-	  }
-	});
-
-	module.exports = TabModel;
-
-/***/ },
-/* 92 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var Behavior = __webpack_require__(146);
 	var POS = __webpack_require__(2);
 	var $ = __webpack_require__(20);
-	var polyglot = __webpack_require__(47);
+	var polyglot = __webpack_require__(43);
 	var d = 'disabled';
 
 	var Buttons = Behavior.extend({
@@ -4078,14 +4006,14 @@
 	POS.attach('Behaviors.Buttons', Buttons);
 
 /***/ },
-/* 93 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ItemView = __webpack_require__(88);
 	var bb = __webpack_require__(25);
 	var POS = __webpack_require__(2);
-	__webpack_require__(185);
 	__webpack_require__(186);
+	__webpack_require__(185);
 	__webpack_require__(147);
 
 	module.exports = POS.FormView = ItemView.extend({
@@ -4134,9 +4062,89 @@
 	});
 
 /***/ },
-/* 94 */,
-/* 95 */,
-/* 96 */,
+/* 91 */,
+/* 92 */,
+/* 93 */,
+/* 94 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Model = __webpack_require__(143);
+
+	var TabModel = Model.extend({
+	  defaults: {
+	    id: '',
+	    label: 'Tab',
+	    active: false,
+	    fixed: true
+	  }
+	});
+
+	module.exports = TabModel;
+
+/***/ },
+/* 95 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Mn = __webpack_require__(70);
+	var POS = __webpack_require__(2);
+
+	module.exports = POS.CollectionView = Mn.CollectionView.extend({
+	  //// Marionette's default implementation ignores the index, always
+	  //// appending the new view to the end. Let's be a little more clever.
+	  //appendHtml: function(collectionView, itemView, index){
+	  //  if (!index) {
+	  //    collectionView.$el.prepend(itemView.el);
+	  //  } else {
+	  //    $(collectionView.$('li')[index - 1]).after(itemView.el);
+	  //  }
+	  //}
+	});
+
+/***/ },
+/* 96 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var hbs = __webpack_require__(22);
+	var ItemView = __webpack_require__(88);
+	var Tmpl = __webpack_require__(162);
+
+	var View = ItemView.extend({
+	  tagName: 'li',
+	  template: hbs.compile(Tmpl),
+
+	  className: function () {
+	    if (this.model.get('active')) {
+	      return 'active';
+	    }
+	  },
+
+	  modelEvents: {
+	    'change:active': 'toggleActive',
+	    'change:label' : 'render' // why does this not auto render?!
+	  },
+
+	  toggleActive: function(){
+	    this.$el.toggleClass('active', this.model.get('active'));
+	  },
+
+	  triggers: {
+	    'click': 'tab:clicked',
+	    'click *[data-action="remove"]': 'remove:tab'
+	  },
+
+	  onTabClicked: function () {
+	    this.model.set({active: true});
+	  },
+
+	  onRemoveTab: function(){
+	    this.model.collection.remove(this.model);
+	  }
+
+	});
+
+	module.exports = View;
+
+/***/ },
 /* 97 */,
 /* 98 */,
 /* 99 */,
@@ -4148,7 +4156,7 @@
 	var $ = __webpack_require__(20);
 	var _ = __webpack_require__(19);
 	var POS = __webpack_require__(2);
-	var LoadingService = __webpack_require__(149);
+	var LoadingService = __webpack_require__(148);
 	var Radio = __webpack_require__(21);
 	var globalChannel = Radio.channel('global');
 
@@ -4213,15 +4221,11 @@
 /* 102 */,
 /* 103 */,
 /* 104 */,
-/* 105 */,
-/* 106 */,
-/* 107 */,
-/* 108 */,
-/* 109 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ItemView = __webpack_require__(88);
-	var Select2 = __webpack_require__(154);
+	var Select2 = __webpack_require__(150);
 	var _ = __webpack_require__(19);
 	var Radio = __webpack_require__(21);
 	var hbs = __webpack_require__(22);
@@ -4247,7 +4251,7 @@
 	  behaviors: {
 	    Select2: {
 	      behaviorClass: Select2,
-	      minimumInputLength: 2
+	      minimumInputLength: 3
 	    }
 	  },
 
@@ -4256,7 +4260,8 @@
 	  },
 
 	  events: {
-	    'change @ui.select' : 'onSelect'
+	    'change @ui.select' : 'onSelect',
+	    'select2-opening @ui.select' : 'onSelectOpen'
 	  },
 
 	  /**
@@ -4283,6 +4288,10 @@
 	    };
 	    this.customers
 	      .fetch({
+	        // wp-admin requires auth
+	        beforeSend: function(xhr){
+	          xhr.setRequestHeader('X-WC-POS', 1);
+	        },
 	        data: 'filter[q]=' + query.term,
 	        success: onSuccess
 	      });
@@ -4344,7 +4353,12 @@
 	   */
 	  onSelect: function(e) {
 	    this.trigger( 'customer:select', e.added );
-	  }
+	  },
+
+	  /**
+	   *
+	   */
+	  onSelectOpen: function() {}
 
 	});
 
@@ -4352,6 +4366,10 @@
 	POS.attach('Components.CustomerSelect.View', View);
 
 /***/ },
+/* 106 */,
+/* 107 */,
+/* 108 */,
+/* 109 */,
 /* 110 */,
 /* 111 */,
 /* 112 */,
@@ -4368,12 +4386,12 @@
 /* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FormView = __webpack_require__(93);
+	var FormView = __webpack_require__(90);
 	var $ = __webpack_require__(20);
 	var POS = __webpack_require__(2);
-	var Select2 = __webpack_require__(154);
-	var Tooltip = __webpack_require__(148);
-	var CustomerSelect = __webpack_require__(109);
+	var Select2 = __webpack_require__(150);
+	var Tooltip = __webpack_require__(149);
+	var CustomerSelect = __webpack_require__(105);
 
 	var View = FormView.extend({
 
@@ -4393,6 +4411,10 @@
 	    Tooltip: {
 	      behaviorClass: Tooltip
 	    }
+	  },
+
+	  modelEvents: {
+	    'change:id': 'render'
 	  },
 
 	  onRender: function(){
@@ -4449,11 +4471,11 @@
 /* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FormView = __webpack_require__(93);
+	var FormView = __webpack_require__(90);
 	var $ = __webpack_require__(20);
 	var POS = __webpack_require__(2);
-	var Tooltip = __webpack_require__(148);
-	var Sortable = __webpack_require__(157);
+	var Tooltip = __webpack_require__(149);
+	var Sortable = __webpack_require__(167);
 
 	var View = FormView.extend({
 	  template: function(){
@@ -4462,6 +4484,10 @@
 
 	  attributes: {
 	    id: 'wc-pos-settings-checkout'
+	  },
+
+	  modelEvents: {
+	    'change:id': 'render'
 	  },
 
 	  onRender: function(){
@@ -4507,9 +4533,9 @@
 /* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FormView = __webpack_require__(93);
+	var FormView = __webpack_require__(90);
 	var $ = __webpack_require__(20);
-	var Tooltip = __webpack_require__(148);
+	var Tooltip = __webpack_require__(149);
 	var Radio = __webpack_require__(21);
 
 	module.exports = FormView.extend({
@@ -4572,10 +4598,10 @@
 /* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FormView = __webpack_require__(93);
+	var FormView = __webpack_require__(90);
 	var $ = __webpack_require__(20);
 	var POS = __webpack_require__(2);
-	var Tooltip = __webpack_require__(148);
+	var Tooltip = __webpack_require__(149);
 
 	var View = FormView.extend({
 
@@ -4591,6 +4617,10 @@
 	    Tooltip: {
 	      behaviorClass: Tooltip
 	    }
+	  },
+
+	  modelEvents: {
+	    'change:id': 'render'
 	  },
 
 	  onRender: function(){
@@ -4615,7 +4645,7 @@
 /* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var FormView = __webpack_require__(93);
+	var FormView = __webpack_require__(90);
 	var POS = __webpack_require__(2);
 	var $ = __webpack_require__(20);
 
@@ -4636,6 +4666,10 @@
 
 	  events: {
 	    'click @ui.tabs' : 'onTabClick'
+	  },
+
+	  modelEvents: {
+	    'change:id': 'render'
 	  },
 
 	  onRender: function(){
@@ -4718,12 +4752,12 @@
 	var EventSource = global['EventSource'];
 
 	module.exports =  ItemView.extend({
+	  template: function(){
+	    return '<i class="spinner"></i>';
+	  },
+
 	  initialize: function (options) {
 	    options = options || {};
-
-	    this.template = function(){
-	      return '<i class="spinner"></i>';
-	    };
 
 	    this.modal = {
 	      header: {
@@ -4737,23 +4771,13 @@
 	        }]
 	      }
 	    };
-
-	    this.initUpdate();
 	  },
 
-	  initUpdate: function() {
-	    var view = this;
-	    var ajaxurl = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'ajaxurl'
-	    });
-	    var nonce = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'nonce'
-	    });
-	    var stream = new EventSource(
-	      ajaxurl + '?action=wc_pos_update_translations&security=' + nonce
-	    );
+	  onShow: function() {
+	    var view = this,
+	        url = this.constructURL(),
+	        stream = new EventSource(url);
+
 	    stream.onmessage = function(e){
 	      if( e.data === 'complete' ){
 	        this.close();
@@ -4765,6 +4789,19 @@
 	        view.$('.spinner').before('<p>' + e.data + '</p>');
 	      }
 	    };
+	  },
+
+	  constructURL: function(){
+	    var ajaxurl = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'ajaxurl'
+	    });
+	    var nonce = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'nonce'
+	    });
+
+	    return ajaxurl + '?action=wc_pos_update_translations&security=' + nonce;
 	  }
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
@@ -4776,7 +4813,7 @@
 	var _ = __webpack_require__(19);
 	var Backbone = __webpack_require__(25);
 	var proxyCollection = __webpack_require__(133);
-	var createFilter = __webpack_require__(169);
+	var createFilter = __webpack_require__(168);
 
 	// Beware of `this`
 	// All of the following functions are meant to be called in the context
@@ -5014,7 +5051,7 @@
 	var _ = __webpack_require__(19);
 	var Backbone =__webpack_require__(25);
 	var proxyCollection = __webpack_require__(133);
-	var sortedIndex = __webpack_require__(170);
+	var sortedIndex = __webpack_require__(169);
 
 	function lookupIterator(value) {
 	  return _.isFunction(value) ? value : function(obj){ return obj.get(value); };
@@ -5136,7 +5173,7 @@
 
 	var _ = __webpack_require__(19);
 	var Backbone = __webpack_require__(25);
-	var proxyCollection = __webpack_require__(188);
+	var proxyCollection = __webpack_require__(133);
 
 	function getPageLimits() {
 	  if(this._infinite){
@@ -5483,7 +5520,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(19);
-	var Parser = __webpack_require__(196);
+	var Parser = __webpack_require__(195);
 	var parser = new Parser();
 
 	function toType(obj) {
@@ -5606,6 +5643,140 @@
 /* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var arrayEach = __webpack_require__(173),
+	    baseMergeDeep = __webpack_require__(174),
+	    getSymbols = __webpack_require__(175),
+	    isArray = __webpack_require__(176),
+	    isArrayLike = __webpack_require__(177),
+	    isObject = __webpack_require__(178),
+	    isObjectLike = __webpack_require__(179),
+	    isTypedArray = __webpack_require__(180),
+	    keys = __webpack_require__(181);
+
+	/** Used for native method references. */
+	var arrayProto = Array.prototype;
+
+	/** Native method references. */
+	var push = arrayProto.push;
+
+	/**
+	 * The base implementation of `_.merge` without support for argument juggling,
+	 * multiple sources, and `this` binding `customizer` functions.
+	 *
+	 * @private
+	 * @param {Object} object The destination object.
+	 * @param {Object} source The source object.
+	 * @param {Function} [customizer] The function to customize merging properties.
+	 * @param {Array} [stackA=[]] Tracks traversed source objects.
+	 * @param {Array} [stackB=[]] Associates values with source counterparts.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseMerge(object, source, customizer, stackA, stackB) {
+	  if (!isObject(object)) {
+	    return object;
+	  }
+	  var isSrcArr = isArrayLike(source) && (isArray(source) || isTypedArray(source));
+	  if (!isSrcArr) {
+	    var props = keys(source);
+	    push.apply(props, getSymbols(source));
+	  }
+	  arrayEach(props || source, function(srcValue, key) {
+	    if (props) {
+	      key = srcValue;
+	      srcValue = source[key];
+	    }
+	    if (isObjectLike(srcValue)) {
+	      stackA || (stackA = []);
+	      stackB || (stackB = []);
+	      baseMergeDeep(object, source, key, baseMerge, customizer, stackA, stackB);
+	    }
+	    else {
+	      var value = object[key],
+	          result = customizer ? customizer(value, srcValue, key, object, source) : undefined,
+	          isCommon = result === undefined;
+
+	      if (isCommon) {
+	        result = srcValue;
+	      }
+	      if ((isSrcArr || result !== undefined) &&
+	          (isCommon || (result === result ? (result !== value) : (value === value)))) {
+	        object[key] = result;
+	      }
+	    }
+	  });
+	  return object;
+	}
+
+	module.exports = baseMerge;
+
+
+/***/ },
+/* 137 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var bindCallback = __webpack_require__(182),
+	    isIterateeCall = __webpack_require__(183),
+	    restParam = __webpack_require__(184);
+
+	/**
+	 * Creates a function that assigns properties of source object(s) to a given
+	 * destination object.
+	 *
+	 * **Note:** This function is used to create `_.assign`, `_.defaults`, and `_.merge`.
+	 *
+	 * @private
+	 * @param {Function} assigner The function to assign values.
+	 * @returns {Function} Returns the new assigner function.
+	 */
+	function createAssigner(assigner) {
+	  return restParam(function(object, sources) {
+	    var index = -1,
+	        length = object == null ? 0 : sources.length,
+	        customizer = length > 2 && sources[length - 2],
+	        guard = length > 2 && sources[2],
+	        thisArg = length > 1 && sources[length - 1];
+
+	    if (typeof customizer == 'function') {
+	      customizer = bindCallback(customizer, thisArg, 5);
+	      length -= 2;
+	    } else {
+	      customizer = typeof thisArg == 'function' ? thisArg : null;
+	      length -= (customizer ? 1 : 0);
+	    }
+	    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+	      customizer = length < 3 ? null : customizer;
+	      length = 1;
+	    }
+	    while (++index < length) {
+	      var source = sources[index];
+	      if (source) {
+	        assigner(object, source, customizer);
+	      }
+	    }
+	    return object;
+	  });
+	}
+
+	module.exports = createAssigner;
+
+
+/***/ },
+/* 138 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = "<p>\n  {{message}}\n  {{#if raw}}\n    <a href=\"#\" data-action=\"raw\"><i class=\"icon icon-info-circle\"></i></a>\n  {{/if}}\n<p>\n{{#if raw}}\n  <div class=\"raw-output\" style=\"display:none\">{{{raw}}}</div>\n{{/if}}"
+
+/***/ },
+/* 139 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = "{{#each buttons}}\n\n  {{#if this.button}}\n    <button class=\"btn {{this.className}}\"\n            {{#if this.action}}data-action=\"{{this.action}}\"{{/if}}\n      {{#if this.toggle}}data-toggle=\"{{this.toggle}}\"{{/if}}\n      {{#if this.loading}}data-loading=\"{{this.loadingText}}\"{{/if}}\n      {{#if this.icon}}data-icon=\"{{this.icon}}\"{{/if}}\n      {{#if this.disabled}}disabled{{/if}}\n      >\n      {{this.label}}\n    </button>\n  {{/if}}\n\n  {{#if this.link}}\n    <a href=\"#\" class=\"btn {{this.className}}\"\n       {{#if this.action}}data-action=\"{{this.action}}\"{{/if}}\n      {{#if this.toggle}}data-toggle=\"{{this.toggle}}\"{{/if}}\n      {{#if this.loading}}data-loading=\"{{this.loadingText}}\"{{/if}}\n      {{#if this.icon}}data-icon=\"{{this.icon}}\"{{/if}}\n      >\n      {{this.label}}\n    </a>\n  {{/if}}\n\n  {{#if this.input}}\n    <input type=\"button\" class=\"btn {{this.className}}\" value=\"{{this.label}}\"\n           {{#if this.action}}data-action=\"{{this.action}}\"{{/if}}\n      {{#if this.toggle}}data-toggle=\"{{this.toggle}}\"{{/if}}\n      {{#if this.loading}}data-loading=\"{{this.loadingText}}\"{{/if}}\n      >\n  {{/if}}\n\n  {{#if this.message}}\n    <p class=\"message {{this.className}}\"></p>\n  {{/if}}\n\n{{/each}}"
+
+/***/ },
+/* 140 */,
+/* 141 */
+/***/ function(module, exports, __webpack_require__) {
+
 	
 	/**
 	 * This is the common logic for both the Node.js and web browser
@@ -5619,7 +5790,7 @@
 	exports.disable = disable;
 	exports.enable = enable;
 	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(197);
+	exports.humanize = __webpack_require__(196);
 
 	/**
 	 * The currently active debug mode names, and names to skip.
@@ -5806,144 +5977,10 @@
 
 
 /***/ },
-/* 137 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var arrayEach = __webpack_require__(173),
-	    baseMergeDeep = __webpack_require__(174),
-	    getSymbols = __webpack_require__(175),
-	    isArray = __webpack_require__(176),
-	    isArrayLike = __webpack_require__(177),
-	    isObject = __webpack_require__(178),
-	    isObjectLike = __webpack_require__(179),
-	    isTypedArray = __webpack_require__(180),
-	    keys = __webpack_require__(181);
-
-	/** Used for native method references. */
-	var arrayProto = Array.prototype;
-
-	/** Native method references. */
-	var push = arrayProto.push;
-
-	/**
-	 * The base implementation of `_.merge` without support for argument juggling,
-	 * multiple sources, and `this` binding `customizer` functions.
-	 *
-	 * @private
-	 * @param {Object} object The destination object.
-	 * @param {Object} source The source object.
-	 * @param {Function} [customizer] The function to customize merging properties.
-	 * @param {Array} [stackA=[]] Tracks traversed source objects.
-	 * @param {Array} [stackB=[]] Associates values with source counterparts.
-	 * @returns {Object} Returns `object`.
-	 */
-	function baseMerge(object, source, customizer, stackA, stackB) {
-	  if (!isObject(object)) {
-	    return object;
-	  }
-	  var isSrcArr = isArrayLike(source) && (isArray(source) || isTypedArray(source));
-	  if (!isSrcArr) {
-	    var props = keys(source);
-	    push.apply(props, getSymbols(source));
-	  }
-	  arrayEach(props || source, function(srcValue, key) {
-	    if (props) {
-	      key = srcValue;
-	      srcValue = source[key];
-	    }
-	    if (isObjectLike(srcValue)) {
-	      stackA || (stackA = []);
-	      stackB || (stackB = []);
-	      baseMergeDeep(object, source, key, baseMerge, customizer, stackA, stackB);
-	    }
-	    else {
-	      var value = object[key],
-	          result = customizer ? customizer(value, srcValue, key, object, source) : undefined,
-	          isCommon = result === undefined;
-
-	      if (isCommon) {
-	        result = srcValue;
-	      }
-	      if ((isSrcArr || result !== undefined) &&
-	          (isCommon || (result === result ? (result !== value) : (value === value)))) {
-	        object[key] = result;
-	      }
-	    }
-	  });
-	  return object;
-	}
-
-	module.exports = baseMerge;
-
-
-/***/ },
-/* 138 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var bindCallback = __webpack_require__(182),
-	    isIterateeCall = __webpack_require__(183),
-	    restParam = __webpack_require__(184);
-
-	/**
-	 * Creates a function that assigns properties of source object(s) to a given
-	 * destination object.
-	 *
-	 * **Note:** This function is used to create `_.assign`, `_.defaults`, and `_.merge`.
-	 *
-	 * @private
-	 * @param {Function} assigner The function to assign values.
-	 * @returns {Function} Returns the new assigner function.
-	 */
-	function createAssigner(assigner) {
-	  return restParam(function(object, sources) {
-	    var index = -1,
-	        length = object == null ? 0 : sources.length,
-	        customizer = length > 2 && sources[length - 2],
-	        guard = length > 2 && sources[2],
-	        thisArg = length > 1 && sources[length - 1];
-
-	    if (typeof customizer == 'function') {
-	      customizer = bindCallback(customizer, thisArg, 5);
-	      length -= 2;
-	    } else {
-	      customizer = typeof thisArg == 'function' ? thisArg : null;
-	      length -= (customizer ? 1 : 0);
-	    }
-	    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-	      customizer = length < 3 ? null : customizer;
-	      length = 1;
-	    }
-	    while (++index < length) {
-	      var source = sources[index];
-	      if (source) {
-	        assigner(object, source, customizer);
-	      }
-	    }
-	    return object;
-	  });
-	}
-
-	module.exports = createAssigner;
-
-
-/***/ },
-/* 139 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = "<p>\n  {{message}}\n  {{#if raw}}\n    <a href=\"#\" data-action=\"raw\"><i class=\"icon icon-info-circle\"></i></a>\n  {{/if}}\n<p>\n{{#if raw}}\n  <div class=\"raw-output\" style=\"display:none\">{{{raw}}}</div>\n{{/if}}"
-
-/***/ },
-/* 140 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = "{{#each buttons}}\n\n  {{#if this.button}}\n    <button class=\"btn {{this.className}}\"\n            {{#if this.action}}data-action=\"{{this.action}}\"{{/if}}\n      {{#if this.toggle}}data-toggle=\"{{this.toggle}}\"{{/if}}\n      {{#if this.loading}}data-loading=\"{{this.loadingText}}\"{{/if}}\n      {{#if this.icon}}data-icon=\"{{this.icon}}\"{{/if}}\n      {{#if this.disabled}}disabled{{/if}}\n      >\n      {{this.label}}\n    </button>\n  {{/if}}\n\n  {{#if this.link}}\n    <a href=\"#\" class=\"btn {{this.className}}\"\n       {{#if this.action}}data-action=\"{{this.action}}\"{{/if}}\n      {{#if this.toggle}}data-toggle=\"{{this.toggle}}\"{{/if}}\n      {{#if this.loading}}data-loading=\"{{this.loadingText}}\"{{/if}}\n      {{#if this.icon}}data-icon=\"{{this.icon}}\"{{/if}}\n      >\n      {{this.label}}\n    </a>\n  {{/if}}\n\n  {{#if this.input}}\n    <input type=\"button\" class=\"btn {{this.className}}\" value=\"{{this.label}}\"\n           {{#if this.action}}data-action=\"{{this.action}}\"{{/if}}\n      {{#if this.toggle}}data-toggle=\"{{this.toggle}}\"{{/if}}\n      {{#if this.loading}}data-loading=\"{{this.loadingText}}\"{{/if}}\n      >\n  {{/if}}\n\n  {{#if this.message}}\n    <p class=\"message {{this.className}}\"></p>\n  {{/if}}\n\n{{/each}}"
-
-/***/ },
-/* 141 */,
 /* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DeepModel = __webpack_require__(81);
+	var DeepModel = __webpack_require__(78);
 	var POS = __webpack_require__(2);
 	var _ = __webpack_require__(19);
 	//var debug = require('debug')('dualModel');
@@ -6063,6 +6100,349 @@
 
 /***/ },
 /* 143 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var bb = __webpack_require__(25);
+	var POS = __webpack_require__(2);
+	//var Radio = require('backbone.radio');
+
+	module.exports = POS.Model = bb.Model.extend({
+	  constructor: function() {
+	    bb.Model.apply(this, arguments);
+	  },
+
+	  parse: function (resp){
+	    return resp && resp[this.name] ? resp[this.name] : resp ;
+	  }
+	});
+
+/***/ },
+/* 144 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(19);
+
+	/**
+	 * Takes a nested object and returns a shallow object keyed with the path names
+	 * e.g. { "level1.level2": "value" }
+	 *
+	 * @param  {Object}      Nested object e.g. { level1: { level2: 'value' } }
+	 * @return {Object}      Shallow object with path names e.g. { 'level1.level2': 'value' }
+	 */
+	function objToPaths(obj) {
+		var ret = {},
+			separator = DeepModel.keyPathSeparator;
+
+		for (var key in obj) {
+			var val = obj[key];
+
+			if (val && (val.constructor === Object || val.constructor === Array) && !_.isEmpty(val)) {
+				//Recursion for embedded objects
+				var obj2 = objToPaths(val);
+
+				for (var key2 in obj2) {
+					var val2 = obj2[key2];
+
+					ret[key + separator + key2] = val2;
+				}
+			} else {
+				ret[key] = val;
+			}
+		}
+
+		return ret;
+	}
+
+	/**
+	 * [getNested description]
+	 * @param  {object} obj           to fetch attribute from
+	 * @param  {string} path          path e.g. 'user.name'
+	 * @param  {[type]} return_exists [description]
+	 * @return {mixed}                [description]
+	 */
+	function getNested(obj, path, return_exists) {
+		var separator = DeepModel.keyPathSeparator;
+
+		var fields = path ? path.split(separator) : [];
+		var result = obj;
+		return_exists || (return_exists === false);
+		for (var i = 0, n = fields.length; i < n; i++) {
+			if (return_exists && !_.has(result, fields[i])) {
+				return false;
+			}
+			result = result[fields[i]];
+
+			if (result == null && i < n - 1) {
+				result = {};
+			}
+
+			if (typeof result === 'undefined') {
+				if (return_exists) {
+					return true;
+				}
+				return result;
+			}
+		}
+		if (return_exists) {
+			return true;
+		}
+		return result;
+	}
+
+
+
+	/**
+	 * @param {Object} obj                Object to fetch attribute from
+	 * @param {String} path               Object path e.g. 'user.name'
+	 * @param {Object} [options]          Options
+	 * @param {Boolean} [options.unset]   Whether to delete the value
+	 * @param {Mixed}                     Value to set
+	 */
+	function setNested(obj, path, val, options) {
+		options = options || {};
+
+		var separator = DeepModel.keyPathSeparator;
+
+		var fields = path ? path.split(separator) : [];
+		var result = obj;
+		for (var i = 0, n = fields.length; i < n && result !== undefined; i++) {
+			var field = fields[i];
+
+			//If the last in the path, set the value
+			if (i === n - 1) {
+				options.unset ? delete result[field] : result[field] = val;
+			} else {
+				//Create the child object if it doesn't exist, or isn't an object
+				if (typeof result[field] === 'undefined' || !_.isObject(result[field])) {
+					// If trying to remove a field that doesn't exist, then there's no need
+					// to create its missing parent (doing so causes a problem with
+					// hasChanged()).
+					if (options.unset) {
+						delete result[field]; // in case parent exists but is not an object
+						return;
+					}
+					var nextField = fields[i + 1];
+
+					// create array if next field is integer, else create object
+					result[field] = /^\d+$/.test(nextField) ? [] : {};
+				}
+
+				//Move onto the next part of the path
+				result = result[field];
+			}
+		}
+	}
+
+	function deleteNested(obj, path) {
+		setNested(obj, path, null, {
+			unset: true
+		});
+	}
+
+	var DeepModel = {
+
+		// Override constructor
+		// Support having nested defaults by using _.deepExtend instead of _.extend
+		constructor: function(attributes, options) {
+			var attrs = attributes || {};
+			this.cid = _.uniqueId('c');
+			this.attributes = {};
+			if (options && options.collection) this.collection = options.collection;
+			if (options && options.parse) attrs = this.parse(attrs, options) || {};
+	    attrs = _.merge({}, _.result(this, 'defaults'), attrs);
+			this.set(attrs, options);
+			this.changed = {};
+			this.initialize.apply(this, arguments);
+		},
+
+		// Return a copy of the model's `attributes` object.
+		toJSON: function(options) {
+			return _.merge({}, this.attributes);
+		},
+
+		// Override get
+		// Supports nested attributes via the syntax 'obj.attr' e.g. 'author.user.name'
+		get: function(attr) {
+			return getNested(this.attributes, attr);
+		},
+
+		// Override set
+		// Supports nested attributes via the syntax 'obj.attr' e.g. 'author.user.name'
+		set: function(key, val, options) {
+			var attr, attrs, unset, changes, silent, changing, prev, current;
+			if (key == null) return this;
+
+			// Handle both `"key", value` and `{key: value}` -style arguments.
+			if (typeof key === 'object') {
+				attrs = key;
+				options = val || {};
+			} else {
+				(attrs = {})[key] = val;
+			}
+
+			options || (options = {});
+
+			// Run validation.
+			if (!this._validate(attrs, options)) return false;
+
+			// Extract attributes and options.
+			unset = options.unset;
+			silent = options.silent;
+			changes = [];
+			changing = this._changing;
+			this._changing = true;
+
+			if (!changing) {
+				this._previousAttributes = _.merge({}, this.attributes); //<custom>: Replaced _.clone with _.deepClone
+				this.changed = {};
+			}
+			current = this.attributes, prev = this._previousAttributes;
+
+			// Check for changes of `id`.
+			if (this.idAttribute in attrs) this.id = attrs[this.idAttribute];
+
+			//<custom code>
+			attrs = objToPaths(attrs);
+			//</custom code>
+
+			// For each `set` attribute, update or delete the current value.
+			for (attr in attrs) {
+				val = attrs[attr];
+
+				//<custom code>: Using getNested, setNested and deleteNested
+				if (!_.isEqual(getNested(current, attr), val)) changes.push(attr);
+				if (!_.isEqual(getNested(prev, attr), val)) {
+					setNested(this.changed, attr, val);
+				} else {
+					deleteNested(this.changed, attr);
+				}
+				unset ? deleteNested(current, attr) : setNested(current, attr, val);
+				//</custom code>
+			}
+
+			// Trigger all relevant attribute changes.
+			if (!silent) {
+				if (changes.length) this._pending = true;
+
+				//<custom code>
+				var separator = DeepModel.keyPathSeparator;
+				var alreadyTriggered = {}; // * @restorer
+
+				for (var i = 0, l = changes.length; i < l; i++) {
+					var key = changes[i];
+
+					if (!alreadyTriggered.hasOwnProperty(key) || !alreadyTriggered[key]) { // * @restorer
+						alreadyTriggered[key] = true; // * @restorer
+						this.trigger('change:' + key, this, getNested(current, key), options);
+					} // * @restorer
+
+					var fields = key.split(separator);
+
+					//Trigger change events for parent keys with wildcard (*) notation
+					for (var n = fields.length - 1; n > 0; n--) {
+						var parentKey = fields.slice(0, n).join(separator),
+							wildcardKey = parentKey + separator + '*';
+
+						if (!alreadyTriggered.hasOwnProperty(wildcardKey) || !alreadyTriggered[wildcardKey]) { // * @restorer
+							alreadyTriggered[wildcardKey] = true; // * @restorer
+							this.trigger('change:' + wildcardKey, this, getNested(current, parentKey), options);
+						} // * @restorer
+
+						// + @restorer
+						if (!alreadyTriggered.hasOwnProperty(parentKey) || !alreadyTriggered[parentKey]) {
+							alreadyTriggered[parentKey] = true;
+							this.trigger('change:' + parentKey, this, getNested(current, parentKey), options);
+						}
+						// - @restorer
+					}
+					//</custom code>
+				}
+			}
+
+			if (changing) return this;
+			if (!silent) {
+				while (this._pending) {
+					this._pending = false;
+					this.trigger('change', this, options);
+				}
+			}
+			this._pending = false;
+			this._changing = false;
+			return this;
+		},
+
+		// Clear all attributes on the model, firing `"change"` unless you choose
+		// to silence it.
+		clear: function(options) {
+			var attrs = {};
+			var shallowAttributes = objToPaths(this.attributes);
+			for (var key in shallowAttributes) attrs[key] = void 0;
+			return this.set(attrs, _.extend({}, options, {
+				unset: true
+			}));
+		},
+
+		// Determine if the model has changed since the last `"change"` event.
+		// If you specify an attribute name, determine if that attribute has changed.
+		hasChanged: function(attr) {
+			if (attr == null) {
+				return !_.isEmpty(this.changed);
+			}
+			return getNested(this.changed, attr) !== undefined;
+		},
+
+		// Return an object containing all the attributes that have changed, or
+		// false if there are no changed attributes. Useful for determining what
+		// parts of a view need to be updated and/or what attributes need to be
+		// persisted to the server. Unset attributes will be set to undefined.
+		// You can also pass an attributes object to diff against the model,
+		// determining if there *would be* a change.
+		changedAttributes: function(diff) {
+			//<custom code>: objToPaths
+			if (!diff) return this.hasChanged() ? objToPaths(this.changed) : false;
+			//</custom code>
+
+			var old = this._changing ? this._previousAttributes : this.attributes;
+
+			//<custom code>
+			diff = objToPaths(diff);
+			old = objToPaths(old);
+			//</custom code>
+
+			var val, changed = false;
+			for (var attr in diff) {
+				if (_.isEqual(old[attr], (val = diff[attr]))) continue;
+				(changed || (changed = {}))[attr] = val;
+			}
+			return changed;
+		},
+
+		// Get the previous value of an attribute, recorded at the time the last
+		// `"change"` event was fired.
+		previous: function(attr) {
+			if (attr == null || !this._previousAttributes) {
+				return null;
+			}
+			//<custom code>
+			return getNested(this._previousAttributes, attr);
+			//</custom code>
+		},
+
+		// Get all of the attributes of the model at the time of the previous
+		// `"change"` event.
+		previousAttributes: function() {
+			return _.merge({}, this._previousAttributes);
+		}
+	};
+
+	//Config; override in your app to customise
+	DeepModel.keyPathSeparator = '.';
+
+
+	module.exports = DeepModel;
+
+/***/ },
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -6390,349 +6770,6 @@
 	module.exports = IndexedDB;
 
 /***/ },
-/* 144 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var bb = __webpack_require__(25);
-	var POS = __webpack_require__(2);
-	//var Radio = require('backbone.radio');
-
-	module.exports = POS.Model = bb.Model.extend({
-	  constructor: function() {
-	    bb.Model.apply(this, arguments);
-	  },
-
-	  parse: function (resp){
-	    return resp && resp[this.name] ? resp[this.name] : resp ;
-	  }
-	});
-
-/***/ },
-/* 145 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(19);
-
-	/**
-	 * Takes a nested object and returns a shallow object keyed with the path names
-	 * e.g. { "level1.level2": "value" }
-	 *
-	 * @param  {Object}      Nested object e.g. { level1: { level2: 'value' } }
-	 * @return {Object}      Shallow object with path names e.g. { 'level1.level2': 'value' }
-	 */
-	function objToPaths(obj) {
-		var ret = {},
-			separator = DeepModel.keyPathSeparator;
-
-		for (var key in obj) {
-			var val = obj[key];
-
-			if (val && (val.constructor === Object || val.constructor === Array) && !_.isEmpty(val)) {
-				//Recursion for embedded objects
-				var obj2 = objToPaths(val);
-
-				for (var key2 in obj2) {
-					var val2 = obj2[key2];
-
-					ret[key + separator + key2] = val2;
-				}
-			} else {
-				ret[key] = val;
-			}
-		}
-
-		return ret;
-	}
-
-	/**
-	 * [getNested description]
-	 * @param  {object} obj           to fetch attribute from
-	 * @param  {string} path          path e.g. 'user.name'
-	 * @param  {[type]} return_exists [description]
-	 * @return {mixed}                [description]
-	 */
-	function getNested(obj, path, return_exists) {
-		var separator = DeepModel.keyPathSeparator;
-
-		var fields = path ? path.split(separator) : [];
-		var result = obj;
-		return_exists || (return_exists === false);
-		for (var i = 0, n = fields.length; i < n; i++) {
-			if (return_exists && !_.has(result, fields[i])) {
-				return false;
-			}
-			result = result[fields[i]];
-
-			if (result == null && i < n - 1) {
-				result = {};
-			}
-
-			if (typeof result === 'undefined') {
-				if (return_exists) {
-					return true;
-				}
-				return result;
-			}
-		}
-		if (return_exists) {
-			return true;
-		}
-		return result;
-	}
-
-
-
-	/**
-	 * @param {Object} obj                Object to fetch attribute from
-	 * @param {String} path               Object path e.g. 'user.name'
-	 * @param {Object} [options]          Options
-	 * @param {Boolean} [options.unset]   Whether to delete the value
-	 * @param {Mixed}                     Value to set
-	 */
-	function setNested(obj, path, val, options) {
-		options = options || {};
-
-		var separator = DeepModel.keyPathSeparator;
-
-		var fields = path ? path.split(separator) : [];
-		var result = obj;
-		for (var i = 0, n = fields.length; i < n && result !== undefined; i++) {
-			var field = fields[i];
-
-			//If the last in the path, set the value
-			if (i === n - 1) {
-				options.unset ? delete result[field] : result[field] = val;
-			} else {
-				//Create the child object if it doesn't exist, or isn't an object
-				if (typeof result[field] === 'undefined' || !_.isObject(result[field])) {
-					// If trying to remove a field that doesn't exist, then there's no need
-					// to create its missing parent (doing so causes a problem with
-					// hasChanged()).
-					if (options.unset) {
-						delete result[field]; // in case parent exists but is not an object
-						return;
-					}
-					var nextField = fields[i + 1];
-
-					// create array if next field is integer, else create object
-					result[field] = /^\d+$/.test(nextField) ? [] : {};
-				}
-
-				//Move onto the next part of the path
-				result = result[field];
-			}
-		}
-	}
-
-	function deleteNested(obj, path) {
-		setNested(obj, path, null, {
-			unset: true
-		});
-	}
-
-	var DeepModel = {
-
-		// Override constructor
-		// Support having nested defaults by using _.deepExtend instead of _.extend
-		constructor: function(attributes, options) {
-			var attrs = attributes || {};
-			this.cid = _.uniqueId('c');
-			this.attributes = {};
-			if (options && options.collection) this.collection = options.collection;
-			if (options && options.parse) attrs = this.parse(attrs, options) || {};
-	    attrs = _.merge({}, _.result(this, 'defaults'), attrs);
-			this.set(attrs, options);
-			this.changed = {};
-			this.initialize.apply(this, arguments);
-		},
-
-		// Return a copy of the model's `attributes` object.
-		toJSON: function(options) {
-			return _.merge({}, this.attributes);
-		},
-
-		// Override get
-		// Supports nested attributes via the syntax 'obj.attr' e.g. 'author.user.name'
-		get: function(attr) {
-			return getNested(this.attributes, attr);
-		},
-
-		// Override set
-		// Supports nested attributes via the syntax 'obj.attr' e.g. 'author.user.name'
-		set: function(key, val, options) {
-			var attr, attrs, unset, changes, silent, changing, prev, current;
-			if (key == null) return this;
-
-			// Handle both `"key", value` and `{key: value}` -style arguments.
-			if (typeof key === 'object') {
-				attrs = key;
-				options = val || {};
-			} else {
-				(attrs = {})[key] = val;
-			}
-
-			options || (options = {});
-
-			// Run validation.
-			if (!this._validate(attrs, options)) return false;
-
-			// Extract attributes and options.
-			unset = options.unset;
-			silent = options.silent;
-			changes = [];
-			changing = this._changing;
-			this._changing = true;
-
-			if (!changing) {
-				this._previousAttributes = _.merge({}, this.attributes); //<custom>: Replaced _.clone with _.deepClone
-				this.changed = {};
-			}
-			current = this.attributes, prev = this._previousAttributes;
-
-			// Check for changes of `id`.
-			if (this.idAttribute in attrs) this.id = attrs[this.idAttribute];
-
-			//<custom code>
-			attrs = objToPaths(attrs);
-			//</custom code>
-
-			// For each `set` attribute, update or delete the current value.
-			for (attr in attrs) {
-				val = attrs[attr];
-
-				//<custom code>: Using getNested, setNested and deleteNested
-				if (!_.isEqual(getNested(current, attr), val)) changes.push(attr);
-				if (!_.isEqual(getNested(prev, attr), val)) {
-					setNested(this.changed, attr, val);
-				} else {
-					deleteNested(this.changed, attr);
-				}
-				unset ? deleteNested(current, attr) : setNested(current, attr, val);
-				//</custom code>
-			}
-
-			// Trigger all relevant attribute changes.
-			if (!silent) {
-				if (changes.length) this._pending = true;
-
-				//<custom code>
-				var separator = DeepModel.keyPathSeparator;
-				var alreadyTriggered = {}; // * @restorer
-
-				for (var i = 0, l = changes.length; i < l; i++) {
-					var key = changes[i];
-
-					if (!alreadyTriggered.hasOwnProperty(key) || !alreadyTriggered[key]) { // * @restorer
-						alreadyTriggered[key] = true; // * @restorer
-						this.trigger('change:' + key, this, getNested(current, key), options);
-					} // * @restorer
-
-					var fields = key.split(separator);
-
-					//Trigger change events for parent keys with wildcard (*) notation
-					for (var n = fields.length - 1; n > 0; n--) {
-						var parentKey = fields.slice(0, n).join(separator),
-							wildcardKey = parentKey + separator + '*';
-
-						if (!alreadyTriggered.hasOwnProperty(wildcardKey) || !alreadyTriggered[wildcardKey]) { // * @restorer
-							alreadyTriggered[wildcardKey] = true; // * @restorer
-							this.trigger('change:' + wildcardKey, this, getNested(current, parentKey), options);
-						} // * @restorer
-
-						// + @restorer
-						if (!alreadyTriggered.hasOwnProperty(parentKey) || !alreadyTriggered[parentKey]) {
-							alreadyTriggered[parentKey] = true;
-							this.trigger('change:' + parentKey, this, getNested(current, parentKey), options);
-						}
-						// - @restorer
-					}
-					//</custom code>
-				}
-			}
-
-			if (changing) return this;
-			if (!silent) {
-				while (this._pending) {
-					this._pending = false;
-					this.trigger('change', this, options);
-				}
-			}
-			this._pending = false;
-			this._changing = false;
-			return this;
-		},
-
-		// Clear all attributes on the model, firing `"change"` unless you choose
-		// to silence it.
-		clear: function(options) {
-			var attrs = {};
-			var shallowAttributes = objToPaths(this.attributes);
-			for (var key in shallowAttributes) attrs[key] = void 0;
-			return this.set(attrs, _.extend({}, options, {
-				unset: true
-			}));
-		},
-
-		// Determine if the model has changed since the last `"change"` event.
-		// If you specify an attribute name, determine if that attribute has changed.
-		hasChanged: function(attr) {
-			if (attr == null) {
-				return !_.isEmpty(this.changed);
-			}
-			return getNested(this.changed, attr) !== undefined;
-		},
-
-		// Return an object containing all the attributes that have changed, or
-		// false if there are no changed attributes. Useful for determining what
-		// parts of a view need to be updated and/or what attributes need to be
-		// persisted to the server. Unset attributes will be set to undefined.
-		// You can also pass an attributes object to diff against the model,
-		// determining if there *would be* a change.
-		changedAttributes: function(diff) {
-			//<custom code>: objToPaths
-			if (!diff) return this.hasChanged() ? objToPaths(this.changed) : false;
-			//</custom code>
-
-			var old = this._changing ? this._previousAttributes : this.attributes;
-
-			//<custom code>
-			diff = objToPaths(diff);
-			old = objToPaths(old);
-			//</custom code>
-
-			var val, changed = false;
-			for (var attr in diff) {
-				if (_.isEqual(old[attr], (val = diff[attr]))) continue;
-				(changed || (changed = {}))[attr] = val;
-			}
-			return changed;
-		},
-
-		// Get the previous value of an attribute, recorded at the time the last
-		// `"change"` event was fired.
-		previous: function(attr) {
-			if (attr == null || !this._previousAttributes) {
-				return null;
-			}
-			//<custom code>
-			return getNested(this._previousAttributes, attr);
-			//</custom code>
-		},
-
-		// Get all of the attributes of the model at the time of the previous
-		// `"change"` event.
-		previousAttributes: function() {
-			return _.merge({}, this._previousAttributes);
-		}
-	};
-
-	//Config; override in your app to customise
-	DeepModel.keyPathSeparator = '.';
-
-
-	module.exports = DeepModel;
-
-/***/ },
 /* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -6776,37 +6813,10 @@
 /* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Behavior = __webpack_require__(146);
-	var POS = __webpack_require__(2);
-	__webpack_require__(161);
-
-	var Tooltip = Behavior.extend({
-
-	  initialize: function(options){
-	    this.options = options;
-	  },
-
-	  ui: {
-	    tooltip: '*[data-toggle="tooltip"]'
-	  },
-
-	  onRender: function() {
-	    this.ui.tooltip.tooltip( this.options );
-	  }
-
-	});
-
-	module.exports = Tooltip;
-	POS.attach('Behaviors.Tooltip', Tooltip);
-
-/***/ },
-/* 149 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var Service = __webpack_require__(26);
-	var View = __webpack_require__(189);
+	var View = __webpack_require__(188);
 	var _ = __webpack_require__(19);
-	var debug = __webpack_require__(72)('loading');
+	var debug = __webpack_require__(73)('loading');
 
 	module.exports = Service.extend({
 	  channelName: 'loading',
@@ -6840,11 +6850,34 @@
 	});
 
 /***/ },
-/* 150 */,
-/* 151 */,
-/* 152 */,
-/* 153 */,
-/* 154 */
+/* 149 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Behavior = __webpack_require__(146);
+	var POS = __webpack_require__(2);
+	__webpack_require__(159);
+
+	var Tooltip = Behavior.extend({
+
+	  initialize: function(options){
+	    this.options = options;
+	  },
+
+	  ui: {
+	    tooltip: '*[data-toggle="tooltip"]'
+	  },
+
+	  onRender: function() {
+	    this.ui.tooltip.tooltip( this.options );
+	  }
+
+	});
+
+	module.exports = Tooltip;
+	POS.attach('Behaviors.Tooltip', Tooltip);
+
+/***/ },
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Behavior = __webpack_require__(146);
@@ -6903,82 +6936,13 @@
 	POS.attach('Behaviors.Select2', Select2);
 
 /***/ },
+/* 151 */,
+/* 152 */,
+/* 153 */,
+/* 154 */,
 /* 155 */,
 /* 156 */,
 /* 157 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Behavior = __webpack_require__(146);
-	var POS = __webpack_require__(2);
-	var $ = __webpack_require__(20);
-	var _ = __webpack_require__(19);
-
-	var Sortable = Behavior.extend({
-
-	  initialize: function(options){
-
-	    this.options = _.defaults(options, {
-	      items:'tr',
-	      cursor:'move',
-	      axis:'y',
-	      handle: 'td',
-	      scrollSensitivity:40,
-	      helper:function(e,ui){
-	        ui.children().each(function(){
-	          $(this).width($(this).width());
-	        });
-	        return ui;
-	      },
-	      start:function(event,ui){
-	        ui.item.css('background-color','#f6f6f6');
-	      },
-	      stop:function(event,ui){
-	        ui.item.removeAttr('style');
-	        $('input.gateway_order', this).each(function(idx) {
-	          $(this).val(idx);
-	          $(this).trigger('input');
-	        });
-	      }
-	    });
-
-	  },
-
-	  ui: {
-	    sortable: '.sortable'
-	  },
-
-	  onRender: function() {
-	    if( this.ui.sortable.length > 0 ) {
-
-	      // Custom sorting for checkout settings table
-	      // TODO: move this to view callback
-	      var table = this.ui.sortable;
-	      var rows = table.find('tbody tr').get();
-
-	      // sort according to input
-	      table.append(rows.sort(function(a, b) {
-	        return parseInt($(a).find('input.gateway_order').val(), 10) -
-	          parseInt($(b).find('input.gateway_order').val(), 10);
-	      }));
-
-	      table.sortable( this.options );
-	    }
-
-	  }
-
-	});
-
-	module.exports = Sortable;
-	POS.attach('Behaviors.Sortable', Sortable);
-
-/***/ },
-/* 158 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = "{{#unless fixed}}\n<a href=\"#\" data-action=\"remove\">\n  <i class=\"icon icon-times-circle\"></i>\n</a>\n{{/unless}}\n{{{ label }}}"
-
-/***/ },
-/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -7323,7 +7287,7 @@
 
 
 /***/ },
-/* 160 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -7388,7 +7352,7 @@
 
 
 /***/ },
-/* 161 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* ========================================================================
@@ -7870,14 +7834,86 @@
 
 
 /***/ },
-/* 162 */,
+/* 160 */,
+/* 161 */,
+/* 162 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = "{{#unless fixed}}\n<a href=\"#\" data-action=\"remove\">\n  <i class=\"icon icon-times-circle\"></i>\n</a>\n{{/unless}}\n{{{ label }}}"
+
+/***/ },
 /* 163 */,
 /* 164 */,
 /* 165 */,
 /* 166 */,
-/* 167 */,
-/* 168 */,
-/* 169 */
+/* 167 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Behavior = __webpack_require__(146);
+	var POS = __webpack_require__(2);
+	var $ = __webpack_require__(20);
+	var _ = __webpack_require__(19);
+
+	var Sortable = Behavior.extend({
+
+	  initialize: function(options){
+
+	    this.options = _.defaults(options, {
+	      items:'tr',
+	      cursor:'move',
+	      axis:'y',
+	      handle: 'td',
+	      scrollSensitivity:40,
+	      helper:function(e,ui){
+	        ui.children().each(function(){
+	          $(this).width($(this).width());
+	        });
+	        return ui;
+	      },
+	      start:function(event,ui){
+	        ui.item.css('background-color','#f6f6f6');
+	      },
+	      stop:function(event,ui){
+	        ui.item.removeAttr('style');
+	        $('input.gateway_order', this).each(function(idx) {
+	          $(this).val(idx);
+	          $(this).trigger('input');
+	        });
+	      }
+	    });
+
+	  },
+
+	  ui: {
+	    sortable: '.sortable'
+	  },
+
+	  onRender: function() {
+	    if( this.ui.sortable.length > 0 ) {
+
+	      // Custom sorting for checkout settings table
+	      // TODO: move this to view callback
+	      var table = this.ui.sortable;
+	      var rows = table.find('tbody tr').get();
+
+	      // sort according to input
+	      table.append(rows.sort(function(a, b) {
+	        return parseInt($(a).find('input.gateway_order').val(), 10) -
+	          parseInt($(b).find('input.gateway_order').val(), 10);
+	      }));
+
+	      table.sortable( this.options );
+	    }
+
+	  }
+
+	});
+
+	module.exports = Sortable;
+	POS.attach('Behaviors.Sortable', Sortable);
+
+/***/ },
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var _ = __webpack_require__(19);
@@ -7964,7 +8000,7 @@
 
 
 /***/ },
-/* 170 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -8011,6 +8047,7 @@
 
 
 /***/ },
+/* 170 */,
 /* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -8337,13 +8374,13 @@
 /* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayCopy = __webpack_require__(198),
-	    isArguments = __webpack_require__(199),
+	var arrayCopy = __webpack_require__(197),
+	    isArguments = __webpack_require__(198),
 	    isArray = __webpack_require__(176),
 	    isArrayLike = __webpack_require__(177),
-	    isPlainObject = __webpack_require__(200),
+	    isPlainObject = __webpack_require__(199),
 	    isTypedArray = __webpack_require__(180),
-	    toPlainObject = __webpack_require__(201);
+	    toPlainObject = __webpack_require__(200);
 
 	/**
 	 * A specialized version of `baseMerge` for arrays and objects which performs
@@ -8410,9 +8447,9 @@
 /* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var constant = __webpack_require__(202),
-	    isNative = __webpack_require__(203),
-	    toObject = __webpack_require__(204);
+	var constant = __webpack_require__(201),
+	    isNative = __webpack_require__(202),
+	    toObject = __webpack_require__(203);
 
 	/** Native method references. */
 	var getOwnPropertySymbols = isNative(getOwnPropertySymbols = Object.getOwnPropertySymbols) && getOwnPropertySymbols;
@@ -8435,8 +8472,8 @@
 /* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isLength = __webpack_require__(205),
-	    isNative = __webpack_require__(203),
+	var isLength = __webpack_require__(204),
+	    isNative = __webpack_require__(202),
 	    isObjectLike = __webpack_require__(179);
 
 	/** `Object#toString` result references. */
@@ -8481,8 +8518,8 @@
 /* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getLength = __webpack_require__(206),
-	    isLength = __webpack_require__(205);
+	var getLength = __webpack_require__(205),
+	    isLength = __webpack_require__(204);
 
 	/**
 	 * Checks if `value` is array-like.
@@ -8554,7 +8591,7 @@
 /* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isLength = __webpack_require__(205),
+	var isLength = __webpack_require__(204),
 	    isObjectLike = __webpack_require__(179);
 
 	/** `Object#toString` result references. */
@@ -8635,9 +8672,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArrayLike = __webpack_require__(177),
-	    isNative = __webpack_require__(203),
+	    isNative = __webpack_require__(202),
 	    isObject = __webpack_require__(178),
-	    shimKeys = __webpack_require__(207);
+	    shimKeys = __webpack_require__(206);
 
 	/* Native method references for those with the same name as other `lodash` methods. */
 	var nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
@@ -8685,7 +8722,7 @@
 /* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(208);
+	var identity = __webpack_require__(207);
 
 	/**
 	 * A specialized version of `baseCallback` which only supports `this` binding
@@ -8731,7 +8768,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArrayLike = __webpack_require__(177),
-	    isIndex = __webpack_require__(209),
+	    isIndex = __webpack_require__(208),
 	    isObject = __webpack_require__(178);
 
 	/**
@@ -8826,704 +8863,6 @@
 
 /***/ },
 /* 185 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Backbone.Stickit v0.9.0, MIT Licensed
-	// Copyright (c) 2012-2015 The New York Times, CMS Group, Matthew DeLambo <delambo@gmail.com>
-
-	(function (factory) {
-
-	  // Set up Stickit appropriately for the environment. Start with AMD.
-	  if (true)
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(19), __webpack_require__(25), exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-	  // Next for Node.js or CommonJS.
-	  else if (typeof exports === 'object')
-	    factory(require('underscore'), require('backbone'), exports);
-
-	  // Finally, as a browser global.
-	  else
-	    factory(_, Backbone, {});
-
-	}(function (_, Backbone, Stickit) {
-
-	  // Stickit Namespace
-	  // --------------------------
-
-	  // Export onto Backbone object
-	  Backbone.Stickit = Stickit;
-
-	  Stickit._handlers = [];
-
-	  Stickit.addHandler = function(handlers) {
-	    // Fill-in default values.
-	    handlers = _.map(_.flatten([handlers]), function(handler) {
-	      return _.defaults({}, handler, {
-	        updateModel: true,
-	        updateView: true,
-	        updateMethod: 'text'
-	      });
-	    });
-	    this._handlers = this._handlers.concat(handlers);
-	  };
-
-	  // Backbone.View Mixins
-	  // --------------------
-
-	  Stickit.ViewMixin = {
-
-	    // Collection of model event bindings.
-	    //   [{model,event,fn,config}, ...]
-	    _modelBindings: null,
-
-	    // Unbind the model and event bindings from `this._modelBindings` and
-	    // `this.$el`. If the optional `model` parameter is defined, then only
-	    // delete bindings for the given `model` and its corresponding view events.
-	    unstickit: function(model, bindingSelector) {
-
-	      // Support passing a bindings hash in place of bindingSelector.
-	      if (_.isObject(bindingSelector)) {
-	        _.each(bindingSelector, function(v, selector) {
-	          this.unstickit(model, selector);
-	        }, this);
-	        return;
-	      }
-
-	      var models = [], destroyFns = [];
-	      this._modelBindings = _.reject(this._modelBindings, function(binding) {
-	        if (model && binding.model !== model) return;
-	        if (bindingSelector && binding.config.selector != bindingSelector) return;
-
-	        binding.model.off(binding.event, binding.fn);
-	        destroyFns.push(binding.config._destroy);
-	        models.push(binding.model);
-	        return true;
-	      });
-
-	      // Trigger an event for each model that was unbound.
-	      _.invoke(_.uniq(models), 'trigger', 'stickit:unstuck', this.cid);
-
-	      // Call `_destroy` on a unique list of the binding callbacks.
-	      _.each(_.uniq(destroyFns), function(fn) { fn.call(this); }, this);
-
-	      this.$el.off('.stickit' + (model ? '.' + model.cid : ''), bindingSelector);
-	    },
-
-	    // Initilize Stickit bindings for the view. Subsequent binding additions
-	    // can either call `stickit` with the new bindings, or add them directly
-	    // with `addBinding`. Both arguments to `stickit` are optional.
-	    stickit: function(optionalModel, optionalBindingsConfig) {
-	      var model = optionalModel || this.model,
-	          bindings = optionalBindingsConfig || _.result(this, "bindings") || {};
-
-	      this._modelBindings || (this._modelBindings = []);
-
-	      // Add bindings in bulk using `addBinding`.
-	      this.addBinding(model, bindings);
-
-	      // Wrap `view.remove` to unbind stickit model and dom events.
-	      var remove = this.remove;
-	      if (!remove.stickitWrapped) {
-	        this.remove = function() {
-	          var ret = this;
-	          this.unstickit();
-	          if (remove) ret = remove.apply(this, arguments);
-	          return ret;
-	        };
-	      }
-	      this.remove.stickitWrapped = true;
-	      return this;
-	    },
-
-	    // Add a single Stickit binding or a hash of bindings to the model. If
-	    // `optionalModel` is ommitted, will default to the view's `model` property.
-	    addBinding: function(optionalModel, selector, binding) {
-	      var model = optionalModel || this.model,
-	          namespace = '.stickit.' + model.cid;
-
-	      binding = binding || {};
-
-	      // Support jQuery-style {key: val} event maps.
-	      if (_.isObject(selector)) {
-	        var bindings = selector;
-	        _.each(bindings, function(val, key) {
-	          this.addBinding(model, key, val);
-	        }, this);
-	        return;
-	      }
-
-	      // Special case the ':el' selector to use the view's this.$el.
-	      var $el = selector === ':el' ? this.$el : this.$(selector);
-
-	      // Clear any previous matching bindings.
-	      this.unstickit(model, selector);
-
-	      // Fail fast if the selector didn't match an element.
-	      if (!$el.length) return;
-
-	      // Allow shorthand setting of model attributes - `'selector':'observe'`.
-	      if (_.isString(binding)) binding = {observe: binding};
-
-	      // Handle case where `observe` is in the form of a function.
-	      if (_.isFunction(binding.observe)) binding.observe = binding.observe.call(this);
-
-	      // Find all matching Stickit handlers that could apply to this element
-	      // and store in a config object.
-	      var config = getConfiguration($el, binding);
-
-	      // The attribute we're observing in our config.
-	      var modelAttr = config.observe;
-
-	      // Store needed properties for later.
-	      config.selector = selector;
-	      config.view = this;
-
-	      // Create the model set options with a unique `bindId` so that we
-	      // can avoid double-binding in the `change:attribute` event handler.
-	      var bindId = config.bindId = _.uniqueId();
-
-	      // Add a reference to the view for handlers of stickitChange events
-	      var options = _.extend({stickitChange: config}, config.setOptions);
-
-	      // Add a `_destroy` callback to the configuration, in case `destroy`
-	      // is a named function and we need a unique function when unsticking.
-	      config._destroy = function() {
-	        applyViewFn.call(this, config.destroy, $el, model, config);
-	      };
-
-	      initializeAttributes($el, config, model, modelAttr);
-	      initializeVisible($el, config, model, modelAttr);
-	      initializeClasses($el, config, model, modelAttr);
-
-	      if (modelAttr) {
-	        // Setup one-way (input element -> model) bindings.
-	        _.each(config.events, function(type) {
-	          var eventName = type + namespace;
-	          var listener = function(event) {
-	            var val = applyViewFn.call(this, config.getVal, $el, event, config, slice.call(arguments, 1));
-
-	            // Don't update the model if false is returned from the `updateModel` configuration.
-	            var currentVal = evaluateBoolean(config.updateModel, val, event, config);
-	            if (currentVal) setAttr(model, modelAttr, val, options, config);
-	          };
-	          var sel = selector === ':el'? '' : selector;
-	          this.$el.on(eventName, sel, _.bind(listener, this));
-	        }, this);
-
-	        // Setup a `change:modelAttr` observer to keep the view element in sync.
-	        // `modelAttr` may be an array of attributes or a single string value.
-	        _.each(_.flatten([modelAttr]), function(attr) {
-	          observeModelEvent(model, 'change:' + attr, config, function(m, val, options) {
-	            var changeId = options && options.stickitChange && options.stickitChange.bindId;
-	            if (changeId !== bindId) {
-	              var currentVal = getAttr(model, modelAttr, config);
-	              updateViewBindEl($el, config, currentVal, model);
-	            }
-	          });
-	        });
-
-	        var currentVal = getAttr(model, modelAttr, config);
-	        updateViewBindEl($el, config, currentVal, model, true);
-	      }
-
-	      // After each binding is setup, call the `initialize` callback.
-	      applyViewFn.call(this, config.initialize, $el, model, config);
-	    }
-	  };
-
-	  _.extend(Backbone.View.prototype, Stickit.ViewMixin);
-
-	  // Helpers
-	  // -------
-
-	  var slice = [].slice;
-
-	  // Evaluates the given `path` (in object/dot-notation) relative to the given
-	  // `obj`. If the path is null/undefined, then the given `obj` is returned.
-	  var evaluatePath = function(obj, path) {
-	    var parts = (path || '').split('.');
-	    var result = _.reduce(parts, function(memo, i) { return memo[i]; }, obj);
-	    return result == null ? obj : result;
-	  };
-
-	  // If the given `fn` is a string, then view[fn] is called, otherwise it is
-	  // a function that should be executed.
-	  var applyViewFn = function(fn) {
-	    fn = _.isString(fn) ? evaluatePath(this, fn) : fn;
-	    if (fn) return (fn).apply(this, slice.call(arguments, 1));
-	  };
-
-	  // Given a function, string (view function reference), or a boolean
-	  // value, returns the truthy result. Any other types evaluate as false.
-	  // The first argument must be `reference` and the last must be `config`, but
-	  // middle arguments can be variadic.
-	  var evaluateBoolean = function(reference, val, config) {
-	    if (_.isBoolean(reference)) {
-	      return reference;
-	    } else if (_.isFunction(reference) || _.isString(reference)) {
-	      var view = _.last(arguments).view;
-	      return applyViewFn.apply(view, arguments);
-	    }
-	    return false;
-	  };
-
-	  // Setup a model event binding with the given function, and track the event
-	  // in the view's _modelBindings.
-	  var observeModelEvent = function(model, event, config, fn) {
-	    var view = config.view;
-	    model.on(event, fn, view);
-	    view._modelBindings.push({model:model, event:event, fn:fn, config:config});
-	  };
-
-	  // Prepares the given `val`ue and sets it into the `model`.
-	  var setAttr = function(model, attr, val, options, config) {
-	    var value = {}, view = config.view;
-	    if (config.onSet) {
-	      val = applyViewFn.call(view, config.onSet, val, config);
-	    }
-
-	    if (config.set) {
-	      applyViewFn.call(view, config.set, attr, val, options, config);
-	    } else {
-	      value[attr] = val;
-	      // If `observe` is defined as an array and `onSet` returned
-	      // an array, then map attributes to their values.
-	      if (_.isArray(attr) && _.isArray(val)) {
-	        value = _.reduce(attr, function(memo, attribute, index) {
-	          memo[attribute] = _.has(val, index) ? val[index] : null;
-	          return memo;
-	        }, {});
-	      }
-	      model.set(value, options);
-	    }
-	  };
-
-	  // Returns the given `attr`'s value from the `model`, escaping and
-	  // formatting if necessary. If `attr` is an array, then an array of
-	  // respective values will be returned.
-	  var getAttr = function(model, attr, config) {
-	    var view = config.view;
-	    var retrieveVal = function(field) {
-	      return model[config.escape ? 'escape' : 'get'](field);
-	    };
-	    var sanitizeVal = function(val) {
-	      return val == null ? '' : val;
-	    };
-	    var val = _.isArray(attr) ? _.map(attr, retrieveVal) : retrieveVal(attr);
-	    if (config.onGet) val = applyViewFn.call(view, config.onGet, val, config);
-	    return _.isArray(val) ? _.map(val, sanitizeVal) : sanitizeVal(val);
-	  };
-
-	  // Find handlers in `Backbone.Stickit._handlers` with selectors that match
-	  // `$el` and generate a configuration by mixing them in the order that they
-	  // were found with the given `binding`.
-	  var getConfiguration = Stickit.getConfiguration = function($el, binding) {
-	    var handlers = [{
-	      updateModel: false,
-	      updateMethod: 'text',
-	      update: function($el, val, m, opts) { if ($el[opts.updateMethod]) $el[opts.updateMethod](val); },
-	      getVal: function($el, e, opts) { return $el[opts.updateMethod](); }
-	    }];
-	    handlers = handlers.concat(_.filter(Stickit._handlers, function(handler) {
-	      return $el.is(handler.selector);
-	    }));
-	    handlers.push(binding);
-
-	    // Merge handlers into a single config object. Last props in wins.
-	    var config = _.extend.apply(_, handlers);
-
-	    // `updateView` is defaulted to false for configutrations with
-	    // `visible`; otherwise, `updateView` is defaulted to true.
-	    if (!_.has(config, 'updateView')) config.updateView = !config.visible;
-	    return config;
-	  };
-
-	  // Setup the attributes configuration - a list that maps an attribute or
-	  // property `name`, to an `observe`d model attribute, using an optional
-	  // `onGet` formatter.
-	  //
-	  //     attributes: [{
-	  //       name: 'attributeOrPropertyName',
-	  //       observe: 'modelAttrName'
-	  //       onGet: function(modelAttrVal, modelAttrName) { ... }
-	  //     }, ...]
-	  //
-	  var initializeAttributes = function($el, config, model, modelAttr) {
-	    var props = ['autofocus', 'autoplay', 'async', 'checked', 'controls',
-	      'defer', 'disabled', 'hidden', 'indeterminate', 'loop', 'multiple',
-	      'open', 'readonly', 'required', 'scoped', 'selected'];
-
-	    var view = config.view;
-
-	    _.each(config.attributes || [], function(attrConfig) {
-	      attrConfig = _.clone(attrConfig);
-	      attrConfig.view = view;
-
-	      var lastClass = '';
-	      var observed = attrConfig.observe || (attrConfig.observe = modelAttr);
-	      var updateAttr = function() {
-	        var updateType = _.contains(props, attrConfig.name) ? 'prop' : 'attr',
-	            val = getAttr(model, observed, attrConfig);
-
-	        // If it is a class then we need to remove the last value and add the new.
-	        if (attrConfig.name === 'class') {
-	          $el.removeClass(lastClass).addClass(val);
-	          lastClass = val;
-	        } else {
-	          $el[updateType](attrConfig.name, val);
-	        }
-	      };
-
-	      _.each(_.flatten([observed]), function(attr) {
-	        observeModelEvent(model, 'change:' + attr, config, updateAttr);
-	      });
-
-	      // Initialize the matched element's state.
-	      updateAttr();
-	    });
-	  };
-
-	  var initializeClasses = function($el, config, model, modelAttr) {
-	    _.each(config.classes || [], function(classConfig, name) {
-	      if (_.isString(classConfig)) classConfig = {observe: classConfig};
-	      classConfig.view = config.view;
-
-	      var observed = classConfig.observe;
-	      var updateClass = function() {
-	        var val = getAttr(model, observed, classConfig);
-	        $el.toggleClass(name, !!val);
-	      };
-
-	      _.each(_.flatten([observed]), function(attr) {
-	        observeModelEvent(model, 'change:' + attr, config, updateClass);
-	      });
-	      updateClass();
-	    });
-	  };
-
-	  // If `visible` is configured, then the view element will be shown/hidden
-	  // based on the truthiness of the modelattr's value or the result of the
-	  // given callback. If a `visibleFn` is also supplied, then that callback
-	  // will be executed to manually handle showing/hiding the view element.
-	  //
-	  //     observe: 'isRight',
-	  //     visible: true, // or function(val, options) {}
-	  //     visibleFn: function($el, isVisible, options) {} // optional handler
-	  //
-	  var initializeVisible = function($el, config, model, modelAttr) {
-	    if (config.visible == null) return;
-	    var view = config.view;
-
-	    var visibleCb = function() {
-	      var visible = config.visible,
-	          visibleFn = config.visibleFn,
-	          val = getAttr(model, modelAttr, config),
-	          isVisible = !!val;
-
-	      // If `visible` is a function then it should return a boolean result to show/hide.
-	      if (_.isFunction(visible) || _.isString(visible)) {
-	        isVisible = !!applyViewFn.call(view, visible, val, config);
-	      }
-
-	      // Either use the custom `visibleFn`, if provided, or execute the standard show/hide.
-	      if (visibleFn) {
-	        applyViewFn.call(view, visibleFn, $el, isVisible, config);
-	      } else {
-	        $el.toggle(isVisible);
-	      }
-	    };
-
-	    _.each(_.flatten([modelAttr]), function(attr) {
-	      observeModelEvent(model, 'change:' + attr, config, visibleCb);
-	    });
-
-	    visibleCb();
-	  };
-
-	  // Update the value of `$el` using the given configuration and trigger the
-	  // `afterUpdate` callback. This action may be blocked by `config.updateView`.
-	  //
-	  //     update: function($el, val, model, options) {},  // handler for updating
-	  //     updateView: true, // defaults to true
-	  //     afterUpdate: function($el, val, options) {} // optional callback
-	  //
-	  var updateViewBindEl = function($el, config, val, model, isInitializing) {
-	    var view = config.view;
-	    if (!evaluateBoolean(config.updateView, val, config)) return;
-	    applyViewFn.call(view, config.update, $el, val, model, config);
-	    if (!isInitializing) applyViewFn.call(view, config.afterUpdate, $el, val, config);
-	  };
-
-	  // Default Handlers
-	  // ----------------
-
-	  Stickit.addHandler([{
-	    selector: '[contenteditable]',
-	    updateMethod: 'html',
-	    events: ['input', 'change']
-	  }, {
-	    selector: 'input',
-	    events: ['propertychange', 'input', 'change'],
-	    update: function($el, val) { $el.val(val); },
-	    getVal: function($el) {
-	      return $el.val();
-	    }
-	  }, {
-	    selector: 'textarea',
-	    events: ['propertychange', 'input', 'change'],
-	    update: function($el, val) { $el.val(val); },
-	    getVal: function($el) { return $el.val(); }
-	  }, {
-	    selector: 'input[type="radio"]',
-	    events: ['change'],
-	    update: function($el, val) {
-	      $el.filter('[value="'+val+'"]').prop('checked', true);
-	    },
-	    getVal: function($el) {
-	      return $el.filter(':checked').val();
-	    }
-	  }, {
-	    selector: 'input[type="checkbox"]',
-	    events: ['change'],
-	    update: function($el, val, model, options) {
-	      if ($el.length > 1) {
-	        // There are multiple checkboxes so we need to go through them and check
-	        // any that have value attributes that match what's in the array of `val`s.
-	        val || (val = []);
-	        $el.each(function(i, el) {
-	          var checkbox = Backbone.$(el);
-	          var checked = _.contains(val, checkbox.val());
-	          checkbox.prop('checked', checked);
-	        });
-	      } else {
-	        var checked = _.isBoolean(val) ? val : val === $el.val();
-	        $el.prop('checked', checked);
-	      }
-	    },
-	    getVal: function($el) {
-	      var val;
-	      if ($el.length > 1) {
-	        val = _.reduce($el, function(memo, el) {
-	          var checkbox = Backbone.$(el);
-	          if (checkbox.prop('checked')) memo.push(checkbox.val());
-	          return memo;
-	        }, []);
-	      } else {
-	        val = $el.prop('checked');
-	        // If the checkbox has a value attribute defined, then
-	        // use that value. Most browsers use "on" as a default.
-	        var boxval = $el.val();
-	        if (boxval !== 'on' && boxval != null) {
-	          val = val ? $el.val() : null;
-	        }
-	      }
-	      return val;
-	    }
-	  }, {
-	    selector: 'select',
-	    events: ['change'],
-	    update: function($el, val, model, options) {
-	      var optList,
-	        selectConfig = options.selectOptions,
-	        list = selectConfig && selectConfig.collection || undefined,
-	        isMultiple = $el.prop('multiple');
-
-	      // If there are no `selectOptions` then we assume that the `<select>`
-	      // is pre-rendered and that we need to generate the collection.
-	      if (!selectConfig) {
-	        selectConfig = {};
-	        var getList = function($el) {
-	          return $el.map(function(index, option) {
-	            // Retrieve the text and value of the option, preferring "stickit-bind-val"
-	            // data attribute over value property.
-	            var dataVal = Backbone.$(option).data('stickit-bind-val');
-	            return {
-	              value: dataVal !== undefined ? dataVal : option.value,
-	              label: option.text
-	            };
-	          }).get();
-	        };
-	        if ($el.find('optgroup').length) {
-	          list = {opt_labels:[]};
-	          // Search for options without optgroup
-	          if ($el.find('> option').length) {
-	            list.opt_labels.push(undefined);
-	            _.each($el.find('> option'), function(el) {
-	              list[undefined] = getList(Backbone.$(el));
-	            });
-	          }
-	          _.each($el.find('optgroup'), function(el) {
-	            var label = Backbone.$(el).attr('label');
-	            list.opt_labels.push(label);
-	            list[label] = getList(Backbone.$(el).find('option'));
-	          });
-	        } else {
-	          list = getList($el.find('option'));
-	        }
-	      }
-
-	      // Fill in default label and path values.
-	      selectConfig.valuePath = selectConfig.valuePath || 'value';
-	      selectConfig.labelPath = selectConfig.labelPath || 'label';
-	      selectConfig.disabledPath = selectConfig.disabledPath || 'disabled';
-
-	      var addSelectOptions = function(optList, $el, fieldVal) {
-	        _.each(optList, function(obj) {
-	          var option = Backbone.$('<option/>'), optionVal = obj;
-
-	          var fillOption = function(text, val, disabled) {
-	            option.text(text);
-	            optionVal = val;
-	            // Save the option value as data so that we can reference it later.
-	            option.data('stickit-bind-val', optionVal);
-	            if (!_.isArray(optionVal) && !_.isObject(optionVal)) option.val(optionVal);
-
-	            if (disabled === true) option.prop('disabled', 'disabled');
-	          };
-
-	          var text, val, disabled;
-	          if (obj === '__default__') {
-	            text = fieldVal.label,
-	            val = fieldVal.value,
-	            disabled = fieldVal.disabled;
-	          } else {
-	            text = evaluatePath(obj, selectConfig.labelPath),
-	            val = evaluatePath(obj, selectConfig.valuePath),
-	            disabled = evaluatePath(obj, selectConfig.disabledPath);
-	          }
-	          fillOption(text, val, disabled);
-
-	          // Determine if this option is selected.
-	          var isSelected = function() {
-	            if (!isMultiple && optionVal != null && fieldVal != null && optionVal === fieldVal) {
-	              return true;
-	            } else if (_.isObject(fieldVal) && _.isEqual(optionVal, fieldVal)) {
-	              return true;
-	            }
-	            return false;
-	          };
-
-	          if (isSelected()) {
-	            option.prop('selected', true);
-	          } else if (isMultiple && _.isArray(fieldVal)) {
-	            _.each(fieldVal, function(val) {
-	              if (_.isObject(val)) val = evaluatePath(val, selectConfig.valuePath);
-	              if (val === optionVal || (_.isObject(val) && _.isEqual(optionVal, val)))
-	                option.prop('selected', true);
-	            });
-	          }
-
-	          $el.append(option);
-	        });
-	      };
-
-	      $el.find('*').remove();
-
-	      // The `list` configuration is a function that returns the options list or a string
-	      // which represents the path to the list relative to `window` or the view/`this`.
-	      if (_.isString(list)) {
-	        var context = window;
-	        if (list.indexOf('this.') === 0) context = this;
-	        list = list.replace(/^[a-z]*\.(.+)$/, '$1');
-	        optList = evaluatePath(context, list);
-	      } else if (_.isFunction(list)) {
-	        optList = applyViewFn.call(this, list, $el, options);
-	      } else {
-	        optList = list;
-	      }
-
-	      // Support Backbone.Collection and deserialize.
-	      if (optList instanceof Backbone.Collection) {
-	        var collection = optList;
-	        var refreshSelectOptions = function() {
-	          var currentVal = getAttr(model, options.observe, options);
-	          applyViewFn.call(this, options.update, $el, currentVal, model, options);
-	        };
-	        // We need to call this function after unstickit and after an update so we don't end up
-	        // with multiple listeners doing the same thing
-	        var removeCollectionListeners = function() {
-	          collection.off('add remove reset sort', refreshSelectOptions);
-	        };
-	        var removeAllListeners = function() {
-	          removeCollectionListeners();
-	          collection.off('stickit:selectRefresh');
-	          model.off('stickit:selectRefresh');
-	        };
-	        // Remove previously set event listeners by triggering a custom event
-	        collection.trigger('stickit:selectRefresh');
-	        collection.once('stickit:selectRefresh', removeCollectionListeners, this);
-
-	        // Listen to the collection and trigger an update of the select options
-	        collection.on('add remove reset sort', refreshSelectOptions, this);
-
-	        // Remove the previous model event listener
-	        model.trigger('stickit:selectRefresh');
-	        model.once('stickit:selectRefresh', function() {
-	          model.off('stickit:unstuck', removeAllListeners);
-	        });
-	        // Remove collection event listeners once this binding is unstuck
-	        model.once('stickit:unstuck', removeAllListeners, this);
-	        optList = optList.toJSON();
-	      }
-
-	      if (selectConfig.defaultOption) {
-	        var option = _.isFunction(selectConfig.defaultOption) ?
-	          selectConfig.defaultOption.call(this, $el, options) :
-	          selectConfig.defaultOption;
-	        addSelectOptions(["__default__"], $el, option);
-	      }
-
-	      if (_.isArray(optList)) {
-	        addSelectOptions(optList, $el, val);
-	      } else if (optList.opt_labels) {
-	        // To define a select with optgroups, format selectOptions.collection as an object
-	        // with an 'opt_labels' property, as in the following:
-	        //
-	        //     {
-	        //       'opt_labels': ['Looney Tunes', 'Three Stooges'],
-	        //       'Looney Tunes': [{id: 1, name: 'Bugs Bunny'}, {id: 2, name: 'Donald Duck'}],
-	        //       'Three Stooges': [{id: 3, name : 'moe'}, {id: 4, name : 'larry'}, {id: 5, name : 'curly'}]
-	        //     }
-	        //
-	        _.each(optList.opt_labels, function(label) {
-	          var $group = Backbone.$('<optgroup/>').attr('label', label);
-	          addSelectOptions(optList[label], $group, val);
-	          $el.append($group);
-	        });
-	        // With no 'opt_labels' parameter, the object is assumed to be a simple value-label map.
-	        // Pass a selectOptions.comparator to override the default order of alphabetical by label.
-	      } else {
-	        var opts = [], opt;
-	        for (var i in optList) {
-	          opt = {};
-	          opt[selectConfig.valuePath] = i;
-	          opt[selectConfig.labelPath] = optList[i];
-	          opts.push(opt);
-	        }
-	        opts = _.sortBy(opts, selectConfig.comparator || selectConfig.labelPath);
-	        addSelectOptions(opts, $el, val);
-	      }
-	    },
-	    getVal: function($el) {
-	      var selected = $el.find('option:selected');
-
-	      if ($el.prop('multiple')) {
-	        return _.map(selected, function(el) {
-	          return Backbone.$(el).data('stickit-bind-val');
-	        });
-	      } else {
-	        return selected.data('stickit-bind-val');
-	      }
-	    }
-	  }]);
-
-	  return Stickit;
-
-	}));
-
-
-/***/ },
-/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Backbone.Validation v0.11.3
@@ -10241,85 +9580,706 @@
 	}));
 
 /***/ },
-/* 187 */,
-/* 188 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	var _ = __webpack_require__(19);
-	var Backbone = __webpack_require__(25);
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Backbone.Stickit v0.9.0, MIT Licensed
+	// Copyright (c) 2012-2015 The New York Times, CMS Group, Matthew DeLambo <delambo@gmail.com>
 
-	// Methods in the collection prototype that we won't expose
-	var blacklistedMethods = [
-	  "_onModelEvent", "_prepareModel", "_removeReference", "_reset", "add",
-	  "initialize", "sync", "remove", "reset", "set", "push", "pop", "unshift",
-	  "shift", "sort", "parse", "fetch", "create", "model", "off", "on",
-	  "listenTo", "listenToOnce", "bind", "trigger", "once", "stopListening"
-	];
+	(function (factory) {
 
-	var eventWhiteList = [
-	  'add', 'remove', 'reset', 'sort', 'destroy', 'sync', 'request', 'error'
-	];
+	  // Set up Stickit appropriately for the environment. Start with AMD.
+	  if (true)
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(19), __webpack_require__(25), exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-	function proxyCollection(from, target) {
+	  // Next for Node.js or CommonJS.
+	  else if (typeof exports === 'object')
+	    factory(require('underscore'), require('backbone'), exports);
 
-	  function updateLength() {
-	    target.length = from.length;
-	  }
+	  // Finally, as a browser global.
+	  else
+	    factory(_, Backbone, {});
 
-	  function pipeEvents(eventName) {
-	    var args = _.toArray(arguments);
-	    var isChangeEvent = eventName === 'change' ||
-	                        eventName.slice(0, 7) === 'change:';
+	}(function (_, Backbone, Stickit) {
 
-	    // In the case of a `reset` event, the Collection.models reference
-	    // is updated to a new array, so we need to update our reference.
-	    if (eventName === 'reset') {
-	      target.models = from.models;
-	    }
+	  // Stickit Namespace
+	  // --------------------------
 
-	    if (_.contains(eventWhiteList, eventName)) {
-	      if (_.contains(['add', 'remove', 'destroy'], eventName)) {
-	        args[2] = target;
-	      } else if (_.contains(['reset', 'sort'], eventName)) {
-	        args[1] = target;
+	  // Export onto Backbone object
+	  Backbone.Stickit = Stickit;
+
+	  Stickit._handlers = [];
+
+	  Stickit.addHandler = function(handlers) {
+	    // Fill-in default values.
+	    handlers = _.map(_.flatten([handlers]), function(handler) {
+	      return _.defaults({}, handler, {
+	        updateModel: true,
+	        updateView: true,
+	        updateMethod: 'text'
+	      });
+	    });
+	    this._handlers = this._handlers.concat(handlers);
+	  };
+
+	  // Backbone.View Mixins
+	  // --------------------
+
+	  Stickit.ViewMixin = {
+
+	    // Collection of model event bindings.
+	    //   [{model,event,fn,config}, ...]
+	    _modelBindings: null,
+
+	    // Unbind the model and event bindings from `this._modelBindings` and
+	    // `this.$el`. If the optional `model` parameter is defined, then only
+	    // delete bindings for the given `model` and its corresponding view events.
+	    unstickit: function(model, bindingSelector) {
+
+	      // Support passing a bindings hash in place of bindingSelector.
+	      if (_.isObject(bindingSelector)) {
+	        _.each(bindingSelector, function(v, selector) {
+	          this.unstickit(model, selector);
+	        }, this);
+	        return;
 	      }
-	      target.trigger.apply(this, args);
-	    } else if (isChangeEvent) {
-	      // In some cases I was seeing change events fired after the model
-	      // had already been removed from the collection.
-	      if (target.contains(args[1])) {
-	        target.trigger.apply(this, args);
+
+	      var models = [], destroyFns = [];
+	      this._modelBindings = _.reject(this._modelBindings, function(binding) {
+	        if (model && binding.model !== model) return;
+	        if (bindingSelector && binding.config.selector != bindingSelector) return;
+
+	        binding.model.off(binding.event, binding.fn);
+	        destroyFns.push(binding.config._destroy);
+	        models.push(binding.model);
+	        return true;
+	      });
+
+	      // Trigger an event for each model that was unbound.
+	      _.invoke(_.uniq(models), 'trigger', 'stickit:unstuck', this.cid);
+
+	      // Call `_destroy` on a unique list of the binding callbacks.
+	      _.each(_.uniq(destroyFns), function(fn) { fn.call(this); }, this);
+
+	      this.$el.off('.stickit' + (model ? '.' + model.cid : ''), bindingSelector);
+	    },
+
+	    // Initilize Stickit bindings for the view. Subsequent binding additions
+	    // can either call `stickit` with the new bindings, or add them directly
+	    // with `addBinding`. Both arguments to `stickit` are optional.
+	    stickit: function(optionalModel, optionalBindingsConfig) {
+	      var model = optionalModel || this.model,
+	          bindings = optionalBindingsConfig || _.result(this, "bindings") || {};
+
+	      this._modelBindings || (this._modelBindings = []);
+
+	      // Add bindings in bulk using `addBinding`.
+	      this.addBinding(model, bindings);
+
+	      // Wrap `view.remove` to unbind stickit model and dom events.
+	      var remove = this.remove;
+	      if (!remove.stickitWrapped) {
+	        this.remove = function() {
+	          var ret = this;
+	          this.unstickit();
+	          if (remove) ret = remove.apply(this, arguments);
+	          return ret;
+	        };
 	      }
-	    }
-	  }
+	      this.remove.stickitWrapped = true;
+	      return this;
+	    },
 
-	  var methods = {};
+	    // Add a single Stickit binding or a hash of bindings to the model. If
+	    // `optionalModel` is ommitted, will default to the view's `model` property.
+	    addBinding: function(optionalModel, selector, binding) {
+	      var model = optionalModel || this.model,
+	          namespace = '.stickit.' + model.cid;
 
-	  _.each(_.functions(Backbone.Collection.prototype), function(method) {
-	    if (!_.contains(blacklistedMethods, method)) {
-	      methods[method] = function() {
-	        return from[method].apply(from, arguments);
+	      binding = binding || {};
+
+	      // Support jQuery-style {key: val} event maps.
+	      if (_.isObject(selector)) {
+	        var bindings = selector;
+	        _.each(bindings, function(val, key) {
+	          this.addBinding(model, key, val);
+	        }, this);
+	        return;
+	      }
+
+	      // Special case the ':el' selector to use the view's this.$el.
+	      var $el = selector === ':el' ? this.$el : this.$(selector);
+
+	      // Clear any previous matching bindings.
+	      this.unstickit(model, selector);
+
+	      // Fail fast if the selector didn't match an element.
+	      if (!$el.length) return;
+
+	      // Allow shorthand setting of model attributes - `'selector':'observe'`.
+	      if (_.isString(binding)) binding = {observe: binding};
+
+	      // Handle case where `observe` is in the form of a function.
+	      if (_.isFunction(binding.observe)) binding.observe = binding.observe.call(this);
+
+	      // Find all matching Stickit handlers that could apply to this element
+	      // and store in a config object.
+	      var config = getConfiguration($el, binding);
+
+	      // The attribute we're observing in our config.
+	      var modelAttr = config.observe;
+
+	      // Store needed properties for later.
+	      config.selector = selector;
+	      config.view = this;
+
+	      // Create the model set options with a unique `bindId` so that we
+	      // can avoid double-binding in the `change:attribute` event handler.
+	      var bindId = config.bindId = _.uniqueId();
+
+	      // Add a reference to the view for handlers of stickitChange events
+	      var options = _.extend({stickitChange: config}, config.setOptions);
+
+	      // Add a `_destroy` callback to the configuration, in case `destroy`
+	      // is a named function and we need a unique function when unsticking.
+	      config._destroy = function() {
+	        applyViewFn.call(this, config.destroy, $el, model, config);
 	      };
+
+	      initializeAttributes($el, config, model, modelAttr);
+	      initializeVisible($el, config, model, modelAttr);
+	      initializeClasses($el, config, model, modelAttr);
+
+	      if (modelAttr) {
+	        // Setup one-way (input element -> model) bindings.
+	        _.each(config.events, function(type) {
+	          var eventName = type + namespace;
+	          var listener = function(event) {
+	            var val = applyViewFn.call(this, config.getVal, $el, event, config, slice.call(arguments, 1));
+
+	            // Don't update the model if false is returned from the `updateModel` configuration.
+	            var currentVal = evaluateBoolean(config.updateModel, val, event, config);
+	            if (currentVal) setAttr(model, modelAttr, val, options, config);
+	          };
+	          var sel = selector === ':el'? '' : selector;
+	          this.$el.on(eventName, sel, _.bind(listener, this));
+	        }, this);
+
+	        // Setup a `change:modelAttr` observer to keep the view element in sync.
+	        // `modelAttr` may be an array of attributes or a single string value.
+	        _.each(_.flatten([modelAttr]), function(attr) {
+	          observeModelEvent(model, 'change:' + attr, config, function(m, val, options) {
+	            var changeId = options && options.stickitChange && options.stickitChange.bindId;
+	            if (changeId !== bindId) {
+	              var currentVal = getAttr(model, modelAttr, config);
+	              updateViewBindEl($el, config, currentVal, model);
+	            }
+	          });
+	        });
+
+	        var currentVal = getAttr(model, modelAttr, config);
+	        updateViewBindEl($el, config, currentVal, model, true);
+	      }
+
+	      // After each binding is setup, call the `initialize` callback.
+	      applyViewFn.call(this, config.initialize, $el, model, config);
 	    }
-	  });
+	  };
 
-	  _.extend(target, Backbone.Events, methods);
+	  _.extend(Backbone.View.prototype, Stickit.ViewMixin);
 
-	  target.listenTo(from, 'all', updateLength);
-	  target.listenTo(from, 'all', pipeEvents);
-	  target.models = from.models;
+	  // Helpers
+	  // -------
 
-	  updateLength();
-	  return target;
-	}
+	  var slice = [].slice;
 
-	module.exports = proxyCollection;
+	  // Evaluates the given `path` (in object/dot-notation) relative to the given
+	  // `obj`. If the path is null/undefined, then the given `obj` is returned.
+	  var evaluatePath = function(obj, path) {
+	    var parts = (path || '').split('.');
+	    var result = _.reduce(parts, function(memo, i) { return memo[i]; }, obj);
+	    return result == null ? obj : result;
+	  };
 
+	  // If the given `fn` is a string, then view[fn] is called, otherwise it is
+	  // a function that should be executed.
+	  var applyViewFn = function(fn) {
+	    fn = _.isString(fn) ? evaluatePath(this, fn) : fn;
+	    if (fn) return (fn).apply(this, slice.call(arguments, 1));
+	  };
+
+	  // Given a function, string (view function reference), or a boolean
+	  // value, returns the truthy result. Any other types evaluate as false.
+	  // The first argument must be `reference` and the last must be `config`, but
+	  // middle arguments can be variadic.
+	  var evaluateBoolean = function(reference, val, config) {
+	    if (_.isBoolean(reference)) {
+	      return reference;
+	    } else if (_.isFunction(reference) || _.isString(reference)) {
+	      var view = _.last(arguments).view;
+	      return applyViewFn.apply(view, arguments);
+	    }
+	    return false;
+	  };
+
+	  // Setup a model event binding with the given function, and track the event
+	  // in the view's _modelBindings.
+	  var observeModelEvent = function(model, event, config, fn) {
+	    var view = config.view;
+	    model.on(event, fn, view);
+	    view._modelBindings.push({model:model, event:event, fn:fn, config:config});
+	  };
+
+	  // Prepares the given `val`ue and sets it into the `model`.
+	  var setAttr = function(model, attr, val, options, config) {
+	    var value = {}, view = config.view;
+	    if (config.onSet) {
+	      val = applyViewFn.call(view, config.onSet, val, config);
+	    }
+
+	    if (config.set) {
+	      applyViewFn.call(view, config.set, attr, val, options, config);
+	    } else {
+	      value[attr] = val;
+	      // If `observe` is defined as an array and `onSet` returned
+	      // an array, then map attributes to their values.
+	      if (_.isArray(attr) && _.isArray(val)) {
+	        value = _.reduce(attr, function(memo, attribute, index) {
+	          memo[attribute] = _.has(val, index) ? val[index] : null;
+	          return memo;
+	        }, {});
+	      }
+	      model.set(value, options);
+	    }
+	  };
+
+	  // Returns the given `attr`'s value from the `model`, escaping and
+	  // formatting if necessary. If `attr` is an array, then an array of
+	  // respective values will be returned.
+	  var getAttr = function(model, attr, config) {
+	    var view = config.view;
+	    var retrieveVal = function(field) {
+	      return model[config.escape ? 'escape' : 'get'](field);
+	    };
+	    var sanitizeVal = function(val) {
+	      return val == null ? '' : val;
+	    };
+	    var val = _.isArray(attr) ? _.map(attr, retrieveVal) : retrieveVal(attr);
+	    if (config.onGet) val = applyViewFn.call(view, config.onGet, val, config);
+	    return _.isArray(val) ? _.map(val, sanitizeVal) : sanitizeVal(val);
+	  };
+
+	  // Find handlers in `Backbone.Stickit._handlers` with selectors that match
+	  // `$el` and generate a configuration by mixing them in the order that they
+	  // were found with the given `binding`.
+	  var getConfiguration = Stickit.getConfiguration = function($el, binding) {
+	    var handlers = [{
+	      updateModel: false,
+	      updateMethod: 'text',
+	      update: function($el, val, m, opts) { if ($el[opts.updateMethod]) $el[opts.updateMethod](val); },
+	      getVal: function($el, e, opts) { return $el[opts.updateMethod](); }
+	    }];
+	    handlers = handlers.concat(_.filter(Stickit._handlers, function(handler) {
+	      return $el.is(handler.selector);
+	    }));
+	    handlers.push(binding);
+
+	    // Merge handlers into a single config object. Last props in wins.
+	    var config = _.extend.apply(_, handlers);
+
+	    // `updateView` is defaulted to false for configutrations with
+	    // `visible`; otherwise, `updateView` is defaulted to true.
+	    if (!_.has(config, 'updateView')) config.updateView = !config.visible;
+	    return config;
+	  };
+
+	  // Setup the attributes configuration - a list that maps an attribute or
+	  // property `name`, to an `observe`d model attribute, using an optional
+	  // `onGet` formatter.
+	  //
+	  //     attributes: [{
+	  //       name: 'attributeOrPropertyName',
+	  //       observe: 'modelAttrName'
+	  //       onGet: function(modelAttrVal, modelAttrName) { ... }
+	  //     }, ...]
+	  //
+	  var initializeAttributes = function($el, config, model, modelAttr) {
+	    var props = ['autofocus', 'autoplay', 'async', 'checked', 'controls',
+	      'defer', 'disabled', 'hidden', 'indeterminate', 'loop', 'multiple',
+	      'open', 'readonly', 'required', 'scoped', 'selected'];
+
+	    var view = config.view;
+
+	    _.each(config.attributes || [], function(attrConfig) {
+	      attrConfig = _.clone(attrConfig);
+	      attrConfig.view = view;
+
+	      var lastClass = '';
+	      var observed = attrConfig.observe || (attrConfig.observe = modelAttr);
+	      var updateAttr = function() {
+	        var updateType = _.contains(props, attrConfig.name) ? 'prop' : 'attr',
+	            val = getAttr(model, observed, attrConfig);
+
+	        // If it is a class then we need to remove the last value and add the new.
+	        if (attrConfig.name === 'class') {
+	          $el.removeClass(lastClass).addClass(val);
+	          lastClass = val;
+	        } else {
+	          $el[updateType](attrConfig.name, val);
+	        }
+	      };
+
+	      _.each(_.flatten([observed]), function(attr) {
+	        observeModelEvent(model, 'change:' + attr, config, updateAttr);
+	      });
+
+	      // Initialize the matched element's state.
+	      updateAttr();
+	    });
+	  };
+
+	  var initializeClasses = function($el, config, model, modelAttr) {
+	    _.each(config.classes || [], function(classConfig, name) {
+	      if (_.isString(classConfig)) classConfig = {observe: classConfig};
+	      classConfig.view = config.view;
+
+	      var observed = classConfig.observe;
+	      var updateClass = function() {
+	        var val = getAttr(model, observed, classConfig);
+	        $el.toggleClass(name, !!val);
+	      };
+
+	      _.each(_.flatten([observed]), function(attr) {
+	        observeModelEvent(model, 'change:' + attr, config, updateClass);
+	      });
+	      updateClass();
+	    });
+	  };
+
+	  // If `visible` is configured, then the view element will be shown/hidden
+	  // based on the truthiness of the modelattr's value or the result of the
+	  // given callback. If a `visibleFn` is also supplied, then that callback
+	  // will be executed to manually handle showing/hiding the view element.
+	  //
+	  //     observe: 'isRight',
+	  //     visible: true, // or function(val, options) {}
+	  //     visibleFn: function($el, isVisible, options) {} // optional handler
+	  //
+	  var initializeVisible = function($el, config, model, modelAttr) {
+	    if (config.visible == null) return;
+	    var view = config.view;
+
+	    var visibleCb = function() {
+	      var visible = config.visible,
+	          visibleFn = config.visibleFn,
+	          val = getAttr(model, modelAttr, config),
+	          isVisible = !!val;
+
+	      // If `visible` is a function then it should return a boolean result to show/hide.
+	      if (_.isFunction(visible) || _.isString(visible)) {
+	        isVisible = !!applyViewFn.call(view, visible, val, config);
+	      }
+
+	      // Either use the custom `visibleFn`, if provided, or execute the standard show/hide.
+	      if (visibleFn) {
+	        applyViewFn.call(view, visibleFn, $el, isVisible, config);
+	      } else {
+	        $el.toggle(isVisible);
+	      }
+	    };
+
+	    _.each(_.flatten([modelAttr]), function(attr) {
+	      observeModelEvent(model, 'change:' + attr, config, visibleCb);
+	    });
+
+	    visibleCb();
+	  };
+
+	  // Update the value of `$el` using the given configuration and trigger the
+	  // `afterUpdate` callback. This action may be blocked by `config.updateView`.
+	  //
+	  //     update: function($el, val, model, options) {},  // handler for updating
+	  //     updateView: true, // defaults to true
+	  //     afterUpdate: function($el, val, options) {} // optional callback
+	  //
+	  var updateViewBindEl = function($el, config, val, model, isInitializing) {
+	    var view = config.view;
+	    if (!evaluateBoolean(config.updateView, val, config)) return;
+	    applyViewFn.call(view, config.update, $el, val, model, config);
+	    if (!isInitializing) applyViewFn.call(view, config.afterUpdate, $el, val, config);
+	  };
+
+	  // Default Handlers
+	  // ----------------
+
+	  Stickit.addHandler([{
+	    selector: '[contenteditable]',
+	    updateMethod: 'html',
+	    events: ['input', 'change']
+	  }, {
+	    selector: 'input',
+	    events: ['propertychange', 'input', 'change'],
+	    update: function($el, val) { $el.val(val); },
+	    getVal: function($el) {
+	      return $el.val();
+	    }
+	  }, {
+	    selector: 'textarea',
+	    events: ['propertychange', 'input', 'change'],
+	    update: function($el, val) { $el.val(val); },
+	    getVal: function($el) { return $el.val(); }
+	  }, {
+	    selector: 'input[type="radio"]',
+	    events: ['change'],
+	    update: function($el, val) {
+	      $el.filter('[value="'+val+'"]').prop('checked', true);
+	    },
+	    getVal: function($el) {
+	      return $el.filter(':checked').val();
+	    }
+	  }, {
+	    selector: 'input[type="checkbox"]',
+	    events: ['change'],
+	    update: function($el, val, model, options) {
+	      if ($el.length > 1) {
+	        // There are multiple checkboxes so we need to go through them and check
+	        // any that have value attributes that match what's in the array of `val`s.
+	        val || (val = []);
+	        $el.each(function(i, el) {
+	          var checkbox = Backbone.$(el);
+	          var checked = _.contains(val, checkbox.val());
+	          checkbox.prop('checked', checked);
+	        });
+	      } else {
+	        var checked = _.isBoolean(val) ? val : val === $el.val();
+	        $el.prop('checked', checked);
+	      }
+	    },
+	    getVal: function($el) {
+	      var val;
+	      if ($el.length > 1) {
+	        val = _.reduce($el, function(memo, el) {
+	          var checkbox = Backbone.$(el);
+	          if (checkbox.prop('checked')) memo.push(checkbox.val());
+	          return memo;
+	        }, []);
+	      } else {
+	        val = $el.prop('checked');
+	        // If the checkbox has a value attribute defined, then
+	        // use that value. Most browsers use "on" as a default.
+	        var boxval = $el.val();
+	        if (boxval !== 'on' && boxval != null) {
+	          val = val ? $el.val() : null;
+	        }
+	      }
+	      return val;
+	    }
+	  }, {
+	    selector: 'select',
+	    events: ['change'],
+	    update: function($el, val, model, options) {
+	      var optList,
+	        selectConfig = options.selectOptions,
+	        list = selectConfig && selectConfig.collection || undefined,
+	        isMultiple = $el.prop('multiple');
+
+	      // If there are no `selectOptions` then we assume that the `<select>`
+	      // is pre-rendered and that we need to generate the collection.
+	      if (!selectConfig) {
+	        selectConfig = {};
+	        var getList = function($el) {
+	          return $el.map(function(index, option) {
+	            // Retrieve the text and value of the option, preferring "stickit-bind-val"
+	            // data attribute over value property.
+	            var dataVal = Backbone.$(option).data('stickit-bind-val');
+	            return {
+	              value: dataVal !== undefined ? dataVal : option.value,
+	              label: option.text
+	            };
+	          }).get();
+	        };
+	        if ($el.find('optgroup').length) {
+	          list = {opt_labels:[]};
+	          // Search for options without optgroup
+	          if ($el.find('> option').length) {
+	            list.opt_labels.push(undefined);
+	            _.each($el.find('> option'), function(el) {
+	              list[undefined] = getList(Backbone.$(el));
+	            });
+	          }
+	          _.each($el.find('optgroup'), function(el) {
+	            var label = Backbone.$(el).attr('label');
+	            list.opt_labels.push(label);
+	            list[label] = getList(Backbone.$(el).find('option'));
+	          });
+	        } else {
+	          list = getList($el.find('option'));
+	        }
+	      }
+
+	      // Fill in default label and path values.
+	      selectConfig.valuePath = selectConfig.valuePath || 'value';
+	      selectConfig.labelPath = selectConfig.labelPath || 'label';
+	      selectConfig.disabledPath = selectConfig.disabledPath || 'disabled';
+
+	      var addSelectOptions = function(optList, $el, fieldVal) {
+	        _.each(optList, function(obj) {
+	          var option = Backbone.$('<option/>'), optionVal = obj;
+
+	          var fillOption = function(text, val, disabled) {
+	            option.text(text);
+	            optionVal = val;
+	            // Save the option value as data so that we can reference it later.
+	            option.data('stickit-bind-val', optionVal);
+	            if (!_.isArray(optionVal) && !_.isObject(optionVal)) option.val(optionVal);
+
+	            if (disabled === true) option.prop('disabled', 'disabled');
+	          };
+
+	          var text, val, disabled;
+	          if (obj === '__default__') {
+	            text = fieldVal.label,
+	            val = fieldVal.value,
+	            disabled = fieldVal.disabled;
+	          } else {
+	            text = evaluatePath(obj, selectConfig.labelPath),
+	            val = evaluatePath(obj, selectConfig.valuePath),
+	            disabled = evaluatePath(obj, selectConfig.disabledPath);
+	          }
+	          fillOption(text, val, disabled);
+
+	          // Determine if this option is selected.
+	          var isSelected = function() {
+	            if (!isMultiple && optionVal != null && fieldVal != null && optionVal === fieldVal) {
+	              return true;
+	            } else if (_.isObject(fieldVal) && _.isEqual(optionVal, fieldVal)) {
+	              return true;
+	            }
+	            return false;
+	          };
+
+	          if (isSelected()) {
+	            option.prop('selected', true);
+	          } else if (isMultiple && _.isArray(fieldVal)) {
+	            _.each(fieldVal, function(val) {
+	              if (_.isObject(val)) val = evaluatePath(val, selectConfig.valuePath);
+	              if (val === optionVal || (_.isObject(val) && _.isEqual(optionVal, val)))
+	                option.prop('selected', true);
+	            });
+	          }
+
+	          $el.append(option);
+	        });
+	      };
+
+	      $el.find('*').remove();
+
+	      // The `list` configuration is a function that returns the options list or a string
+	      // which represents the path to the list relative to `window` or the view/`this`.
+	      if (_.isString(list)) {
+	        var context = window;
+	        if (list.indexOf('this.') === 0) context = this;
+	        list = list.replace(/^[a-z]*\.(.+)$/, '$1');
+	        optList = evaluatePath(context, list);
+	      } else if (_.isFunction(list)) {
+	        optList = applyViewFn.call(this, list, $el, options);
+	      } else {
+	        optList = list;
+	      }
+
+	      // Support Backbone.Collection and deserialize.
+	      if (optList instanceof Backbone.Collection) {
+	        var collection = optList;
+	        var refreshSelectOptions = function() {
+	          var currentVal = getAttr(model, options.observe, options);
+	          applyViewFn.call(this, options.update, $el, currentVal, model, options);
+	        };
+	        // We need to call this function after unstickit and after an update so we don't end up
+	        // with multiple listeners doing the same thing
+	        var removeCollectionListeners = function() {
+	          collection.off('add remove reset sort', refreshSelectOptions);
+	        };
+	        var removeAllListeners = function() {
+	          removeCollectionListeners();
+	          collection.off('stickit:selectRefresh');
+	          model.off('stickit:selectRefresh');
+	        };
+	        // Remove previously set event listeners by triggering a custom event
+	        collection.trigger('stickit:selectRefresh');
+	        collection.once('stickit:selectRefresh', removeCollectionListeners, this);
+
+	        // Listen to the collection and trigger an update of the select options
+	        collection.on('add remove reset sort', refreshSelectOptions, this);
+
+	        // Remove the previous model event listener
+	        model.trigger('stickit:selectRefresh');
+	        model.once('stickit:selectRefresh', function() {
+	          model.off('stickit:unstuck', removeAllListeners);
+	        });
+	        // Remove collection event listeners once this binding is unstuck
+	        model.once('stickit:unstuck', removeAllListeners, this);
+	        optList = optList.toJSON();
+	      }
+
+	      if (selectConfig.defaultOption) {
+	        var option = _.isFunction(selectConfig.defaultOption) ?
+	          selectConfig.defaultOption.call(this, $el, options) :
+	          selectConfig.defaultOption;
+	        addSelectOptions(["__default__"], $el, option);
+	      }
+
+	      if (_.isArray(optList)) {
+	        addSelectOptions(optList, $el, val);
+	      } else if (optList.opt_labels) {
+	        // To define a select with optgroups, format selectOptions.collection as an object
+	        // with an 'opt_labels' property, as in the following:
+	        //
+	        //     {
+	        //       'opt_labels': ['Looney Tunes', 'Three Stooges'],
+	        //       'Looney Tunes': [{id: 1, name: 'Bugs Bunny'}, {id: 2, name: 'Donald Duck'}],
+	        //       'Three Stooges': [{id: 3, name : 'moe'}, {id: 4, name : 'larry'}, {id: 5, name : 'curly'}]
+	        //     }
+	        //
+	        _.each(optList.opt_labels, function(label) {
+	          var $group = Backbone.$('<optgroup/>').attr('label', label);
+	          addSelectOptions(optList[label], $group, val);
+	          $el.append($group);
+	        });
+	        // With no 'opt_labels' parameter, the object is assumed to be a simple value-label map.
+	        // Pass a selectOptions.comparator to override the default order of alphabetical by label.
+	      } else {
+	        var opts = [], opt;
+	        for (var i in optList) {
+	          opt = {};
+	          opt[selectConfig.valuePath] = i;
+	          opt[selectConfig.labelPath] = optList[i];
+	          opts.push(opt);
+	        }
+	        opts = _.sortBy(opts, selectConfig.comparator || selectConfig.labelPath);
+	        addSelectOptions(opts, $el, val);
+	      }
+	    },
+	    getVal: function($el) {
+	      var selected = $el.find('option:selected');
+
+	      if ($el.prop('multiple')) {
+	        return _.map(selected, function(el) {
+	          return Backbone.$(el).data('stickit-bind-val');
+	        });
+	      } else {
+	        return selected.data('stickit-bind-val');
+	      }
+	    }
+	  }]);
+
+	  return Stickit;
+
+	}));
 
 
 /***/ },
-/* 189 */
+/* 187 */,
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ItemView = __webpack_require__(88);
@@ -10367,13 +10327,13 @@
 	POS.attach('Components.Loading.View', View);
 
 /***/ },
+/* 189 */,
 /* 190 */,
 /* 191 */,
 /* 192 */,
 /* 193 */,
 /* 194 */,
-/* 195 */,
-/* 196 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* jshint -W071, -W074 */
@@ -10653,7 +10613,7 @@
 	/* jshint +W071, +W074 */
 
 /***/ },
-/* 197 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -10782,7 +10742,7 @@
 
 
 /***/ },
-/* 198 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -10808,7 +10768,7 @@
 
 
 /***/ },
-/* 199 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArrayLike = __webpack_require__(177),
@@ -10850,11 +10810,11 @@
 
 
 /***/ },
-/* 200 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isNative = __webpack_require__(203),
-	    shimIsPlainObject = __webpack_require__(232);
+	var isNative = __webpack_require__(202),
+	    shimIsPlainObject = __webpack_require__(231);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -10917,11 +10877,11 @@
 
 
 /***/ },
-/* 201 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseCopy = __webpack_require__(233),
-	    keysIn = __webpack_require__(234);
+	var baseCopy = __webpack_require__(232),
+	    keysIn = __webpack_require__(233);
 
 	/**
 	 * Converts `value` to a plain object flattening inherited enumerable
@@ -10954,7 +10914,7 @@
 
 
 /***/ },
-/* 202 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -10983,10 +10943,10 @@
 
 
 /***/ },
-/* 203 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var escapeRegExp = __webpack_require__(235),
+	var escapeRegExp = __webpack_require__(234),
 	    isObjectLike = __webpack_require__(179);
 
 	/** `Object#toString` result references. */
@@ -11043,7 +11003,7 @@
 
 
 /***/ },
-/* 204 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(178);
@@ -11063,7 +11023,7 @@
 
 
 /***/ },
-/* 205 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11089,10 +11049,10 @@
 
 
 /***/ },
-/* 206 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(236);
+	var baseProperty = __webpack_require__(235);
 
 	/**
 	 * Gets the "length" property value of `object`.
@@ -11110,15 +11070,15 @@
 
 
 /***/ },
-/* 207 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArguments = __webpack_require__(199),
+	var isArguments = __webpack_require__(198),
 	    isArray = __webpack_require__(176),
-	    isIndex = __webpack_require__(209),
-	    isLength = __webpack_require__(205),
-	    keysIn = __webpack_require__(234),
-	    support = __webpack_require__(237);
+	    isIndex = __webpack_require__(208),
+	    isLength = __webpack_require__(204),
+	    keysIn = __webpack_require__(233),
+	    support = __webpack_require__(236);
 
 	/** Used for native method references. */
 	var objectProto = Object.prototype;
@@ -11158,7 +11118,7 @@
 
 
 /***/ },
-/* 208 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11184,7 +11144,7 @@
 
 
 /***/ },
-/* 209 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11211,6 +11171,7 @@
 
 
 /***/ },
+/* 209 */,
 /* 210 */,
 /* 211 */,
 /* 212 */,
@@ -11232,11 +11193,10 @@
 /* 228 */,
 /* 229 */,
 /* 230 */,
-/* 231 */,
-/* 232 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseForIn = __webpack_require__(250),
+	var baseForIn = __webpack_require__(249),
 	    isObjectLike = __webpack_require__(179);
 
 	/** `Object#toString` result references. */
@@ -11289,7 +11249,7 @@
 
 
 /***/ },
-/* 233 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11318,15 +11278,15 @@
 
 
 /***/ },
-/* 234 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArguments = __webpack_require__(199),
+	var isArguments = __webpack_require__(198),
 	    isArray = __webpack_require__(176),
-	    isIndex = __webpack_require__(209),
-	    isLength = __webpack_require__(205),
+	    isIndex = __webpack_require__(208),
+	    isLength = __webpack_require__(204),
 	    isObject = __webpack_require__(178),
-	    support = __webpack_require__(237);
+	    support = __webpack_require__(236);
 
 	/** Used for native method references. */
 	var objectProto = Object.prototype;
@@ -11389,10 +11349,10 @@
 
 
 /***/ },
-/* 235 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseToString = __webpack_require__(251);
+	var baseToString = __webpack_require__(250);
 
 	/**
 	 * Used to match `RegExp` [special characters](http://www.regular-expressions.info/characters.html#special).
@@ -11427,7 +11387,7 @@
 
 
 /***/ },
-/* 236 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11447,7 +11407,7 @@
 
 
 /***/ },
-/* 237 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Used for native method references. */
@@ -11531,6 +11491,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
+/* 237 */,
 /* 238 */,
 /* 239 */,
 /* 240 */,
@@ -11542,12 +11503,11 @@
 /* 246 */,
 /* 247 */,
 /* 248 */,
-/* 249 */,
-/* 250 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFor = __webpack_require__(254),
-	    keysIn = __webpack_require__(234);
+	var baseFor = __webpack_require__(253),
+	    keysIn = __webpack_require__(233);
 
 	/**
 	 * The base implementation of `_.forIn` without support for callback
@@ -11566,7 +11526,7 @@
 
 
 /***/ },
-/* 251 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11588,12 +11548,12 @@
 
 
 /***/ },
+/* 251 */,
 /* 252 */,
-/* 253 */,
-/* 254 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createBaseFor = __webpack_require__(255);
+	var createBaseFor = __webpack_require__(254);
 
 	/**
 	 * The base implementation of `baseForIn` and `baseForOwn` which iterates
@@ -11613,10 +11573,10 @@
 
 
 /***/ },
-/* 255 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toObject = __webpack_require__(204);
+	var toObject = __webpack_require__(203);
 
 	/**
 	 * Creates a base function for `_.forIn` or `_.forInRight`.
