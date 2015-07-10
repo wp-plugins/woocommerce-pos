@@ -2,8 +2,8 @@
 Contributors: kilbot
 Tags: cart, e-commerce, ecommerce, inventory, point-of-sale, pos, sales, sell, shop, shopify, store, vend, woocommerce,  wordpress-ecommerce
 Requires at least: 4.0 & WooCommerce 2.2
-Tested up to: 4.2
-Stable tag: 0.4.0
+Tested up to: 4.2.2
+Stable tag: 0.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,7 +24,7 @@ You can see a demo of the WooCommerce POS plugin in action by going to [http://d
 * Upgrade to Pro: http://woopos.com.au/pro
 
 = REQUIREMENTS =
-* WooCommerce >= 2.2.0
+* WooCommerce >= 2.3.0
 * [A modern browser](http://woopos.com.au/faq/browser-compatibility/)
 
 == Installation ==
@@ -66,7 +66,7 @@ Try:
 Visit the [Roadmap](http://woopos.com.au/roadmap) for information on what is coming in the next version of WooCommerce POS. If your feature isn't mentioned leave a request in the comments.
 
 = Where can I get support? =
-WooCommerce POS has a support page within the plugin (eg: http://*<yourstore>*/pos/support). If you are experiencing an error or problem please visit this support page and send a message using the form provided. This form will attach important information we need to assist you.
+WooCommerce POS has a support page within the plugin (eg: http://*<yourstore>*/pos/#support). If you are experiencing an error or problem please visit this support page and send a message using the form provided. This form will attach important information we need to assist you.
 
 = Where can I report bugs? =
 Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.com/kilbot/WooCommerce-POS/issues).
@@ -77,10 +77,28 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 
 == Changelog ==
 
+= 0.4.1 =
+* Note: WooCommerce POS now requires WooCommerce 2.3 or greater
+* New: added woocommerce_pos_email_receipt hook
+* Improve: blur() barcode search field after successful match
+* Improve: editing a product/fee/shipping title in cart - commit [216e8a5](https://github.com/kilbot/WooCommerce-POS/commit/216e8a5)
+* Improve: css tweaks for Firefox - commit [216e8a5](https://github.com/kilbot/WooCommerce-POS/commit/216e8a5)
+* Improve: keyboard entry for qty and prices - commit [ee61744](https://github.com/kilbot/WooCommerce-POS/commit/ee61744)
+* Improve: variation attributes now stored as line item meta for display on receipts
+* Fix: support for legacy server HTTP methods - commit [5765491](https://github.com/kilbot/WooCommerce-POS/commit/5765491)
+* Fix: Internal Server Error for PHP 5.2.x - commit [d800d40](https://github.com/kilbot/WooCommerce-POS/commit/d800d40)
+* Fix: parse $HTTP_RAW_POST_DATA global to array - commit [ac88f50](https://github.com/kilbot/WooCommerce-POS/commit/ac88f50)
+* Fix: decimal quantity display - commit [358d95f](https://github.com/kilbot/WooCommerce-POS/commit/358d95f)
+* Fix: check WooCommerce has loaded - commit [80285c4](https://github.com/kilbot/WooCommerce-POS/commit/80285c4)
+* Fix: variation selection issues in popover - commit [5c9673b](https://github.com/kilbot/WooCommerce-POS/commit/5c9673b)
+* Fix: incorrect total tax calculation for negative fees - issue [#85](https://github.com/kilbot/WooCommerce-POS/issues/85)
+* Fix: decimal bug on numpad entry, eg: 0.01 - commit [b46884d](https://github.com/kilbot/WooCommerce-POS/commit/b46884d)
+* Update npm dependencies
+
 = 0.4 =
-* Note: this is a major code refactor, almost every line of code has been rewritten
-* Please check your POS admin after upgrade as many settings have changed
--
+* ** Note: this is a major code refactor, almost every line of code has been rewritten **
+* ** Please check your POS admin after upgrade as many settings have changed **
+
 * Products: Variation popover/drawer
 * Products: Infinite scroll
 * Products: Hotkey for barcode search
@@ -93,7 +111,7 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 * Translations: WooCommerce POS now uses automatic downloads
 * New: Set custom permalink for POS front-end
 * Improved: Responsive design for tablets & mobile
--
+
 * Pro: Add customer during checkout
 * Pro: Open multiple carts
 * Pro: Hotkey for credit card readers
@@ -103,7 +121,7 @@ Bugs can be reported on the [WooCommerce POS GitHub repository](https://github.c
 * Pro: New coupon page
 * Pro: Multiple stores
 * Pro: Compatibility fix for Stripe gateway
--
+
 * Fix: all the things
 
 = 0.3.5 =

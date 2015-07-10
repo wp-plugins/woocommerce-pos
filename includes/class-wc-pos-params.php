@@ -37,6 +37,7 @@ class WC_POS_Params {
     $params['tax_rates']     = $this->tax_rates();
     $params['user']          = $this->user();
     $params['wc_api']        = get_woocommerce_api_url( '' );
+    $params['emulateHTTP']   = get_option( 'woocommerce_pos_emulateHTTP' ) === '1';
     return $params;
   }
 
@@ -50,6 +51,7 @@ class WC_POS_Params {
     $params['customers']  = $this->customers();
     $params['nonce']      = wp_create_nonce( WC_POS_PLUGIN_NAME );
     $params['wc_api']     = get_woocommerce_api_url( '' );
+    $params['emulateHTTP']= get_option( 'woocommerce_pos_emulateHTTP' ) === '1';
     return $params;
   }
 
@@ -212,10 +214,10 @@ class WC_POS_Params {
     $rates = array();
 
     // get_shop_base_rate depreciated in 2.3
-    $get_rates = method_exists( 'WC_Tax','get_base_tax_rates' ) ? 'get_base_tax_rates' : 'get_shop_base_rate';
+//    $get_rates = method_exists( 'WC_Tax','get_base_tax_rates' ) ? 'get_base_tax_rates' : 'get_shop_base_rate';
 
     foreach( self::tax_classes() as $class ) {
-      if( $rate = WC_Tax::$get_rates( $class ) ){
+      if( $rate = WC_Tax::get_base_tax_rates( $class ) ){
         // WC_Tax returns a assoc array with int as keys = world of pain in js
         // possibly change $key to $rate['id']
         $rates[$class] = $rate;

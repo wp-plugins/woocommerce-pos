@@ -25,7 +25,8 @@ class WC_POS_Admin_Settings {
     'checkout'  => 'WC_POS_Admin_Settings_Checkout',
     'hotkeys'   => 'WC_POS_Admin_Settings_HotKeys',
     'access'    => 'WC_POS_Admin_Settings_Access',
-    'tools'     => 'WC_POS_Admin_Settings_Tools'
+    'tools'     => 'WC_POS_Admin_Settings_Tools',
+    'status'    => 'WC_POS_Admin_Settings_Status'
   );
 
   /**
@@ -137,7 +138,7 @@ class WC_POS_Admin_Settings {
 
     wp_enqueue_script(
       'backbone.radio',
-      'https://cdnjs.cloudflare.com/ajax/libs/backbone.radio/0.9.0/backbone.radio.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/backbone.radio/1.0.0/backbone.radio.min.js',
       array( 'jquery', 'backbone', 'underscore' ),
       false,
       true
@@ -145,7 +146,7 @@ class WC_POS_Admin_Settings {
 
     wp_enqueue_script(
       'marionette',
-      'https://cdnjs.cloudflare.com/ajax/libs/backbone.marionette/2.4.1/backbone.marionette.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/backbone.marionette/2.4.2/backbone.marionette.min.js',
       array( 'jquery', 'backbone', 'underscore' ),
       false,
       true
@@ -208,7 +209,7 @@ class WC_POS_Admin_Settings {
     );
 
     $scripts = apply_filters( 'woocommerce_pos_admin_enqueue_scripts', array() );
-    if( $scripts['locale'] ) {
+    if( isset( $scripts['locale'] ) ) {
       wp_enqueue_script(
         WC_POS_PLUGIN_NAME . '-js-locale',
         $scripts['locale'],

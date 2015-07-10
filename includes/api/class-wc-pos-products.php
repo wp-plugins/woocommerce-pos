@@ -13,11 +13,88 @@
 class WC_POS_API_Products extends WC_POS_API_Abstract {
 
   /**
+   * Product fields used by the POS
+   * @var array
+   */
+  private $whitelist = array(
+    'title',
+    'id',
+    'created_at',
+    'updated_at',
+    'type',
+    'status',
+    'downloadable',
+    'virtual',
+//    'permalink',
+    'sku',
+    'price',
+    'regular_price',
+    'sale_price',
+    'price_html',
+    'taxable',
+    'tax_status',
+    'tax_class',
+    'managing_stock',
+    'stock_quantity',
+    'in_stock',
+    'backorders_allowed',
+    'backordered',
+    'sold_individually',
+    'purchaseable',
+    'featured',
+    'visible',
+//    'catalog_visibility',
+    'on_sale',
+//    'weight',
+//    'dimensions',
+    'shipping_required',
+    'shipping_taxable',
+    'shipping_class',
+    'shipping_class_id',
+//    'description',
+//    'short_description',
+//    'reviews_allowed',
+//    'average_rating',
+//    'rating_count',
+//    'related_ids',
+//    'upsell_ids',
+//    'cross_sell_ids',
+    'parent_id',
+    'categories',
+//    'tags',
+//    'images',
+    'featured_src',
+    'attributes',
+//    'downloads',
+//    'download_limit',
+//    'download_expiry',
+//    'download_type',
+    'purchase_note',
+    'total_sales',
+    'variations',
+//    'parent',
+
+    /**
+     * Fields add by POS
+     * - product thumbnail
+     * - barcode
+     */
+    'featured_src',
+    'barcode'
+  );
+
+  /**
    *
    */
   public function __construct() {
     add_filter( 'woocommerce_api_product_response', array( $this, 'product_response' ), 10, 4 );
     add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+
+    $general_settings = new WC_POS_Admin_Settings_General();
+    if( $general_settings->get_data('decimal_qty') ){
+      remove_filter('woocommerce_stock_amount', 'intval');
+      add_filter( 'woocommerce_stock_amount', 'floatval' );
+    }
   }
 
   /**
@@ -26,97 +103,118 @@ class WC_POS_API_Products extends WC_POS_API_Abstract {
    * - add barcode field
    * - unset unnecessary data
    *
-   * @param  array $product_data
+   * @param  array $data
    * @param $product
    *
    * @return array modified data array $product_data
    */
-  public function product_response( $product_data, $product, $fields, $server ) {
+  public function product_response( $data, $product, $fields, $server ) {
+    $type = isset( $data['type'] ) ? $data['type'] : '';
 
-    // remove some unnecessary keys
-    // - saves storage space in IndexedDB
-    // - saves bandwidth transferring the data
-    // eg: removing 'description' reduces object size by ~25%
-    $removeKeys = array(
-      'average_rating',
-      'cross_sell_ids',
-      'description',
-      'dimensions',
-      'download_expiry',
-      'download_limit',
-      'download_type',
-      'downloads',
-      'image',
-      'images',
-      'rating_count',
-      'related_ids',
-      'reviews_allowed',
-      'shipping_class',
-      'shipping_class_id',
-      'shipping_required',
-      'shipping_taxable',
-      'short_description',
-      'tags',
-      'upsell_ids',
-      'weight',
-    );
-    foreach($removeKeys as $key) {
-      unset($product_data[$key]);
-    }
+    // variable products
+    if( $type == 'variable' ) :
+      $data['attributes'] = $this->patch_variable_attributes($data['attributes']);
 
-    // use thumbnails for images
-    if( $thumb_id = get_post_thumbnail_id( $product_data['id'] ) ) {
-      $image = wp_get_attachment_image_src( $thumb_id, 'shop_thumbnail' );
-      $product_data['featured_src'] = $image[0];
-    } else {
-      $product_data['featured_src'] = wc_placeholder_img_src();
-    }
+      // nested variations
+      foreach( $data['variations'] as &$variation ) :
+        $_product = wc_get_product( $variation['id'] );
+        $variation = $this->filter_response_data( $variation, $_product );
+        $variation['attributes'] = $this->patch_variation_attributes( $variation['attributes'], $data['attributes'] );
+      endforeach;
+    endif;
 
-    // add special key for barcode, defaults to sku
-    // TODO: add an option for any meta field
-    $product_data['barcode'] = $product_data['sku'];
+    // variation
+    if( $type == 'variation' ) :
+      $data['attributes'] = $this->patch_variation_attributes( $data['attributes'], $data['parent']['attributes'] );
+    endif;
 
-    // deep dive on variations
-    if( $product_data['type'] == 'variable' ) {
-
-      // Woo handling of variation labels is FUBAR
-      // create assoc array of options so we can reconstruct for variation
-      // todo: sanitize_title on slug causes error on variable edit?
-      foreach( $product_data['attributes'] as &$attribute ){
-        $attribute['slug'] = sanitize_title( $attribute['name'] );
-        $labels = array();
-        foreach( $attribute['options'] as $key => $option){
-          $labels[$key]['slug'] = sanitize_title( $option );
-          $labels[$key]['name'] = $option;
-        }
-        $attribute['labels'] = $labels;
-      }
-
-      foreach( $product_data['variations'] as &$variation ) {
-
-        // remove keys
-        foreach($removeKeys as $key) {
-          unset($variation[$key]);
-        }
-
-        // add featured_src
-        if( $thumb_id = get_post_thumbnail_id( $variation['id'] ) ) {
-          $image = wp_get_attachment_image_src( $thumb_id, 'shop_thumbnail' );
-          $variation['featured_src'] = $image[0];
-        } else {
-          $variation['featured_src'] = $product_data['featured_src'];
-        }
-
-        // add special key for barcode, defaults to sku
-        // TODO: add an option for any meta field
-        $variation['barcode'] = $variation['sku'];
-
-      }
-    }
-
-    return $product_data;
+    return $this->filter_response_data( $data, $product );
   }
 
+  /**
+   * https://github.com/woothemes/woocommerce/issues/8457
+   * - sanitize the attribute slug
+   * @param array $attributes
+   * @return array
+   */
+  private function patch_variable_attributes(array $attributes){
+    foreach( $attributes as &$attribute ) :
+      if( isset($attribute['slug']) ) $attribute['slug'] = sanitize_title($attribute['slug']);
+    endforeach;
+    return $attributes;
+  }
+
+  /**
+   * https://github.com/woothemes/woocommerce/issues/8457
+   * - restore the correct attribute name
+   * - add label
+   * @param array $attributes
+   * @param $parent_attributes
+   * @return array
+   */
+  private function patch_variation_attributes(array $attributes, array $parent_attributes){
+    foreach( $attributes as &$attribute ) :
+      foreach($parent_attributes as $attr){
+        if( $attribute['slug'] == sanitize_title( $attr['slug'] ) ){
+          $attribute['name'] = $attr['name'];
+          $option_slugs = array_map( 'sanitize_title', $attr['options'] );
+          $key = array_search( $attribute['option'], $option_slugs );
+          $attribute['label'] = $attr['options'][$key];
+          break;
+        }
+      }
+    endforeach;
+    return $attributes;
+  }
+
+  /**
+   * Filter product response data
+   * - add featured_src
+   * - add special key for barcode, defaults to sku
+   * @param array $data
+   * @param $product
+   * @return array
+   */
+  private function filter_response_data( array $data, $product ){
+    $id = isset( $data['id'] ) ? $data['id'] : '';
+    $sku = isset( $data['sku'] ) ? $data['sku'] : '';
+
+    $data['featured_src'] = $this->get_thumbnail( $id );
+    $data['barcode'] = apply_filters( 'woocommerce_pos_product_barcode', $sku, $id );
+
+    // allow decimal stock quantities, fixed in WC 2.4
+    if( version_compare( WC()->version, '2.4', '<' ) ){
+      $data['stock_quantity'] = $product->get_stock_quantity();
+    }
+
+    // filter by whitelist
+    // - note, this uses the same method as WC REST API fields parameter
+    // - this doesn't speed up queries as it should
+    // - when WC REST API properly filters requests POS should use fields param
+    return array_intersect_key( $data, array_flip( $this->whitelist ) );
+  }
+
+  /**
+   * Returns thumbnail if it exists, if not, returns the WC placeholder image
+   * @param int $id
+   * @return string
+   */
+  private function get_thumbnail($id){
+    $image = false;
+    $thumb_id = get_post_thumbnail_id( $id );
+
+    if( $thumb_id )
+      $image = wp_get_attachment_image_src( $thumb_id, 'shop_thumbnail' );
+
+    if( is_array($image) )
+      return $image[0];
+
+    return wc_placeholder_img_src();
+  }
+
+  /**
+   * @param $query
+   */
   public function pre_get_posts($query){
 
     // store original meta_query

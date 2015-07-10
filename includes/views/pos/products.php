@@ -37,7 +37,7 @@
     <dl class="variations">
       {{#each this}}
       <dt>{{name}}:</dt>
-      <dd>{{#list labels ', '}}<a href="#" data-value="{{slug}}" data-variation="{{../slug}}">{{name}}</a>{{/list}}</dd>
+      <dd>{{#list options ', '}}<a href="#" data-value="{{this}}" data-variation="{{../slug}}">{{this}}</a>{{/list}}</dd>
       {{/each}}
       <dt></dt><dd>
         <a href="#" data-action="expand"><?php /* translators: woocommerce */ _e( 'Expand all', 'woocommerce' ); ?></a>
@@ -49,12 +49,12 @@
     <dl class="variant">
       {{#each attributes}}
       <dt>{{name}}:</dt>
-      <dd>{{option}}</dd>
+      <dd>{{label}}</dd>
       {{/each}}
     </dl>
     {{/is}}
 		{{#if managing_stock}}
-		<small><?php /* translators: woocommerce */ printf( __( '%s in stock', 'woocommerce' ), '{{stock_quantity}}' ); ?></small>
+		<small><?php /* translators: woocommerce */ printf( __( '%s in stock', 'woocommerce' ), '{{number stock_quantity precision="auto"}}' ); ?></small>
 		{{/if}}
 	</div>
 	<div class="price">

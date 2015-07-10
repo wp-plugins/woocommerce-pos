@@ -19,6 +19,11 @@ class WC_POS_API {
     if( ! is_pos() )
       return;
 
+    // support for X-HTTP-Method-Override for WC < 2.4
+    if( version_compare( WC()->version, '2.4', '<' ) && isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']) ){
+      $_GET['_method'] = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
+    }
+
     add_filter( 'woocommerce_api_dispatch_args', array( $this, 'dispatch_args'), 10, 2 );
     add_filter( 'woocommerce_api_query_args', array( $this, 'woocommerce_api_query_args' ), 10, 2 );
   }
@@ -31,11 +36,24 @@ class WC_POS_API {
   public function dispatch_args($args, $callback){
     $wc_api_handler = get_class($callback[0]);
 
+    $has_data = in_array( $args['_method'], array(2, 4, 6) ) && isset( $args['data'] ) && is_array($args['data']);
+    if( $has_data ){
+      // remove status
+      if( array_key_exists('status', $args['data']) ){
+        unset($args['data']['status']);
+      }
+    }
+
     switch($wc_api_handler){
       case 'WC_API_Products':
         new WC_POS_API_Products();
         break;
       case 'WC_API_Orders':
+        if( $has_data && !isset( $args['data']['order'] ) ){
+          $data = $args['data'];
+          unset( $args['data'] );
+          $args['data']['order'] = $data;
+        }
         new WC_POS_API_Orders();
         break;
       case 'WC_API_Customers':
@@ -50,6 +68,7 @@ class WC_POS_API {
   }
 
   /**
+   * - this filter was introduced in WC 2.3
    * @param $args
    * @param $request_args
    * @return mixed
@@ -62,7 +81,7 @@ class WC_POS_API {
       unset( $request_args['in'] );
     }
 
-    // pos query
+    // required for compatibility WC < 2.4
     if ( ! empty( $request_args['not_in'] ) ) {
       $args['post__not_in'] = explode(',', $request_args['not_in']);
       unset( $request_args['not_in'] );
@@ -81,7 +100,7 @@ class WC_POS_API {
     $handler = 'WC_POS_API_' . ucfirst( $entity );
 
     if(method_exists($handler, 'get_ids')){
-      $result = $handler::get_ids($updated_at_min);
+      $result = call_user_func(array($handler, 'get_ids'), $updated_at_min);
     } else {
       $result = new WP_Error(
         'woocommerce_pos_get_ids_error',
@@ -91,7 +110,7 @@ class WC_POS_API {
       );
     }
 
-    WC_POS_AJAX::serve_response($result);
+    WC_POS_Server::response($result);
   }
 
 }
