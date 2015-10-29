@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Abstract Settings Page Class
+ * Abstract Settings Class
  *
  * @class    WC_POS_Admin_Settings_Page
  * @package  WooCommerce POS
@@ -9,46 +9,70 @@
  * @link     http://www.woopos.com.au
  */
 
-abstract class WC_POS_Admin_Settings_Abstract {
+class WC_POS_Admin_Settings_Abstract {
 
-  protected $default_settings;
+  protected static $instance;
+  protected $defaults;
   public $current_user_authorized = true;
+
+  /**
+   * Returns the Singleton instance of this class.
+   * - late static binding requires PHP 5.3+
+   * @return Singleton
+   */
+  public static function get_instance() {
+    $class = get_called_class();
+    if (null === static::$instance) {
+      static::$instance = new $class();
+    }
+    return static::$instance;
+  }
+
+  protected function __construct() {}
+  protected function __clone() {}
+  protected function __wakeup() {}
 
   /**
    * Output the view file
    */
   public function output(){
     include 'views/' . $this->id . '.php';
-  }
-
-  public function get_data($key = false){
-    $data = $this->stored_data() ? $this->stored_data() : $this->default_settings;
-
-    if($key && is_array($data)) {
-      $data = array_key_exists($key, $data) ? $data[$key] : false;
-    }
-
-    return $data;
+    do_action( 'woocommerce_pos_' . $this->id . '_settings_after_output', $this );
   }
 
   /**
-   * Get stored data from db
-   * note: get_option caches data
-   * @return mixed|void
+   * Return db key
+   * @return string
    */
-  protected function stored_data(){
-    return get_option(WC_POS_Admin_Settings::DB_PREFIX . $this->id);
+  public function option_name(){
+    return WC_POS_Admin_Settings::DB_PREFIX . $this->id;
+  }
+
+  /**
+   * Get options
+   * @param bool|false $key
+   * @return bool|mixed|void
+   */
+  public function get($key = false){
+    $data = get_option( $this->option_name() );
+    if(!$data){
+      $data = apply_filters( 'woocommerce_pos_' . $this->id . '_settings_defaults', $this->defaults );
+    }
+    if($key && is_array($data)) {
+      $data = array_key_exists($key, $data) ? $data[$key] : false;
+    }
+    return $data;
   }
 
   /**
    * @param array $data
    * @return array|bool
    */
-  public function save(array $data){
+  public function set(array $data){
     $data['updated_at'] = time(); // forces update_option to return true
-    $updated = add_option( WC_POS_Admin_Settings::DB_PREFIX . $this->id, $data, '', 'no' );
+    $updated = add_option( $this->option_name(), $data, '', 'no' );
     if(!$updated) {
-      $updated = update_option( WC_POS_Admin_Settings::DB_PREFIX . $this->id, $data );
+      $updated = update_option( $this->option_name(), $data );
     }
     return $updated ? $data : false;
   }
@@ -57,8 +81,17 @@ abstract class WC_POS_Admin_Settings_Abstract {
    *
    */
   public function delete(){
-    delete_option(WC_POS_Admin_Settings::DB_PREFIX . $this->id);
-    return $this->get_data();
+    delete_option( $this->option_name() );
+    return $this->get();
+  }
+
+  /**
+   * @return mixed|string|void
+   */
+  public function getJSON(){
+//    return json_encode( $this->get(), JSON_FORCE_OBJECT ); // empty array as object??
+    $data = $this->get();
+    return $data ? json_encode( $data ) : false;
   }
 
 }

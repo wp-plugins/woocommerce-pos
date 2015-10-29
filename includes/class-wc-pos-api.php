@@ -19,13 +19,38 @@ class WC_POS_API {
     if( ! is_pos() )
       return;
 
+    // remove wc api authentication
+    // - relies on ->api and ->authentication being publicly accessible
+    if( isset( WC()->api ) && isset( WC()->api->authentication ) ){
+      remove_filter( 'woocommerce_api_check_authentication', array( WC()->api->authentication, 'authenticate' ), 0 );
+    }
+
     // support for X-HTTP-Method-Override for WC < 2.4
     if( version_compare( WC()->version, '2.4', '<' ) && isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']) ){
       $_GET['_method'] = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
     }
 
+    add_filter( 'woocommerce_api_check_authentication', array( $this, 'wc_api_authentication' ), 10, 0 );
     add_filter( 'woocommerce_api_dispatch_args', array( $this, 'dispatch_args'), 10, 2 );
     add_filter( 'woocommerce_api_query_args', array( $this, 'woocommerce_api_query_args' ), 10, 2 );
+  }
+
+  /**
+   * Bypass authentication for WC REST API
+   * @return WP_User object
+   */
+  public function wc_api_authentication() {
+    global $current_user;
+    $user = $current_user;
+
+    if( ! user_can( $user->ID, 'access_woocommerce_pos' ) )
+      $user = new WP_Error(
+        'woocommerce_pos_authentication_error',
+        __( 'User not authorized to access WooCommerce POS', 'woocommerce-pos' ),
+        array( 'status' => 401 )
+      );
+
+    return $user;
   }
 
   /**
@@ -36,7 +61,7 @@ class WC_POS_API {
   public function dispatch_args($args, $callback){
     $wc_api_handler = get_class($callback[0]);
 
-    $has_data = in_array( $args['_method'], array(2, 4, 6) ) && isset( $args['data'] ) && is_array($args['data']);
+    $has_data = in_array( $args['_method'], array(2, 4, 8) ) && isset( $args['data'] ) && is_array( $args['data'] );
     if( $has_data ){
       // remove status
       if( array_key_exists('status', $args['data']) ){
@@ -97,7 +122,8 @@ class WC_POS_API {
   static public function get_all_ids() {
     $entity = isset($_REQUEST['type']) ? $_REQUEST['type'] : false;
     $updated_at_min = isset($_REQUEST['updated_at_min']) ? $_REQUEST['updated_at_min'] : false;
-    $handler = 'WC_POS_API_' . ucfirst( $entity );
+    $class_name = 'WC_POS_API_' . ucfirst( $entity );
+    $handler = new $class_name();
 
     if(method_exists($handler, 'get_ids')){
       $result = call_user_func(array($handler, 'get_ids'), $updated_at_min);

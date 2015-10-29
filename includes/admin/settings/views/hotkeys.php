@@ -6,11 +6,11 @@
   <?php printf( __( 'For more information please visit <a href="%1$s" target="_blank">%1$s</a>', 'woocommerce-pos' ), 'http://woopos.com.au/docs/hotkeys' ); ?>
 </p>
 
-<ul class="wc-pos-hotkeys">
-  <?php $keys = $this->get_data('hotkeys'); if($keys): foreach($keys as $id => $key): ?>
+<ul class="wc_pos-hotkeys">
+  <?php $keys = $this->get('hotkeys'); if($keys): foreach($keys as $id => $key): ?>
     <li>
-      <input type="text" name="hotkeys.<?php echo $id?>.key">
-      <label for="hotkeys.<?php echo $id?>.key"><?php echo $key['label']?></label>
+      <input type="text" name="hotkeys.<?php esc_attr_e($id); ?>.key">
+      <label for="hotkeys.<?php esc_attr_e($id); ?>.key"><?php echo $key['label']; ?></label>
     </li>
   <?php endforeach; endif; ?>
 </ul>

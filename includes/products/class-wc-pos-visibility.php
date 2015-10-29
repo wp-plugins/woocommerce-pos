@@ -221,16 +221,11 @@ class WC_POS_Products_Visibility {
    * @param $hook
    */
   public function admin_enqueue_scripts( $hook ) {
-
-    if ($hook != 'edit.php' && $hook != 'post.php') {
-      return;
-    }
-
+    $pages = array('edit.php', 'post.php', 'post-new.php');
     $screen = get_current_screen();
 
-    if ($screen->post_type != 'product') {
+    if( !in_array( $hook, $pages ) || $screen->post_type != 'product' )
       return;
-    }
 
     if(defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG){
       $script = WC_POS_PLUGIN_URL . 'assets/js/src/products.js';
@@ -252,11 +247,10 @@ class WC_POS_Products_Visibility {
    * @param $post_id
    */
   public function custom_product_column($column, $post_id) {
-    if( $column != 'name'){
-      return;
+    if( $column == 'name'){
+      $selected = get_post_meta( $post_id , '_pos_visibility' , true );
+      echo '<div class="hidden" id="woocommerce_pos_inline_'. $post_id .'" data-visibility="'. $selected .'"></div>';
     }
-    $selected = get_post_meta( $post_id , '_pos_visibility' , true );
-    echo '<div class="hidden" id="woocommerce_pos_inline_'. $post_id .'" data-visibility="'. $selected .'"><div>';
   }
 
   /**

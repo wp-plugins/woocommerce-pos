@@ -16,17 +16,10 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
   private $data = array();
   private $flag = false;
 
-  /** @var object Contains a reference to the settings classes */
-  private $general_settings;
-  private $checkout_settings;
-
   /**
    * Constructor
    */
   public function __construct() {
-
-    // init subclasses
-    $this->init();
 
     // order data
     add_filter( 'woocommerce_api_create_order_data', array( $this, 'create_order_data') );
@@ -41,22 +34,8 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
     // order response
     add_filter( 'woocommerce_api_order_response', array( $this, 'order_response' ), 10, 4 );
 
-    // allow decimals for qty
-    if( $this->general_settings->get_data('decimal_qty') ){
-      remove_filter('woocommerce_stock_amount', 'intval');
-      add_filter( 'woocommerce_stock_amount', 'floatval' );
-    }
-
     // order emails
     add_filter( 'woocommerce_email', array( $this, 'woocommerce_email' ), 99 );
-  }
-
-  /**
-   * Init the settings classes
-   */
-  private function init(){
-    $this->general_settings = new WC_POS_Admin_Settings_General();
-    $this->checkout_settings = new WC_POS_Admin_Settings_Checkout();
   }
 
   /**
@@ -101,15 +80,11 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
     if( $has_fee || $has_shipping )
       add_filter( 'update_post_metadata', array( $this, 'update_post_metadata'), 10, 5 );
 
-    // copy billing and shipping addresses from customer
-    if( isset($this->data['customer']) ){
-      $customer = $this->data['customer'];
-      if( isset($customer['billing_address']) ){
-        $this->data['billing_address'] = $customer['billing_address'];
-      }
-      if( isset($customer['shipping_address']) ){
-        $this->data['shipping_address'] = $customer['shipping_address'];
-      }
+    // populate customer data
+    $customer_id = isset( $data['customer_id'] ) ? $data['customer_id'] : 0 ;
+    if($customer_id){
+      $this->data['billing_address'] = $this->get_customer_details($customer_id, 'billing');
+      $this->data['shipping_address'] = $this->get_customer_details($customer_id, 'shipping');
     }
 
     return $this->data;
@@ -394,8 +369,11 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
    */
   public function create_order( $order_id ){
     // pos meta
+    global $current_user;
+    get_currentuserinfo();
     update_post_meta( $order_id, '_pos', 1 );
-    update_post_meta( $order_id, '_pos_user', get_current_user_id() );
+    update_post_meta( $order_id, '_pos_user', $current_user->ID );
+    update_post_meta( $order_id, '_pos_user_name', $current_user->user_firstname . ' ' . $current_user->user_lastname );
 
     // payment
     do_action( 'woocommerce_pos_process_payment', $order_id, $this->data);
@@ -421,11 +399,6 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
       return;
     }
 
-    // special case, pos_card cashback
-    if(isset($data['payment_details']['pos-cashback'])){
-      $_POST['pos-cashback'] = $data['payment_details']['pos-cashback'];
-    }
-
     // some gateways check if a user is signed in, so let's switch to customer
     $logged_in_user = get_current_user_id();
     $customer_id = isset( $data['customer_id'] ) ? $data['customer_id'] : 0 ;
@@ -434,7 +407,8 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
     // load the gateways & process payment
     $gateway_id = $data['payment_details']['method_id'];
     add_filter('option_woocommerce_'. $gateway_id .'_settings', array($this, 'force_enable_gateway'));
-    $gateways = $this->checkout_settings->load_enabled_gateways();
+    $settings = WC_POS_Admin_Settings_Checkout::get_instance();
+    $gateways = $settings->load_enabled_gateways();
     $response = $gateways[ $gateway_id ]->process_payment( $order_id );
 
     if(isset($response['result']) && $response['result'] == 'success'){
@@ -512,11 +486,11 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
 
     // compare url fragments
     $success_url = wc_get_endpoint_url( 'order-received', $order_id, get_permalink( wc_get_page_id( 'checkout' ) ) );
-    $success_frag = parse_url( $success_url );
-    $redirect_frag = parse_url( $response['redirect'] );
+    $success = wp_parse_args( parse_url( $success_url ), array( 'host' => '', 'path' => '' ));
+    $redirect = wp_parse_args( parse_url( $response['redirect'] ), array( 'host' => '', 'path' => '' ));
 
-    $offsite = $success_frag['host'] !== $redirect_frag['host'];
-    $reload = !$offsite && $success_frag['path'] !== $redirect_frag['path'] && $response['messages'] == '';
+    $offsite = $success['host'] !== $redirect['host'];
+    $reload = !$offsite && $success['path'] !== $redirect['path'] && $response['messages'] == '';
 
     if($offsite || $reload){
       update_post_meta( $order_id, '_pos_payment_redirect', $response['redirect'] );
@@ -536,7 +510,7 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
     $order = new WC_Order( $order_id );
     if( $order->status == 'processing' ) {
       $message = __('POS Transaction completed.', 'woocommerce-pos');
-      $order->update_status( $this->checkout_settings->get_data('order_status'), $message );
+      $order->update_status( wc_pos_get_option( 'checkout', 'order_status' ), $message );
     }
 
   }
@@ -552,19 +526,21 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
    */
   public function order_response( $order_data, $order, $fields, $server ) {
 
+    // add cashier data
+    $cashier_details = isset( $order_data['cashier'] ) ? $order_data['cashier'] : array();
+    $order_data['cashier'] = $this->add_cashier_details( $order, $cashier_details );
+
     // add pos payment info
-    $order_data['payment_details']['result']   = get_post_meta( $order->id, '_pos_payment_result', true );
-    $order_data['payment_details']['message']  = get_post_meta( $order->id, '_pos_payment_message', true );
-    $order_data['payment_details']['redirect'] = get_post_meta( $order->id, '_pos_payment_redirect', true );
+    $payment_details = isset( $order_data['payment_details'] ) ? $order_data['payment_details'] : array();
+    $order_data['payment_details'] = $this->add_payment_details( $order, $payment_details );
 
     // addresses
-    $order_data['billing_address'] = $this->filter_address($order_data['billing_address'], $order);
-    $order_data['shipping_address'] = $this->filter_address($order_data['shipping_address'], $order, 'shipping');
+//    $order_data['billing_address'] = $this->filter_address($order_data['billing_address'], $order);
+//    $order_data['shipping_address'] = $this->filter_address($order_data['shipping_address'], $order, 'shipping');
 
     // allow decimal quantity
     // fixed in WC 2.4+
-    if( version_compare( WC()->version, '2.4', '<' ) &&
-      $this->general_settings->get_data('decimal_qty') ){
+    if( version_compare( WC()->version, '2.4', '<' ) && wc_pos_get_option( 'general', 'decimal_qty' ) ){
       $order_data['line_items'] = $this->filter_qty($order_data['line_items']);
     }
 
@@ -592,6 +568,40 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
   }
 
   /**
+   * @param $order
+   * @param array $cashier
+   * @return array
+   */
+  private function add_cashier_details( $order, array $cashier = array() ){
+    $cashier['id'] = get_post_meta( $order->id, '_pos_user', true);
+    $first_name = get_post_meta( $order->id, '_pos_user_first_name', true);
+    $last_name = get_post_meta( $order->id, '_pos_user_last_name', true);
+    if( !$first_name && !$last_name ) {
+      $user_info = get_userdata( $cashier['id'] );
+      $first_name = $user_info->first_name;
+      $last_name = $user_info->last_name;
+    }
+    $cashier['first_name'] = $first_name;
+    $cashier['last_name'] = $last_name;
+    return apply_filters( 'woocommerce_pos_order_response_cashier', $cashier, $order );
+  }
+
+  /**
+   * @param $order
+   * @param array $payment
+   * @return array
+   */
+  private function add_payment_details( $order, array $payment = array() ){
+    $payment['result']   = get_post_meta( $order->id, '_pos_payment_result', true );
+    $payment['message']  = get_post_meta( $order->id, '_pos_payment_message', true );
+    $payment['redirect'] = get_post_meta( $order->id, '_pos_payment_redirect', true );
+    if( isset( $payment['method_id'] ) && $payment['method_id'] == 'pos_cash' ){
+      $payment = WC_POS_Gateways_Cash::payment_details( $payment, $order );
+    }
+    return apply_filters( 'woocommerce_pos_order_response_payment_details', $payment, $order );
+  }
+
+  /**
    * Adds support for custom address fields
    * @param $address
    * @param $order
@@ -600,13 +610,45 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
    */
   private function filter_address( $address, $order, $type = 'billing' ){
     $fields = apply_filters('woocommerce_admin_'.$type.'_fields', false);
-    if($fields){
+    if( $fields ){
       $address = array();
       foreach($fields as $key => $value){
         $address[$key] = $order->{$type.'_'.$key};
       }
     }
     return $address;
+  }
+
+  /**
+   * Get customer details
+   * - mirrors woocommerce/includes/class-wc-ajax.php->get_customer_details()
+   * @param $user_id
+   * @param $type_to_load
+   * @return mixed|void
+   */
+  private function get_customer_details( $user_id, $type_to_load ){
+    $customer_data = array(
+      $type_to_load . '_first_name' => get_user_meta( $user_id, $type_to_load . '_first_name', true ),
+      $type_to_load . '_last_name'  => get_user_meta( $user_id, $type_to_load . '_last_name', true ),
+      $type_to_load . '_company'    => get_user_meta( $user_id, $type_to_load . '_company', true ),
+      $type_to_load . '_address_1'  => get_user_meta( $user_id, $type_to_load . '_address_1', true ),
+      $type_to_load . '_address_2'  => get_user_meta( $user_id, $type_to_load . '_address_2', true ),
+      $type_to_load . '_city'       => get_user_meta( $user_id, $type_to_load . '_city', true ),
+      $type_to_load . '_postcode'   => get_user_meta( $user_id, $type_to_load . '_postcode', true ),
+      $type_to_load . '_country'    => get_user_meta( $user_id, $type_to_load . '_country', true ),
+      $type_to_load . '_state'      => get_user_meta( $user_id, $type_to_load . '_state', true ),
+      $type_to_load . '_email'      => get_user_meta( $user_id, $type_to_load . '_email', true ),
+      $type_to_load . '_phone'      => get_user_meta( $user_id, $type_to_load . '_phone', true ),
+    );
+    $customer_data = apply_filters( 'woocommerce_found_customer_details', $customer_data, $user_id, $type_to_load );
+
+    // remove billing_ or shipping_ prefix for WC REST API
+    $data = array();
+    foreach( $customer_data as $key => $value ): if($value):
+      $key = str_replace( $type_to_load.'_', '', $key );
+      $data[$key] = $value;
+    endif; endforeach;
+    return $data;
   }
 
   /**
@@ -627,7 +669,7 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
    * @param $updated_at_min
    * @return array
    */
-  static public function get_ids($updated_at_min){
+  public function get_ids($updated_at_min){
     $args = array(
       'post_type'     => array('shop_order'),
       'post_status'   => array('any'),
@@ -669,11 +711,12 @@ class WC_POS_API_Orders extends WC_POS_API_Abstract {
    * @param WC_Emails $wc_emails
    */
   public function woocommerce_email(WC_Emails $wc_emails) {
-    if( !$this->checkout_settings->get_data('customer_emails') ){
+
+    if( ! wc_pos_get_option( 'checkout', 'customer_emails' ) ){
       $this->remove_customer_emails($wc_emails);
     }
 
-    if( !$this->checkout_settings->get_data('admin_emails') ){
+    if( ! wc_pos_get_option( 'checkout', 'admin_emails' ) ){
       $this->remove_admin_emails($wc_emails);
     }
   }

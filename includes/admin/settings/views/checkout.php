@@ -6,12 +6,12 @@
 
 <h3><?php /* translators: woocommerce */ _e( 'Checkout Process', 'woocommerce' ); ?></h3>
 
-<table class="form-table">
+<table class="wc_pos-form-table">
 
   <tr class="order_status">
     <th scope="row">
       <label for="order_status"><?php _e( 'Completed Order Status', 'woocommerce-pos' ); ?></label>
-      <img title="<?php _e( 'Change the default order status for POS sales', 'woocommerce-pos' ) ?>" src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" data-toggle="tooltip">
+      <img title="<?php esc_attr_e( 'Change the default order status for POS sales', 'woocommerce-pos' ) ?>" src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" data-toggle="wc_pos-tooltip">
     </th>
     <td>
       <select name="order_status" id="order_status">
@@ -25,14 +25,24 @@
   <tr class="order_emails">
     <th scope="row">
       <?php _e( 'Order Emails', 'woocommerce-pos' ); ?>
-      <img title="<?php _e( 'Send WooCommerce notification emails for POS orders', 'woocommerce-pos' ) ?>" src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" data-toggle="tooltip">
+      <img title="<?php esc_attr_e( 'Send WooCommerce notification emails for POS orders', 'woocommerce-pos' ) ?>" src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" data-toggle="wc_pos-tooltip">
     </th>
     <td>
       <input type="checkbox" name="admin_emails" id="admin_emails" />
-      <label for="order_emails">Enable admin emails</label>
+      <label for="order_emails"><?php _e( 'Enable admin emails', 'woocommerce-pos' ); ?></label>
       <br>
       <input type="checkbox" name="customer_emails" id="customer_emails" />
-      <label for="order_emails">Enable customer emails</label>
+      <label for="order_emails"><?php _e( 'Enable customer emails', 'woocommerce-pos' ); ?></label>
+    </td>
+  </tr>
+
+  <tr class="receipt_printing">
+    <th scope="row">
+      <?php _e( 'Receipt Printing', 'woocommerce-pos' ); ?>
+    </th>
+    <td>
+      <input type="checkbox" name="auto_print_receipt" id="auto_print_receipt" />
+      <label for="auto_print_receipt"><?php _e( 'Automatically print receipt after checkout', 'woocommerce-pos' ); ?></label>
     </td>
   </tr>
 
@@ -50,8 +60,7 @@
   <?php printf( __( 'For more information please visit <a href="%1$s" target="_blank">%1$s</a>', 'woocommerce-pos' ), 'http://woopos.com.au/docs/security' ); ?>
 </p>
 
-<table class="form-table">
-
+<table class="wc_pos-form-table">
   <tr>
     <th scope="row"><?php _e( 'Gateway Display', 'woocommerce-pos' ) ?></th>
     <td>
@@ -69,7 +78,7 @@
         </thead>
         <tbody>
           <?php foreach ( $this->load_gateways() as $gateway ) : ?>
-            <tr id="gateway_<?php echo esc_html( $gateway->id ) ?>">
+            <tr id="gateway_<?php esc_attr_e( $gateway->id ) ?>">
               <td>
                 <input type="radio" name="default_gateway" value="<?php echo esc_attr( $gateway->id ) ?>" />
                 <input type="hidden" name="gateway_order.<?php echo $gateway->id ?>" class="gateway_order" />
@@ -82,14 +91,14 @@
               <td class="gateway-id"><?php echo esc_html( $gateway->id ) ?></td>
               <td>
                 <?php if ( $gateway->enabled == 'yes' ): ?>
-                  <span class="status-enabled" data-toggle="tooltip" title="<?php /* translators: woocommerce */ _e( 'Enabled', 'woocommerce' ); ?>"></span>
+                  <span class="status-enabled" data-toggle="wc_pos-tooltip" title="<?php /* translators: woocommerce */ esc_attr_e( 'Enabled', 'woocommerce' ); ?>"></span>
                 <?php else: echo '-'; endif; ?>
               </td>
               <td>
                 <?php if ( $gateway->pos ): ?>
                   <input type="checkbox" name="enabled.<?php echo $gateway->id ?>" />
                 <?php else: ?>
-                  <span class="status-disabled" data-toggle="tooltip" title="<?php _e( 'Upgrade to Pro', 'woocommerce-pos' ); ?>"></span>
+                  <span class="status-disabled" data-toggle="wc_pos-tooltip" title="<?php esc_attr_e( 'Upgrade to Pro', 'woocommerce-pos' ); ?>"></span>
                 <?php endif; ?>
               </td>
               <td>
@@ -110,18 +119,18 @@
   </tr>
 </table>
 
-<table id="tmpl-gateway-settings-modal" class="form-table" style="display:none">
+<table id="tmpl-gateway-settings-modal" style="display:none">
   <tr>
     <th scope="row">
       <label for="title"><?php /* translators: wordpress */ _e( 'Title' ); ?></label>
-      <img data-toggle="tooltip" title="<?php _e( 'Payment method title.', 'woocommerce-pos' ); ?>" src="<?php echo esc_url( WC()->plugin_url() ); ?>/assets/images/help.png" height="16" width="16" />
+      <img data-toggle="wc_pos-tooltip" title="<?php _e( 'Payment method title.', 'woocommerce-pos' ); ?>" src="<?php echo esc_url( WC()->plugin_url() ); ?>/assets/images/help.png" height="16" width="16" />
     </th>
     <td><input id="title" name="title" type="text" /></td>
   </tr>
   <tr>
     <th scope="row">
       <label for="description"><?php /* translators: wordpress */ _e( 'Description' ); ?></label>
-      <img data-toggle="tooltip" title="<?php _e( 'Payment method description that will be shown in the POS.', 'woocommerce-pos' ); ?>" src="<?php echo esc_url( WC()->plugin_url() ); ?>/assets/images/help.png" height="16" width="16" />
+      <img data-toggle="wc_pos-tooltip" title="<?php _e( 'Payment method description that will be shown in the POS.', 'woocommerce-pos' ); ?>" src="<?php echo esc_url( WC()->plugin_url() ); ?>/assets/images/help.png" height="16" width="16" />
     </th>
     <td><textarea id="description" name="description"></textarea></td>
   </tr>

@@ -3,7 +3,7 @@
 /**
  * Provides a Card Payment Gateway.
  *
- * @class 	    WC_POS_Gateways_Card
+ * @class       WC_POS_Gateways_Card
  * @package     WooCommerce POS
  * @author      Paul Kilmurray <paul@kilbot.com.au>
  * @link        http://www.woopos.com.au
@@ -52,7 +52,7 @@ class WC_POS_Gateways_Card extends WC_Payment_Gateway {
         <label for="pos-cashback" class="">'. __('Cashback', 'woocommerce-pos') .'</label>
         <div class="input-group">
         '. $left_addon .'
-          <input type="text" class="input-text" name="pos-cashback" id="pos-cashback" placeholder="" maxlength="20" data-value="0" data-numpad="cash" data-label="'. __('Cashback', 'woocommerce-pos') .'">
+          <input type="text" class="form-control" name="pos-cashback" id="pos-cashback" placeholder="" maxlength="20" data-value="0" data-numpad="cash" data-label="'. __('Cashback', 'woocommerce-pos') .'">
         '. $right_addon .'
         </div>
       </div>
@@ -69,7 +69,9 @@ class WC_POS_Gateways_Card extends WC_Payment_Gateway {
     // get order object
     $order = new WC_Order( $order_id );
 
-    $cashback = isset( $_POST['pos-cashback'] ) ? wc_format_decimal( $_POST['pos-cashback'] ) : 0 ;
+    // update pos_cash data
+    $data = WC_POS_Server::get_raw_data();
+    $cashback = isset( $data['payment_details']['pos-cashback'] ) ? wc_format_decimal( $data['payment_details']['pos-cashback'] ) : 0 ;
 
     if( $cashback !== 0 ) {
 
@@ -113,7 +115,7 @@ class WC_POS_Gateways_Card extends WC_Payment_Gateway {
 
     // construct message
     if( $cashback ) {
-      $message = '<strong>'. __('Cashback', 'woocommerce-pos') .':</strong> ';
+      $message = __('Cashback', 'woocommerce-pos') . ': ';
       $message .= wc_price($cashback);
     }
 

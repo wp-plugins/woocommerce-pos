@@ -3,11 +3,11 @@
 /**
  * Provides a Cash Payment Gateway.
  *
- * @class 	    WC_POS_Gateways_Cash
+ * @class       WC_POS_Gateways_Cash
  * @package     WooCommerce POS
  * @author      Paul Kilmurray <paul@kilbot.com.au>
  * @link        http://www.woopos.com.au
- * @extends		WC_Payment_Gateway
+ * @extends     WC_Payment_Gateway
  */
 
 class WC_POS_Gateways_Cash extends WC_Payment_Gateway {
@@ -52,7 +52,7 @@ class WC_POS_Gateways_Cash extends WC_Payment_Gateway {
         <label for="pos-cash-tendered" class="">'. __('Amount Tendered', 'woocommerce-pos') .'</label>
         <div class="input-group">
         '. $left_addon .'
-          <input type="text" class="input-text" name="pos-cash-tendered" id="pos-cash-tendered" maxlength="20" data-numpad="cash" data-label="'. __('Amount Tendered', 'woocommerce-pos') .'" data-placement="bottom" data-value="{{total}}">
+          <input type="text" class="form-control" name="pos-cash-tendered" id="pos-cash-tendered" maxlength="20" data-numpad="cash" data-label="'. __('Amount Tendered', 'woocommerce-pos') .'" data-placement="bottom" data-value="{{total}}">
         '. $right_addon .'
         </div>
       </div>
@@ -65,21 +65,12 @@ class WC_POS_Gateways_Cash extends WC_Payment_Gateway {
     // get order object
     $order = new WC_Order( $order_id );
 
-    $tendered = isset( $_REQUEST['pos-cash-tendered'] ) ? wc_format_decimal( $_REQUEST['pos-cash-tendered'] ) : 0 ;
-    $tendered = abs((float) $tendered);
-    $total = isset( $_REQUEST['total'] ) ? $_REQUEST['total'] : 0 ;
-    $total = abs((float) $total);
-
-    if( $tendered !== 0 ) {
-
-      // calculate change
-      $change = $tendered - $total;
-
-      // add order meta
-      update_post_meta( $order_id, '_pos_cash_amount_tendered', $tendered );
-      update_post_meta( $order_id, '_pos_cash_change', $change );
-
-    }
+    // update pos_cash data
+    $data = WC_POS_Server::get_raw_data();
+    $tendered = isset( $data['payment_details']['pos-cash-tendered'] ) ? wc_format_decimal( $data['payment_details']['pos-cash-tendered'] ) : 0 ;
+    $change = isset( $data['payment_details']['pos-cash-change'] ) ? wc_format_decimal( $data['payment_details']['pos-cash-change'] ) : 0 ;
+    update_post_meta( $order_id, '_pos_cash_amount_tendered', $tendered );
+    update_post_meta( $order_id, '_pos_cash_change', $change );
 
     // payment complete
     $order->payment_complete();
@@ -97,13 +88,21 @@ class WC_POS_Gateways_Cash extends WC_Payment_Gateway {
 
     // construct message
     if( $tendered && $change ) {
-      $message = '<strong>'. __('Amount Tendered', 'woocommerce-pos') .':</strong> ';
+      $message = __('Amount Tendered', 'woocommerce-pos') .': ';
       $message .= wc_price($tendered) .'<br>';
-      $message .= '<strong>'. _x('Change', 'Money returned from cash sale', 'woocommerce-pos') .':</strong> ';
+      $message .= _x('Change', 'Money returned from cash sale', 'woocommerce-pos') .': ';
       $message .= wc_price($change);
     }
 
     echo $message;
+  }
+
+  static public function payment_details( $payment_details, $order ) {
+    $payment_details['method_pos_cash'] = array(
+      'tendered'  => get_post_meta( $order->id, '_pos_cash_amount_tendered', true ),
+      'change'    => get_post_meta( $order->id, '_pos_cash_change', true )
+    );
+    return $payment_details;
   }
 
 }

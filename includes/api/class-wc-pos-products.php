@@ -89,12 +89,7 @@ class WC_POS_API_Products extends WC_POS_API_Abstract {
   public function __construct() {
     add_filter( 'woocommerce_api_product_response', array( $this, 'product_response' ), 10, 4 );
     add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
-
-    $general_settings = new WC_POS_Admin_Settings_General();
-    if( $general_settings->get_data('decimal_qty') ){
-      remove_filter('woocommerce_stock_amount', 'intval');
-      add_filter( 'woocommerce_stock_amount', 'floatval' );
-    }
+    add_filter( 'posts_where', array( $this, 'posts_where' ), 10 , 2 );
   }
 
   /**
@@ -113,19 +108,17 @@ class WC_POS_API_Products extends WC_POS_API_Abstract {
 
     // variable products
     if( $type == 'variable' ) :
-      $data['attributes'] = $this->patch_variable_attributes($data['attributes']);
-
       // nested variations
       foreach( $data['variations'] as &$variation ) :
         $_product = wc_get_product( $variation['id'] );
         $variation = $this->filter_response_data( $variation, $_product );
-        $variation['attributes'] = $this->patch_variation_attributes( $variation['attributes'], $data['attributes'] );
+        $variation['attributes'] = $this->patch_variation_attributes( $_product );
       endforeach;
     endif;
 
     // variation
     if( $type == 'variation' ) :
-      $data['attributes'] = $this->patch_variation_attributes( $data['attributes'], $data['parent']['attributes'] );
+      $data['attributes'] = $this->patch_variation_attributes( $product );
     endif;
 
     return $this->filter_response_data( $data, $product );
@@ -133,38 +126,84 @@ class WC_POS_API_Products extends WC_POS_API_Abstract {
 
   /**
    * https://github.com/woothemes/woocommerce/issues/8457
-   * - sanitize the attribute slug
-   * @param array $attributes
+   * patches WC_Product_Variable->get_variation_attributes()
+   * @param $product
    * @return array
    */
-  private function patch_variable_attributes(array $attributes){
-    foreach( $attributes as &$attribute ) :
-      if( isset($attribute['slug']) ) $attribute['slug'] = sanitize_title($attribute['slug']);
-    endforeach;
-    return $attributes;
+  private function patch_variation_attributes( $product ){
+    $patched_attributes = array();
+    $attributes = $product->get_attributes();
+    $variation_attributes = $product->get_variation_attributes();
+
+    // patch for corrupted data, depreciate asap
+    if( empty( $attributes ) ){
+      $attributes = $product->parent->product_attributes;
+      delete_post_meta( $product->variation_id, '_product_attributes' );
+    }
+
+    foreach( $variation_attributes as $slug => $option ){
+      $slug = str_replace( 'attribute_', '', $slug );
+
+      if( isset( $attributes[$slug] ) ){
+        $patched_attributes[] = array(
+          'name'    => $this->get_variation_name( $attributes[$slug] ),
+          'option'  => $this->get_variation_option( $product, $attributes[$slug], $option )
+        );
+      }
+
+    }
+
+    return $patched_attributes;
   }
 
   /**
-   * https://github.com/woothemes/woocommerce/issues/8457
-   * - restore the correct attribute name
-   * - add label
-   * @param array $attributes
-   * @param $parent_attributes
-   * @return array
+   * @param $attribute
+   * @return null|string
    */
-  private function patch_variation_attributes(array $attributes, array $parent_attributes){
-    foreach( $attributes as &$attribute ) :
-      foreach($parent_attributes as $attr){
-        if( $attribute['slug'] == sanitize_title( $attr['slug'] ) ){
-          $attribute['name'] = $attr['name'];
-          $option_slugs = array_map( 'sanitize_title', $attr['options'] );
-          $key = array_search( $attribute['option'], $option_slugs );
-          $attribute['label'] = $attr['options'][$key];
-          break;
-        }
+  private function get_variation_name( $attribute ){
+    if( $attribute['is_taxonomy'] ){
+      global $wpdb;
+      $name = str_replace( 'pa_', '', $attribute['name'] );
+
+      $label = $wpdb->get_var(
+        $wpdb->prepare("
+          SELECT attribute_label
+          FROM {$wpdb->prefix}woocommerce_attribute_taxonomies
+          WHERE attribute_name = %s;
+        ", $name ) );
+
+      return $label ? $label : $name;
+    }
+
+    return $attribute['name'];
+  }
+
+  /**
+   * @param $product
+   * @param $option
+   * @param $attribute
+   * @return mixed
+   */
+  private function get_variation_option( $product, $attribute, $option ){
+    $name = $option;
+
+    // taxonomy attributes
+    if ( $attribute['is_taxonomy'] ) {
+      $terms = wp_get_post_terms( $product->parent->id, $attribute['name'] );
+      if( !is_wp_error($terms) ) : foreach( $terms as $term ) :
+        if( $option == $term->slug ) $name = $term->name;
+      endforeach; endif;
+
+    // piped attributes
+    } else {
+      $values = array_map( 'trim', explode( WC_DELIMITER, $attribute['value'] ) );
+      $options = array_combine( array_map( 'sanitize_title', $values) , $values );
+      if( $options && isset( $options[$option] ) ){
+        $name = $options[$option];
       }
-    endforeach;
-    return $attributes;
+    }
+
+    return $name;
   }
 
   /**
@@ -177,10 +216,16 @@ class WC_POS_API_Products extends WC_POS_API_Abstract {
    */
   private function filter_response_data( array $data, $product ){
     $id = isset( $data['id'] ) ? $data['id'] : '';
-    $sku = isset( $data['sku'] ) ? $data['sku'] : '';
+    $barcode = isset( $data['sku'] ) ? $data['sku'] : '';
+
+    // allow custom barcode field
+    $barcode_meta_key = apply_filters( 'woocommerce_pos_barcode_meta_key', '_sku' );
+    if( $barcode_meta_key !== '_sku' ){
+      $barcode = get_post_meta( $id, $barcode_meta_key, true );
+    }
 
     $data['featured_src'] = $this->get_thumbnail( $id );
-    $data['barcode'] = apply_filters( 'woocommerce_pos_product_barcode', $sku, $id );
+    $data['barcode'] = apply_filters( 'woocommerce_pos_product_barcode', $barcode, $id );
 
     // allow decimal stock quantities, fixed in WC 2.4
     if( version_compare( WC()->version, '2.4', '<' ) ){
@@ -224,15 +269,14 @@ class WC_POS_API_Products extends WC_POS_API_Abstract {
 
       $filter = $_GET['filter'];
 
-      // barcode
-      // todo: allow users to set custom meta field
-      if( isset($filter['barcode']) ){
-        $meta_query[] = array(
-          'key' 		=> '_sku',
-          'value' 	=> $filter['barcode'],
-          'compare'	=> 'LIKE'
-        );
-      }
+      // barcode moved to posts_where for variation search
+//      if( isset($filter['barcode']) ){
+//        $meta_query[] = array(
+//          'key' 		=> $this->barcode_meta_key,
+//          'value' 	=> $filter['barcode'],
+//          'compare'	=> 'LIKE'
+//        );
+//      }
 
       // featured
       // todo: more general meta_key test using $query_args_whitelist
@@ -263,11 +307,55 @@ class WC_POS_API_Products extends WC_POS_API_Abstract {
   }
 
   /**
+   * @param $where
+   * @param $query
+   * @return mixed
+   */
+  public function posts_where( $where, $query ) {
+    global $wpdb;
+
+    if( isset( $_GET['filter'] ) ){
+
+      $filter = $_GET['filter'];
+
+      if( isset($filter['barcode']) ){
+
+        $barcode_meta_key = apply_filters( 'woocommerce_pos_barcode_meta_key', '_sku' );
+
+        // gets post ids and parent ids
+        $result = $wpdb->get_results(
+          $wpdb->prepare("
+            SELECT p.ID, p.post_parent
+            FROM $wpdb->posts AS p
+            JOIN $wpdb->postmeta AS pm
+            ON p.ID = pm.post_id
+            WHERE pm.meta_key = %s
+            AND pm.meta_value LIKE %s
+          ", $barcode_meta_key, '%'.$filter['barcode'].'%' ),
+          ARRAY_N
+        );
+
+        if($result){
+          $ids = call_user_func_array('array_merge', $result);
+          $where .= " AND ID IN (" . implode( ',', array_unique($ids) ) . ")";
+        } else {
+          // no matches
+          $where .= " AND 1=0";
+        }
+
+      }
+
+    }
+
+    return $where;
+  }
+
+  /**
    * Returns array of all product ids
    * @param $updated_at_min
    * @return array
    */
-  static public function get_ids($updated_at_min){
+  public function get_ids($updated_at_min){
     $args = array(
       'post_type'     => array('product'),
       'post_status'   => array('publish'),

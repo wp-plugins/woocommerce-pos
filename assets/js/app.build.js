@@ -1,3 +1,4 @@
+var POS =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -44,35 +45,34 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var POS = __webpack_require__(5);
-	var Application = __webpack_require__(143);
+	var Application = __webpack_require__(112);
 
 	// sync config
-	__webpack_require__(145);
+	__webpack_require__(114);
 
 	/**
 	 * Services
 	 */
-	var EntitiesService = __webpack_require__(62);
-	var HeaderService = __webpack_require__(147);
-	var ModalService = __webpack_require__(1);
-	var PopoverService = __webpack_require__(189);
-	var PrintService = __webpack_require__(192);
-	var TabsService = __webpack_require__(101);
-	var ButtonsService = __webpack_require__(108);
-	var NumpadService = __webpack_require__(193);
+	var EntitiesService = __webpack_require__(19);
+	var HeaderService = __webpack_require__(116);
+	var ModalService = __webpack_require__(58);
+	var PopoverService = __webpack_require__(157);
+	var PrintService = __webpack_require__(158);
+	var TabsService = __webpack_require__(68);
+	var ButtonsService = __webpack_require__(75);
+	var NumpadService = __webpack_require__(159);
 
 	/**
 	 * SubApps
 	 */
-	var POSRouter = __webpack_require__(199);
-	var SupportRouter = __webpack_require__(240);
-	var PrintRouter = __webpack_require__(249);
+	var POSRouter = __webpack_require__(165);
+	var SupportRouter = __webpack_require__(209);
+	var PrintRouter = __webpack_require__(218);
 
 	/**
 	 * bootstrap Handlebars Helpers
 	 */
-	__webpack_require__(253);
+	__webpack_require__(111);
 
 	/**
 	 * Create the app ...
@@ -116,193 +116,110 @@
 	/**
 	 * Attach app to window for third party plugins
 	 */
-	module.exports = window.POS = POS.create(app);
+	module.exports = app;
 
 /***/ },
-/* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Service = __webpack_require__(2);
-	var Backbone = __webpack_require__(11);
-	var LayoutView = __webpack_require__(12);
-	var AlertView = __webpack_require__(22);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	var globalChannel = __webpack_require__(4).channel('global');
-
-	module.exports = Service.extend({
-	  channelName: 'modal',
-
-	  initialize: function(options){
-	    this.container = options.container;
-	    this.start();
-	  },
-
-	  onStart: function(){
-	    this.channel.reply({
-	      'open'    : this.open,
-	      'close'   : this.close,
-	      'alert'   : this.alert,
-	      'confirm' : this.confirm,
-	      'prompt'  : this.prompt
-	    }, this);
-
-	    this.layout = new LayoutView();
-	    this.container.show(this.layout);
-
-	    this.channel.reply({
-	      'update': this.layout.update
-	    }, this.layout);
-
-	    globalChannel.on({
-	      'error'   : this.error
-	    }, this);
-
-	    this.listenTo(Backbone.history, {
-	      'route' : this.onRoute
-	    });
-	  },
-
-	  onStop: function(){
-	    delete this.layout;
-	    this.container.reset();
-	    this.channel.reset();
-	  },
-
-	  onRoute: function(){
-	    if (this.fragment !== Backbone.history.fragment) {
-	      this.close();
-	    }
-	  },
-
-	  //alert: function(options){
-	  //  var deferred = $.Deferred();
-	  //  var view = new AlertView(options);
-	  //
-	  //  view.on({
-	  //    'confirm' : deferred.resolve,
-	  //    'cancel'  : deferred.resolve
-	  //  });
-	  //
-	  //  return deferred;
-	  //},
-	  //
-	  //confirm: function(options){
-	  //  var deferred = $.Deferred();
-	  //  var view = new ConfirmView(options);
-	  //
-	  //  view.on({
-	  //    'confirm' : deferred.resolve,
-	  //    'cancel'  : deferred.reject
-	  //  });
-	  //
-	  //  return deferred;
-	  //},
-	  //
-	  //prompt: function(options){
-	  //  var deferred = $.Deferred();
-	  //  var view = new PromptView(options);
-	  //
-	  //  view.on({
-	  //    'submit' : deferred.resolve,
-	  //    'cancel' : deferred.reject
-	  //  });
-	  //
-	  //  return deferred;
-	  //},
-
-	  open: function(view){
-	    var self = this;
-	    this.fragment = Backbone.history.fragment;
-	    return this.close().then(function() {
-	      self.isOpen = true;
-	      return self.layout.open(view);
-	    });
-	  },
-
-	  close: function(){
-	    if (this.isOpen) {
-	      this.isOpen = false;
-	      return this.layout.close();
-	    } else {
-	      return $.Deferred().resolve();
-	    }
-	  },
-
-	  error: function(options){
-	    options = options || {};
-
-	    if(options.jqXHR){
-	      this.parseXHR(options);
-	    }
-
-	    var view = new AlertView({
-	      className : 'error',
-	      title     : options.status,
-	      message   : options.message,
-	      raw       : options.raw
-	    });
-
-	    this.open(view);
-	  },
-
-	  parseXHR: function(options){
-	    if( _.isObject(options.thrownError) ){
-	      options.status = options.thrownError.name;
-	      options.message = options.thrownError.message;
-	    } else {
-	      options.status = options.jqXHR.statusText;
-	      if( options.jqXHR.responseJSON && options.jqXHR.responseJSON.errors[0] ){
-	        options.message = options.jqXHR.responseJSON.errors[0].message;
-	      }
-	    }
-	    options.raw = options.jqXHR.responseText;
-	  }
-
-	});
-
-/***/ },
+/* 1 */,
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Mn = __webpack_require__(3);
 	var Radio = __webpack_require__(4);
-	var POS = __webpack_require__(5);
-	var _ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var $ = __webpack_require__(6);
+	var hbs = __webpack_require__(7);
+	var Utils = __webpack_require__(8);
+	var polyglot = __webpack_require__(10);
+	var debugFunction = __webpack_require__(13);
+	var bb = __webpack_require__(16);
+	var accounting = __webpack_require__(9);
 
-	module.exports = POS.Service = Mn.Object.extend({
-	  constructor: function(options) {
-	    options = options || {};
+	module.exports = Mn.Application.extend({
 
-	    if (this.channelName) {
-	      this.channel = Radio.channel(_.result(this, 'channelName'));
+	  _initChannel: function () {
+	    this.channelName = _.result(this, 'channelName') || 'global';
+	    this.channel = _.result(this, 'channel') ||
+	    Radio.channel(this.channelName);
+	  },
+
+	  _initDebug: function( debug ){
+	    if( debug ){
+	      debugFunction.enable('*');
 	    }
-
-	    // add reference to the app, like old Marionette.Module
-	    if(options.app){
-	      this.app = options.app;
-	    }
-
-	    Mn.Object.apply(this, arguments);
+	    Radio.DEBUG = debug;
+	    console.info(
+	      'Debugging is ' +
+	      ( debug ? 'on' : 'off' )  +
+	      ', visit http://woopos.com.au/docs/debugging'
+	    );
 	  },
 
-	  start: function(){
-	    this.triggerMethod('before:start');
-	    this._isStarted = true;
-	    this.triggerMethod('start');
+	  _initOptions: function( payload ){
+	    payload = payload || {};
+
+	    // templates
+	    hbs.Templates = payload.templates || {};
+
+	    // polyglot
+	    polyglot.extend( payload.i18n );
+
+	    // options
+	    this.options = payload.params || {};
+
+	    // debug
+	    this._initDebug( this.options.debug );
+
+	    // emulateHTTP
+	    bb.emulateHTTP = this.options.emulateHTTP === true;
+
+	    // bootstrap accounting settings
+	    accounting.settings = this.options.accounting;
 	  },
 
-	  stop: function(){
-	    this.triggerMethod('before:stop');
-	    this._isStarted = false;
-	    this.triggerMethod('stop');
+	  /**
+	   * todo: handle errors
+	   * @param options
+	   */
+	  start: function( options ){
+	    var self = this;
+	    $.getJSON(
+	      options.ajaxurl, {
+	        action: options.action || 'wc_pos_payload',
+	        security: options.nonce
+	      }, function( payload ){
+	        self._initOptions( payload );
+	        Mn.Application.prototype.start.call(self, payload);
+	      }
+	    );
 	  },
 
-	  isStarted: function(){
-	    return this._isStarted === true;
-	  }
+	  set: function( path, value ){
+	    _.set( this, path, value );
+	  },
+
+	  // namespace prefix for WP Admin
+	  namespace: function( str ){
+	    var prefix = window.adminpage ? 'wc_pos-' : '' ;
+	    return prefix + str;
+	  },
+
+	  // extend app for third party plugins
+	  debug: debugFunction,
+	  polyglot: polyglot,
+	  Utils: Utils
 
 	});
+
+	/**
+	 * Custom Template Access
+	 **/
+	Mn.TemplateCache.prototype.loadTemplate = function(templateId){
+	  return _.get( hbs.Templates, templateId.split('.'), $(templateId).html() );
+	};
+
+	Mn.TemplateCache.prototype.compileTemplate = function(rawTemplate) {
+	  return hbs.compile(rawTemplate);
+	};
 
 /***/ },
 /* 3 */
@@ -318,805 +235,218 @@
 
 /***/ },
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var version = version || '';
-	var _ = __webpack_require__(6);
-	var debugFunc = __webpack_require__(7);
-	var $ = __webpack_require__(10);
-	var Radio = __webpack_require__(4);
-
-	if(window.wc_pos_debug){
-	  debugFunc.enable('*');
-	}
-
-	var debug = debugFunc().enabled;
-	Radio.DEBUG = debug;
-	console.info(
-	  'Debugging is ' +
-	  ( debug ? 'on' : 'off' )  +
-	  ', visit http://woopos.com.au/docs/debugging'
-	);
-
-	/**
-	 * create a global variable
-	 */
-	module.exports = {
-	  VERSION: version,
-	  attach: function(deepProperty, value){
-	    deepProperty = deepProperty.split('.');
-	    var nestedObj = _.reduceRight(deepProperty, function (child, parent) {
-	      var obj = {};
-	      obj[parent] = child;
-	      return obj;
-	    }, value || {});
-	    $.extend(true, this, nestedObj);
-	  },
-	  create: function(app){
-	    return _.defaults( app, this );
-	  },
-	  debug: debugFunc,
-	  getOption: function(){}
-	};
-
-/***/ },
-/* 6 */
 /***/ function(module, exports) {
 
 	module.exports = _;
 
 /***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/**
-	 * This is the web browser implementation of `debug()`.
-	 *
-	 * Expose `debug()` as the module.
-	 */
-
-	exports = module.exports = __webpack_require__(8);
-	exports.log = log;
-	exports.formatArgs = formatArgs;
-	exports.save = save;
-	exports.load = load;
-	exports.useColors = useColors;
-	exports.storage = 'undefined' != typeof chrome
-	               && 'undefined' != typeof chrome.storage
-	                  ? chrome.storage.local
-	                  : localstorage();
-
-	/**
-	 * Colors.
-	 */
-
-	exports.colors = [
-	  'lightseagreen',
-	  'forestgreen',
-	  'goldenrod',
-	  'dodgerblue',
-	  'darkorchid',
-	  'crimson'
-	];
-
-	/**
-	 * Currently only WebKit-based Web Inspectors, Firefox >= v31,
-	 * and the Firebug extension (any Firefox version) are known
-	 * to support "%c" CSS customizations.
-	 *
-	 * TODO: add a `localStorage` variable to explicitly enable/disable colors
-	 */
-
-	function useColors() {
-	  // is webkit? http://stackoverflow.com/a/16459606/376773
-	  return ('WebkitAppearance' in document.documentElement.style) ||
-	    // is firebug? http://stackoverflow.com/a/398120/376773
-	    (window.console && (console.firebug || (console.exception && console.table))) ||
-	    // is firefox >= v31?
-	    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-	    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
-	}
-
-	/**
-	 * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
-	 */
-
-	exports.formatters.j = function(v) {
-	  return JSON.stringify(v);
-	};
-
-
-	/**
-	 * Colorize log arguments if enabled.
-	 *
-	 * @api public
-	 */
-
-	function formatArgs() {
-	  var args = arguments;
-	  var useColors = this.useColors;
-
-	  args[0] = (useColors ? '%c' : '')
-	    + this.namespace
-	    + (useColors ? ' %c' : ' ')
-	    + args[0]
-	    + (useColors ? '%c ' : ' ')
-	    + '+' + exports.humanize(this.diff);
-
-	  if (!useColors) return args;
-
-	  var c = 'color: ' + this.color;
-	  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
-
-	  // the final "%c" is somewhat tricky, because there could be other
-	  // arguments passed either before or after the %c, so we need to
-	  // figure out the correct index to insert the CSS into
-	  var index = 0;
-	  var lastC = 0;
-	  args[0].replace(/%[a-z%]/g, function(match) {
-	    if ('%%' === match) return;
-	    index++;
-	    if ('%c' === match) {
-	      // we only are interested in the *last* %c
-	      // (the user may have provided their own)
-	      lastC = index;
-	    }
-	  });
-
-	  args.splice(lastC, 0, c);
-	  return args;
-	}
-
-	/**
-	 * Invokes `console.log()` when available.
-	 * No-op when `console.log` is not a "function".
-	 *
-	 * @api public
-	 */
-
-	function log() {
-	  // this hackery is required for IE8/9, where
-	  // the `console.log` function doesn't have 'apply'
-	  return 'object' === typeof console
-	    && console.log
-	    && Function.prototype.apply.call(console.log, console, arguments);
-	}
-
-	/**
-	 * Save `namespaces`.
-	 *
-	 * @param {String} namespaces
-	 * @api private
-	 */
-
-	function save(namespaces) {
-	  try {
-	    if (null == namespaces) {
-	      exports.storage.removeItem('debug');
-	    } else {
-	      exports.storage.debug = namespaces;
-	    }
-	  } catch(e) {}
-	}
-
-	/**
-	 * Load `namespaces`.
-	 *
-	 * @return {String} returns the previously persisted debug modes
-	 * @api private
-	 */
-
-	function load() {
-	  var r;
-	  try {
-	    r = exports.storage.debug;
-	  } catch(e) {}
-	  return r;
-	}
-
-	/**
-	 * Enable namespaces listed in `localStorage.debug` initially.
-	 */
-
-	exports.enable(load());
-
-	/**
-	 * Localstorage attempts to return the localstorage.
-	 *
-	 * This is necessary because safari throws
-	 * when a user disables cookies/localstorage
-	 * and you attempt to access it.
-	 *
-	 * @return {LocalStorage}
-	 * @api private
-	 */
-
-	function localstorage(){
-	  try {
-	    return window.localStorage;
-	  } catch (e) {}
-	}
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/**
-	 * This is the common logic for both the Node.js and web browser
-	 * implementations of `debug()`.
-	 *
-	 * Expose `debug()` as the module.
-	 */
-
-	exports = module.exports = debug;
-	exports.coerce = coerce;
-	exports.disable = disable;
-	exports.enable = enable;
-	exports.enabled = enabled;
-	exports.humanize = __webpack_require__(9);
-
-	/**
-	 * The currently active debug mode names, and names to skip.
-	 */
-
-	exports.names = [];
-	exports.skips = [];
-
-	/**
-	 * Map of special "%n" handling functions, for the debug "format" argument.
-	 *
-	 * Valid key names are a single, lowercased letter, i.e. "n".
-	 */
-
-	exports.formatters = {};
-
-	/**
-	 * Previously assigned color.
-	 */
-
-	var prevColor = 0;
-
-	/**
-	 * Previous log timestamp.
-	 */
-
-	var prevTime;
-
-	/**
-	 * Select a color.
-	 *
-	 * @return {Number}
-	 * @api private
-	 */
-
-	function selectColor() {
-	  return exports.colors[prevColor++ % exports.colors.length];
-	}
-
-	/**
-	 * Create a debugger with the given `namespace`.
-	 *
-	 * @param {String} namespace
-	 * @return {Function}
-	 * @api public
-	 */
-
-	function debug(namespace) {
-
-	  // define the `disabled` version
-	  function disabled() {
-	  }
-	  disabled.enabled = false;
-
-	  // define the `enabled` version
-	  function enabled() {
-
-	    var self = enabled;
-
-	    // set `diff` timestamp
-	    var curr = +new Date();
-	    var ms = curr - (prevTime || curr);
-	    self.diff = ms;
-	    self.prev = prevTime;
-	    self.curr = curr;
-	    prevTime = curr;
-
-	    // add the `color` if not set
-	    if (null == self.useColors) self.useColors = exports.useColors();
-	    if (null == self.color && self.useColors) self.color = selectColor();
-
-	    var args = Array.prototype.slice.call(arguments);
-
-	    args[0] = exports.coerce(args[0]);
-
-	    if ('string' !== typeof args[0]) {
-	      // anything else let's inspect with %o
-	      args = ['%o'].concat(args);
-	    }
-
-	    // apply any `formatters` transformations
-	    var index = 0;
-	    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
-	      // if we encounter an escaped % then don't increase the array index
-	      if (match === '%%') return match;
-	      index++;
-	      var formatter = exports.formatters[format];
-	      if ('function' === typeof formatter) {
-	        var val = args[index];
-	        match = formatter.call(self, val);
-
-	        // now we need to remove `args[index]` since it's inlined in the `format`
-	        args.splice(index, 1);
-	        index--;
-	      }
-	      return match;
-	    });
-
-	    if ('function' === typeof exports.formatArgs) {
-	      args = exports.formatArgs.apply(self, args);
-	    }
-	    var logFn = enabled.log || exports.log || console.log.bind(console);
-	    logFn.apply(self, args);
-	  }
-	  enabled.enabled = true;
-
-	  var fn = exports.enabled(namespace) ? enabled : disabled;
-
-	  fn.namespace = namespace;
-
-	  return fn;
-	}
-
-	/**
-	 * Enables a debug mode by namespaces. This can include modes
-	 * separated by a colon and wildcards.
-	 *
-	 * @param {String} namespaces
-	 * @api public
-	 */
-
-	function enable(namespaces) {
-	  exports.save(namespaces);
-
-	  var split = (namespaces || '').split(/[\s,]+/);
-	  var len = split.length;
-
-	  for (var i = 0; i < len; i++) {
-	    if (!split[i]) continue; // ignore empty strings
-	    namespaces = split[i].replace(/\*/g, '.*?');
-	    if (namespaces[0] === '-') {
-	      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-	    } else {
-	      exports.names.push(new RegExp('^' + namespaces + '$'));
-	    }
-	  }
-	}
-
-	/**
-	 * Disable debug output.
-	 *
-	 * @api public
-	 */
-
-	function disable() {
-	  exports.enable('');
-	}
-
-	/**
-	 * Returns true if the given mode name is enabled, false otherwise.
-	 *
-	 * @param {String} name
-	 * @return {Boolean}
-	 * @api public
-	 */
-
-	function enabled(name) {
-	  var i, len;
-	  for (i = 0, len = exports.skips.length; i < len; i++) {
-	    if (exports.skips[i].test(name)) {
-	      return false;
-	    }
-	  }
-	  for (i = 0, len = exports.names.length; i < len; i++) {
-	    if (exports.names[i].test(name)) {
-	      return true;
-	    }
-	  }
-	  return false;
-	}
-
-	/**
-	 * Coerce `val`.
-	 *
-	 * @param {Mixed} val
-	 * @return {Mixed}
-	 * @api private
-	 */
-
-	function coerce(val) {
-	  if (val instanceof Error) return val.stack || val.message;
-	  return val;
-	}
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-	/**
-	 * Helpers.
-	 */
-
-	var s = 1000;
-	var m = s * 60;
-	var h = m * 60;
-	var d = h * 24;
-	var y = d * 365.25;
-
-	/**
-	 * Parse or format the given `val`.
-	 *
-	 * Options:
-	 *
-	 *  - `long` verbose formatting [false]
-	 *
-	 * @param {String|Number} val
-	 * @param {Object} options
-	 * @return {String|Number}
-	 * @api public
-	 */
-
-	module.exports = function(val, options){
-	  options = options || {};
-	  if ('string' == typeof val) return parse(val);
-	  return options.long
-	    ? long(val)
-	    : short(val);
-	};
-
-	/**
-	 * Parse the given `str` and return milliseconds.
-	 *
-	 * @param {String} str
-	 * @return {Number}
-	 * @api private
-	 */
-
-	function parse(str) {
-	  str = '' + str;
-	  if (str.length > 10000) return;
-	  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
-	  if (!match) return;
-	  var n = parseFloat(match[1]);
-	  var type = (match[2] || 'ms').toLowerCase();
-	  switch (type) {
-	    case 'years':
-	    case 'year':
-	    case 'yrs':
-	    case 'yr':
-	    case 'y':
-	      return n * y;
-	    case 'days':
-	    case 'day':
-	    case 'd':
-	      return n * d;
-	    case 'hours':
-	    case 'hour':
-	    case 'hrs':
-	    case 'hr':
-	    case 'h':
-	      return n * h;
-	    case 'minutes':
-	    case 'minute':
-	    case 'mins':
-	    case 'min':
-	    case 'm':
-	      return n * m;
-	    case 'seconds':
-	    case 'second':
-	    case 'secs':
-	    case 'sec':
-	    case 's':
-	      return n * s;
-	    case 'milliseconds':
-	    case 'millisecond':
-	    case 'msecs':
-	    case 'msec':
-	    case 'ms':
-	      return n;
-	  }
-	}
-
-	/**
-	 * Short format for `ms`.
-	 *
-	 * @param {Number} ms
-	 * @return {String}
-	 * @api private
-	 */
-
-	function short(ms) {
-	  if (ms >= d) return Math.round(ms / d) + 'd';
-	  if (ms >= h) return Math.round(ms / h) + 'h';
-	  if (ms >= m) return Math.round(ms / m) + 'm';
-	  if (ms >= s) return Math.round(ms / s) + 's';
-	  return ms + 'ms';
-	}
-
-	/**
-	 * Long format for `ms`.
-	 *
-	 * @param {Number} ms
-	 * @return {String}
-	 * @api private
-	 */
-
-	function long(ms) {
-	  return plural(ms, d, 'day')
-	    || plural(ms, h, 'hour')
-	    || plural(ms, m, 'minute')
-	    || plural(ms, s, 'second')
-	    || ms + ' ms';
-	}
-
-	/**
-	 * Pluralization helper.
-	 */
-
-	function plural(ms, n, name) {
-	  if (ms < n) return;
-	  if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
-	  return Math.ceil(ms / n) + ' ' + name + 's';
-	}
-
-
-/***/ },
-/* 10 */
+/* 6 */
 /***/ function(module, exports) {
 
 	module.exports = jQuery;
 
 /***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	module.exports = Backbone;
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-	var Header = __webpack_require__(14);
-	var _ = __webpack_require__(6);
-	var $ = __webpack_require__(10);
-	var Radio = __webpack_require__(4);
-	var debug = __webpack_require__(7)('modalLayout');
-	__webpack_require__(20);
-	__webpack_require__(21);
-
-	module.exports = LayoutView.extend({
-	  template: function(){
-	    return '<div class="modal-dialog">' +
-	      '<div class="modal-content">' +
-	        '<div class="modal-header"></div>' +
-	        '<div class="modal-body"></div>' +
-	        '<div class="modal-footer"></div>' +
-	      '</div>' +
-	    '</div>';
-	  },
-	  className: 'modal',
-	  attributes: {
-	    'tabindex' : -1,
-	    'role' : 'dialog'
-	  },
-	  buttons: [
-	    {
-	      type: 'message'
-	    },{
-	      action: 'save',
-	      icon: 'prepend',
-	      className: 'btn-primary'
-	    }
-	  ],
-
-	  regions: {
-	    header  : '.modal-header',
-	    content : '.modal-body',
-	    footer  : '.modal-footer'
-	  },
-
-	  initialize: function () {
-	    this.$el.modal({ show: false, backdrop: 'static' });
-	  },
-
-	  events: {
-	    'click [data-action="close"]' : function(e){
-	      e.preventDefault();
-	      Radio.request('modal', 'close');
-	    }
-	  },
-
-	  triggers: {
-	    'show.bs.modal'   : { preventDefault: false, event: 'before:open' },
-	    'shown.bs.modal'  : { preventDefault: false, event: 'open' },
-	    'hide.bs.modal'   : { preventDefault: false, event: 'before:close' },
-	    'hidden.bs.modal' : { preventDefault: false, event: 'close' }
-	  },
-
-	  open: function(view){
-	    var deferred = $.Deferred();
-	    this.once('open', deferred.resolve);
-	    this.setup(view);
-	    this.content.show(view);
-	    this.$el.modal('show');
-	    return deferred;
-	  },
-
-	  close: function() {
-	    var deferred = $.Deferred();
-	    this.once('close', function() {
-	      this.tearDown();
-	      deferred.resolve();
-	    });
-	    this.$el.modal('hide');
-	    return deferred;
-	  },
-
-	  setup: function(view){
-	    var attributes = view.modal || {};
-
-	    _.defaults(attributes, {
-	      header: {},
-	      footer: {}
-	    });
-
-	    _.each(attributes, function(attr, key){
-	      var method = $.camelCase('modal-' + key);
-	      if(this[method]){
-	        this[method](attr);
-	      } else {
-	        debug('no method matching ' + method);
-	      }
-	    }, this);
-	  },
-
-	  tearDown: function(){
-	    this.header.empty();
-	    this.content.empty();
-	    this.footer.empty();
-	    this.$('.modal-dialog').removeClass().addClass('modal-dialog');
-	  },
-
-	  update: function(options){
-	    options = options || {};
-	    _.each(options, function(attr, key){
-	      this[key].currentView.triggerMethod('Update', attr);
-	    }, this);
-	  },
-
-	  modalHeader: function(options){
-	    var view = new Header(options);
-	    this.header.show(view);
-	  },
-
-	  modalFooter: function(options){
-	    options.buttons = options.buttons || this.buttons;
-	    var view = Radio.request('buttons', 'view', options);
-	    this.footer.show(view);
-	  },
-
-	  modalTitle: function(title){
-	    //title = title || this.$('.modal-header h1').data('title');
-	    this.$('.modal-header h1').html(title);
-	  },
-
-	  modalClassName: function(className){
-	    if(className){
-	      this.$('.modal-dialog').addClass(className);
-	    }
-	  },
-
-	  getButtons: function(){
-	    return this.getRegion('footer').currentView;
-	  }
-
-	});
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Mn = __webpack_require__(3);
-	var POS = __webpack_require__(5);
-
-	module.exports = POS.LayoutView = Mn.LayoutView.extend({
-
-	  working: function( action ) {
-	    if (action === 'start') {
-	      this.$el.addClass('working');
-	    } else {
-	      this.$el.removeClass('working');
-	    }
-	  }
-
-	});
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var hbs = __webpack_require__(16);
-	var _ = __webpack_require__(6);
-	var polyglot = __webpack_require__(17);
-
-	module.exports = ItemView.extend({
-	  template: hbs.compile('' +
-	    '<h1>{{{title}}}</h1>' +
-	    '<i class="icon icon-times" ' +
-	    'data-action="close" ' +
-	    'title="{{close}}">' +
-	    '</i>'
-	  ),
-
-	  initialize: function(options){
-	    options = options || {};
-	    var defaults = {
-	      title: polyglot.t('messages.loading'),
-	      close: polyglot.t('buttons.close')
-	    };
-	    this.data = _.defaults(options, defaults);
-	  },
-
-	  templateHelpers: function(){
-	    return this.data;
-	  },
-
-	  onUpdate: function(options){
-	    _.extend(this.data, options);
-	    this.render();
-	  }
-	});
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Mn = __webpack_require__(3);
-	var POS = __webpack_require__(5);
-
-	module.exports = POS.ItemView = Mn.ItemView;
-
-/***/ },
-/* 16 */
+/* 7 */
 /***/ function(module, exports) {
 
 	module.exports = Handlebars;
 
 /***/ },
-/* 17 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Polyglot = __webpack_require__(18);
-	var POS = __webpack_require__(5);
-	var polyglot = new Polyglot();
-	module.exports = POS.polyglot = polyglot;
+	var accounting = __webpack_require__(9);
+	var _ = __webpack_require__(5);
+	var Utils = {};
+
+	/**
+	 * Using the same function as Woo: /assets/js/admin/round.js
+	 * PHP_ROUND_HALF_EVEN should be the default?!
+	 * @param value
+	 * @param precision
+	 * @param mode
+	 * @returns {number}
+	 */
+	/* jshint -W018, -W071, -W074 */
+	Utils.round = function(value, precision, mode) {
+	  // http://kevin.vanzonneveld.net
+	  // +   original by: Philip Peterson
+	  // +    revised by: Onno Marsman
+	  // +      input by: Greenseed
+	  // +    revised by: T.Wild
+	  // +      input by: meo
+	  // +      input by: William
+	  // +   bugfixed by: Brett Zamir (http://brett-zamir.me)
+	  // +      input by: Josep Sanz (http://www.ws3.es/)
+	  // +    revised by: Rafał Kukawski (http://blog.kukawski.pl/)
+	  // %        note 1: Great work. Ideas for improvement:
+	  // %        note 1:  - code more compliant with developer guidelines
+	  // %        note 1:  - for implementing PHP constant arguments look at
+	  // %        note 1:  the pathinfo() function, it offers the greatest
+	  // %        note 1:  flexibility & compatibility possible
+	  // *     example 1: round(1241757, -3);
+	  // *     returns 1: 1242000
+	  // *     example 2: round(3.6);
+	  // *     returns 2: 4
+	  // *     example 3: round(2.835, 2);
+	  // *     returns 3: 2.84
+	  // *     example 4: round(1.1749999999999, 2);
+	  // *     returns 4: 1.17
+	  // *     example 5: round(58551.799999999996, 2);
+	  // *     returns 5: 58551.8
+
+	  //
+	  //mode = mode || 'PHP_ROUND_HALF_EVEN';
+
+	  if( !_.isFinite( parseInt(precision, 10) ) ) {
+	    precision = accounting.settings.currency.precision;
+	  }
+
+	  var m, f, isHalf, sgn; // helper variables
+	  //precision |= 0; // making sure precision is integer
+	  m = Math.pow(10, precision);
+	  value *= m;
+	  sgn = (value > 0) | -(value < 0); // sign of the number
+	  isHalf = value % 1 === 0.5 * sgn;
+	  f = Math.floor(value);
+
+	  if (isHalf) {
+	    switch (mode) {
+	      case '2':
+	      case 'PHP_ROUND_HALF_DOWN':
+	        value = f + (sgn < 0); // rounds .5 toward zero
+	        break;
+	      case '3':
+	      case 'PHP_ROUND_HALF_EVEN':
+	        value = f + (f % 2 * sgn); // rouds .5 towards the next even integer
+	        break;
+	      case '4':
+	      case 'PHP_ROUND_HALF_ODD':
+	        value = f + !(f % 2); // rounds .5 towards the next odd integer
+	        break;
+	      default:
+	        value = f + (sgn > 0); // rounds .5 away from zero
+	    }
+	  }
+
+	  return (isHalf ? value : Math.round(value)) / m;
+	};
+	/* jshint +W018, +W071, +W074 */
+
+	/**
+	 * Number of significant decimal places
+	 */
+	Utils.decimalPlaces = function(num){
+	  return ((+num).toFixed(4)).replace(/^-?\d*\.?|0+$/g, '').length;
+	};
+
+	/**
+	 *
+	 */
+	Utils.unformat = function( num ) {
+	  return accounting.unformat( num, accounting.settings.number.decimal );
+	};
+
+	/**
+	 *
+	 */
+	Utils.formatNumber = function( num, precision ) {
+	  if( precision === 'auto' ) {
+	    precision = Utils.decimalPlaces(num);
+	  }
+	  if( !_.isFinite( parseInt(precision, 10) ) ) {
+	    precision = accounting.settings.currency.precision;
+	  }
+	  return accounting.formatNumber(num, precision);
+	};
+
+	/**
+	 *
+	 */
+	Utils.formatMoney = function( num, precision ) {
+	  if( precision === 'auto' ) {
+	    precision = Utils.decimalPlaces(num);
+	  }
+	  if( !_.isFinite( parseInt(precision, 10) ) ) {
+	    precision = accounting.settings.currency.precision;
+	  }
+	  // round the number to even
+	  num = Utils.round(num, precision);
+	  return accounting.formatMoney(num);
+	};
+
+	/**
+	 *
+	 */
+	Utils.isPositiveInteger = function( num, allowZero ){
+	  var n = ~~Number(num);
+	  if(allowZero) {
+	    return String(n) === num && n >= 0;
+	  } else {
+	    return String(n) === num && n > 0;
+	  }
+	};
+
+	/**
+	 * Parse error messages from the server
+	 */
+	Utils.parseErrorResponse = function( jqXHR ){
+	  var resp = jqXHR.responseJSON;
+	  if( resp.errors ){
+	    return resp.errors[0].message;
+	  }
+
+	  return jqXHR.responseText;
+	};
+
+	/**
+	 * returns the variable type
+	 * http://wp.me/pQpop-JM
+	 *
+	 *
+	toType({a: 4}); //"object"
+	toType([1, 2, 3]); //"array"
+	(function() {console.log(toType(arguments))})(); //arguments
+	toType(new ReferenceError); //"error"
+	toType(new Date); //"date"
+	toType(/a-z/); //"regexp"
+	toType(Math); //"math"
+	toType(JSON); //"json"
+	toType(new Number(4)); //"number"
+	toType(new String("abc")); //"string"
+	toType(new Boolean(true)); //"boolean"
+
+	 */
+	Utils.toType = function(obj) {
+	  return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
+	};
+
+	module.exports = Utils;
 
 /***/ },
-/* 18 */
+/* 9 */
+/***/ function(module, exports) {
+
+	module.exports = accounting;
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Polyglot = __webpack_require__(11);
+	module.exports = new Polyglot();
+
+/***/ },
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Added for convenience in the Node environment.
 	// The meat and potatoes exist in ./lib/polyglot.js.
-	module.exports = __webpack_require__(19);
+	module.exports = __webpack_require__(12);
 
 
 /***/ },
-/* 19 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     (c) 2012 Airbnb, Inc.
@@ -1423,554 +753,558 @@
 
 
 /***/ },
-/* 20 */
-/***/ function(module, exports) {
-
-	/* ========================================================================
-	 * Bootstrap: modal.js v3.3.4
-	 * http://getbootstrap.com/javascript/#modals
-	 * ========================================================================
-	 * Copyright 2011-2015 Twitter, Inc.
-	 * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-	 * ======================================================================== */
-
-
-	+function ($) {
-	  'use strict';
-
-	  // MODAL CLASS DEFINITION
-	  // ======================
-
-	  var Modal = function (element, options) {
-	    this.options             = options
-	    this.$body               = $(document.body)
-	    this.$element            = $(element)
-	    this.$dialog             = this.$element.find('.modal-dialog')
-	    this.$backdrop           = null
-	    this.isShown             = null
-	    this.originalBodyPad     = null
-	    this.scrollbarWidth      = 0
-	    this.ignoreBackdropClick = false
-
-	    if (this.options.remote) {
-	      this.$element
-	        .find('.modal-content')
-	        .load(this.options.remote, $.proxy(function () {
-	          this.$element.trigger('loaded.bs.modal')
-	        }, this))
-	    }
-	  }
-
-	  Modal.VERSION  = '3.3.4'
-
-	  Modal.TRANSITION_DURATION = 300
-	  Modal.BACKDROP_TRANSITION_DURATION = 150
-
-	  Modal.DEFAULTS = {
-	    backdrop: true,
-	    keyboard: true,
-	    show: true
-	  }
-
-	  Modal.prototype.toggle = function (_relatedTarget) {
-	    return this.isShown ? this.hide() : this.show(_relatedTarget)
-	  }
-
-	  Modal.prototype.show = function (_relatedTarget) {
-	    var that = this
-	    var e    = $.Event('show.bs.modal', { relatedTarget: _relatedTarget })
-
-	    this.$element.trigger(e)
-
-	    if (this.isShown || e.isDefaultPrevented()) return
-
-	    this.isShown = true
-
-	    this.checkScrollbar()
-	    this.setScrollbar()
-	    this.$body.addClass('modal-open')
-
-	    this.escape()
-	    this.resize()
-
-	    this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
-
-	    this.$dialog.on('mousedown.dismiss.bs.modal', function () {
-	      that.$element.one('mouseup.dismiss.bs.modal', function (e) {
-	        if ($(e.target).is(that.$element)) that.ignoreBackdropClick = true
-	      })
-	    })
-
-	    this.backdrop(function () {
-	      var transition = $.support.transition && that.$element.hasClass('fade')
-
-	      if (!that.$element.parent().length) {
-	        that.$element.appendTo(that.$body) // don't move modals dom position
-	      }
-
-	      that.$element
-	        .show()
-	        .scrollTop(0)
-
-	      that.adjustDialog()
-
-	      if (transition) {
-	        that.$element[0].offsetWidth // force reflow
-	      }
-
-	      that.$element
-	        .addClass('in')
-	        .attr('aria-hidden', false)
-
-	      that.enforceFocus()
-
-	      var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
-
-	      transition ?
-	        that.$dialog // wait for modal to slide in
-	          .one('bsTransitionEnd', function () {
-	            that.$element.trigger('focus').trigger(e)
-	          })
-	          .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
-	        that.$element.trigger('focus').trigger(e)
-	    })
-	  }
-
-	  Modal.prototype.hide = function (e) {
-	    if (e) e.preventDefault()
-
-	    e = $.Event('hide.bs.modal')
-
-	    this.$element.trigger(e)
-
-	    if (!this.isShown || e.isDefaultPrevented()) return
-
-	    this.isShown = false
-
-	    this.escape()
-	    this.resize()
-
-	    $(document).off('focusin.bs.modal')
-
-	    this.$element
-	      .removeClass('in')
-	      .attr('aria-hidden', true)
-	      .off('click.dismiss.bs.modal')
-	      .off('mouseup.dismiss.bs.modal')
-
-	    this.$dialog.off('mousedown.dismiss.bs.modal')
-
-	    $.support.transition && this.$element.hasClass('fade') ?
-	      this.$element
-	        .one('bsTransitionEnd', $.proxy(this.hideModal, this))
-	        .emulateTransitionEnd(Modal.TRANSITION_DURATION) :
-	      this.hideModal()
-	  }
-
-	  Modal.prototype.enforceFocus = function () {
-	    $(document)
-	      .off('focusin.bs.modal') // guard against infinite focus loop
-	      .on('focusin.bs.modal', $.proxy(function (e) {
-	        if (this.$element[0] !== e.target && !this.$element.has(e.target).length) {
-	          this.$element.trigger('focus')
-	        }
-	      }, this))
-	  }
-
-	  Modal.prototype.escape = function () {
-	    if (this.isShown && this.options.keyboard) {
-	      this.$element.on('keydown.dismiss.bs.modal', $.proxy(function (e) {
-	        e.which == 27 && this.hide()
-	      }, this))
-	    } else if (!this.isShown) {
-	      this.$element.off('keydown.dismiss.bs.modal')
-	    }
-	  }
-
-	  Modal.prototype.resize = function () {
-	    if (this.isShown) {
-	      $(window).on('resize.bs.modal', $.proxy(this.handleUpdate, this))
-	    } else {
-	      $(window).off('resize.bs.modal')
-	    }
-	  }
-
-	  Modal.prototype.hideModal = function () {
-	    var that = this
-	    this.$element.hide()
-	    this.backdrop(function () {
-	      that.$body.removeClass('modal-open')
-	      that.resetAdjustments()
-	      that.resetScrollbar()
-	      that.$element.trigger('hidden.bs.modal')
-	    })
-	  }
-
-	  Modal.prototype.removeBackdrop = function () {
-	    this.$backdrop && this.$backdrop.remove()
-	    this.$backdrop = null
-	  }
-
-	  Modal.prototype.backdrop = function (callback) {
-	    var that = this
-	    var animate = this.$element.hasClass('fade') ? 'fade' : ''
-
-	    if (this.isShown && this.options.backdrop) {
-	      var doAnimate = $.support.transition && animate
-
-	      this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
-	        .appendTo(this.$body)
-
-	      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
-	        if (this.ignoreBackdropClick) {
-	          this.ignoreBackdropClick = false
-	          return
-	        }
-	        if (e.target !== e.currentTarget) return
-	        this.options.backdrop == 'static'
-	          ? this.$element[0].focus()
-	          : this.hide()
-	      }, this))
-
-	      if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
-
-	      this.$backdrop.addClass('in')
-
-	      if (!callback) return
-
-	      doAnimate ?
-	        this.$backdrop
-	          .one('bsTransitionEnd', callback)
-	          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
-	        callback()
-
-	    } else if (!this.isShown && this.$backdrop) {
-	      this.$backdrop.removeClass('in')
-
-	      var callbackRemove = function () {
-	        that.removeBackdrop()
-	        callback && callback()
-	      }
-	      $.support.transition && this.$element.hasClass('fade') ?
-	        this.$backdrop
-	          .one('bsTransitionEnd', callbackRemove)
-	          .emulateTransitionEnd(Modal.BACKDROP_TRANSITION_DURATION) :
-	        callbackRemove()
-
-	    } else if (callback) {
-	      callback()
-	    }
-	  }
-
-	  // these following methods are used to handle overflowing modals
-
-	  Modal.prototype.handleUpdate = function () {
-	    this.adjustDialog()
-	  }
-
-	  Modal.prototype.adjustDialog = function () {
-	    var modalIsOverflowing = this.$element[0].scrollHeight > document.documentElement.clientHeight
-
-	    this.$element.css({
-	      paddingLeft:  !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : '',
-	      paddingRight: this.bodyIsOverflowing && !modalIsOverflowing ? this.scrollbarWidth : ''
-	    })
-	  }
-
-	  Modal.prototype.resetAdjustments = function () {
-	    this.$element.css({
-	      paddingLeft: '',
-	      paddingRight: ''
-	    })
-	  }
-
-	  Modal.prototype.checkScrollbar = function () {
-	    var fullWindowWidth = window.innerWidth
-	    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
-	      var documentElementRect = document.documentElement.getBoundingClientRect()
-	      fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left)
-	    }
-	    this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth
-	    this.scrollbarWidth = this.measureScrollbar()
-	  }
-
-	  Modal.prototype.setScrollbar = function () {
-	    var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
-	    this.originalBodyPad = document.body.style.paddingRight || ''
-	    if (this.bodyIsOverflowing) this.$body.css('padding-right', bodyPad + this.scrollbarWidth)
-	  }
-
-	  Modal.prototype.resetScrollbar = function () {
-	    this.$body.css('padding-right', this.originalBodyPad)
-	  }
-
-	  Modal.prototype.measureScrollbar = function () { // thx walsh
-	    var scrollDiv = document.createElement('div')
-	    scrollDiv.className = 'modal-scrollbar-measure'
-	    this.$body.append(scrollDiv)
-	    var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth
-	    this.$body[0].removeChild(scrollDiv)
-	    return scrollbarWidth
-	  }
-
-
-	  // MODAL PLUGIN DEFINITION
-	  // =======================
-
-	  function Plugin(option, _relatedTarget) {
-	    return this.each(function () {
-	      var $this   = $(this)
-	      var data    = $this.data('bs.modal')
-	      var options = $.extend({}, Modal.DEFAULTS, $this.data(), typeof option == 'object' && option)
-
-	      if (!data) $this.data('bs.modal', (data = new Modal(this, options)))
-	      if (typeof option == 'string') data[option](_relatedTarget)
-	      else if (options.show) data.show(_relatedTarget)
-	    })
-	  }
-
-	  var old = $.fn.modal
-
-	  $.fn.modal             = Plugin
-	  $.fn.modal.Constructor = Modal
-
-
-	  // MODAL NO CONFLICT
-	  // =================
-
-	  $.fn.modal.noConflict = function () {
-	    $.fn.modal = old
-	    return this
-	  }
-
-
-	  // MODAL DATA-API
-	  // ==============
-
-	  $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
-	    var $this   = $(this)
-	    var href    = $this.attr('href')
-	    var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) // strip for ie7
-	    var option  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
-
-	    if ($this.is('a')) e.preventDefault()
-
-	    $target.one('show.bs.modal', function (showEvent) {
-	      if (showEvent.isDefaultPrevented()) return // only register focus restorer if modal will actually get shown
-	      $target.one('hidden.bs.modal', function () {
-	        $this.is(':visible') && $this.trigger('focus')
-	      })
-	    })
-	    Plugin.call($target, option, this)
-	  })
-
-	}(jQuery);
-
-
-/***/ },
-/* 21 */
-/***/ function(module, exports) {
-
-	/* ========================================================================
-	 * Bootstrap: transition.js v3.3.4
-	 * http://getbootstrap.com/javascript/#transitions
-	 * ========================================================================
-	 * Copyright 2011-2015 Twitter, Inc.
-	 * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-	 * ======================================================================== */
-
-
-	+function ($) {
-	  'use strict';
-
-	  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
-	  // ============================================================
-
-	  function transitionEnd() {
-	    var el = document.createElement('bootstrap')
-
-	    var transEndEventNames = {
-	      WebkitTransition : 'webkitTransitionEnd',
-	      MozTransition    : 'transitionend',
-	      OTransition      : 'oTransitionEnd otransitionend',
-	      transition       : 'transitionend'
-	    }
-
-	    for (var name in transEndEventNames) {
-	      if (el.style[name] !== undefined) {
-	        return { end: transEndEventNames[name] }
-	      }
-	    }
-
-	    return false // explicit for ie8 (  ._.)
-	  }
-
-	  // http://blog.alexmaccaw.com/css-transitions
-	  $.fn.emulateTransitionEnd = function (duration) {
-	    var called = false
-	    var $el = this
-	    $(this).one('bsTransitionEnd', function () { called = true })
-	    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
-	    setTimeout(callback, duration)
-	    return this
-	  }
-
-	  $(function () {
-	    $.support.transition = transitionEnd()
-
-	    if (!$.support.transition) return
-
-	    $.event.special.bsTransitionEnd = {
-	      bindType: $.support.transition.end,
-	      delegateType: $.support.transition.end,
-	      handle: function (e) {
-	        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
-	      }
-	    }
-	  })
-
-	}(jQuery);
-
-
-/***/ },
-/* 22 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var View = __webpack_require__(15);
-	var hbs = __webpack_require__(16);
-	var Tmpl = __webpack_require__(23);
+	
+	/**
+	 * This is the web browser implementation of `debug()`.
+	 *
+	 * Expose `debug()` as the module.
+	 */
 
-	module.exports = View.extend({
-	  template: hbs.compile(Tmpl),
+	exports = module.exports = __webpack_require__(14);
+	exports.log = log;
+	exports.formatArgs = formatArgs;
+	exports.save = save;
+	exports.load = load;
+	exports.useColors = useColors;
+	exports.storage = 'undefined' != typeof chrome
+	               && 'undefined' != typeof chrome.storage
+	                  ? chrome.storage.local
+	                  : localstorage();
 
-	  initialize: function(options){
-	    options = options || {};
-	    this.message = options.message;
-	    this.raw = options.raw;
+	/**
+	 * Colors.
+	 */
 
-	    this.modal = {
-	      className: options.className,
-	      header: {
-	        title: options.title
-	      },
-	      footer: {
-	        buttons: [{
-	          action: 'close'
-	        }]
-	      }
-	    };
-	  },
+	exports.colors = [
+	  'lightseagreen',
+	  'forestgreen',
+	  'goldenrod',
+	  'dodgerblue',
+	  'darkorchid',
+	  'crimson'
+	];
 
-	  templateHelpers: function(){
-	    var data = {};
-	    data.message = this.message;
-	    data.raw = this.raw;
-	    return data;
-	  },
+	/**
+	 * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+	 * and the Firebug extension (any Firefox version) are known
+	 * to support "%c" CSS customizations.
+	 *
+	 * TODO: add a `localStorage` variable to explicitly enable/disable colors
+	 */
 
-	  ui: {
-	    raw: '*[data-action="raw"]',
-	    output: '.raw-output'
-	  },
+	function useColors() {
+	  // is webkit? http://stackoverflow.com/a/16459606/376773
+	  return ('WebkitAppearance' in document.documentElement.style) ||
+	    // is firebug? http://stackoverflow.com/a/398120/376773
+	    (window.console && (console.firebug || (console.exception && console.table))) ||
+	    // is firefox >= v31?
+	    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+	    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
+	}
 
-	  events: {
-	    'click @ui.raw': 'toggleRaw'
-	  },
+	/**
+	 * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+	 */
 
-	  toggleRaw: function(e){
-	    e.preventDefault();
-	    this.ui.output.toggle();
-	  }
+	exports.formatters.j = function(v) {
+	  return JSON.stringify(v);
+	};
 
-	});
+
+	/**
+	 * Colorize log arguments if enabled.
+	 *
+	 * @api public
+	 */
+
+	function formatArgs() {
+	  var args = arguments;
+	  var useColors = this.useColors;
+
+	  args[0] = (useColors ? '%c' : '')
+	    + this.namespace
+	    + (useColors ? ' %c' : ' ')
+	    + args[0]
+	    + (useColors ? '%c ' : ' ')
+	    + '+' + exports.humanize(this.diff);
+
+	  if (!useColors) return args;
+
+	  var c = 'color: ' + this.color;
+	  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
+
+	  // the final "%c" is somewhat tricky, because there could be other
+	  // arguments passed either before or after the %c, so we need to
+	  // figure out the correct index to insert the CSS into
+	  var index = 0;
+	  var lastC = 0;
+	  args[0].replace(/%[a-z%]/g, function(match) {
+	    if ('%%' === match) return;
+	    index++;
+	    if ('%c' === match) {
+	      // we only are interested in the *last* %c
+	      // (the user may have provided their own)
+	      lastC = index;
+	    }
+	  });
+
+	  args.splice(lastC, 0, c);
+	  return args;
+	}
+
+	/**
+	 * Invokes `console.log()` when available.
+	 * No-op when `console.log` is not a "function".
+	 *
+	 * @api public
+	 */
+
+	function log() {
+	  // this hackery is required for IE8/9, where
+	  // the `console.log` function doesn't have 'apply'
+	  return 'object' === typeof console
+	    && console.log
+	    && Function.prototype.apply.call(console.log, console, arguments);
+	}
+
+	/**
+	 * Save `namespaces`.
+	 *
+	 * @param {String} namespaces
+	 * @api private
+	 */
+
+	function save(namespaces) {
+	  try {
+	    if (null == namespaces) {
+	      exports.storage.removeItem('debug');
+	    } else {
+	      exports.storage.debug = namespaces;
+	    }
+	  } catch(e) {}
+	}
+
+	/**
+	 * Load `namespaces`.
+	 *
+	 * @return {String} returns the previously persisted debug modes
+	 * @api private
+	 */
+
+	function load() {
+	  var r;
+	  try {
+	    r = exports.storage.debug;
+	  } catch(e) {}
+	  return r;
+	}
+
+	/**
+	 * Enable namespaces listed in `localStorage.debug` initially.
+	 */
+
+	exports.enable(load());
+
+	/**
+	 * Localstorage attempts to return the localstorage.
+	 *
+	 * This is necessary because safari throws
+	 * when a user disables cookies/localstorage
+	 * and you attempt to access it.
+	 *
+	 * @return {LocalStorage}
+	 * @api private
+	 */
+
+	function localstorage(){
+	  try {
+	    return window.localStorage;
+	  } catch (e) {}
+	}
+
 
 /***/ },
-/* 23 */
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 * This is the common logic for both the Node.js and web browser
+	 * implementations of `debug()`.
+	 *
+	 * Expose `debug()` as the module.
+	 */
+
+	exports = module.exports = debug;
+	exports.coerce = coerce;
+	exports.disable = disable;
+	exports.enable = enable;
+	exports.enabled = enabled;
+	exports.humanize = __webpack_require__(15);
+
+	/**
+	 * The currently active debug mode names, and names to skip.
+	 */
+
+	exports.names = [];
+	exports.skips = [];
+
+	/**
+	 * Map of special "%n" handling functions, for the debug "format" argument.
+	 *
+	 * Valid key names are a single, lowercased letter, i.e. "n".
+	 */
+
+	exports.formatters = {};
+
+	/**
+	 * Previously assigned color.
+	 */
+
+	var prevColor = 0;
+
+	/**
+	 * Previous log timestamp.
+	 */
+
+	var prevTime;
+
+	/**
+	 * Select a color.
+	 *
+	 * @return {Number}
+	 * @api private
+	 */
+
+	function selectColor() {
+	  return exports.colors[prevColor++ % exports.colors.length];
+	}
+
+	/**
+	 * Create a debugger with the given `namespace`.
+	 *
+	 * @param {String} namespace
+	 * @return {Function}
+	 * @api public
+	 */
+
+	function debug(namespace) {
+
+	  // define the `disabled` version
+	  function disabled() {
+	  }
+	  disabled.enabled = false;
+
+	  // define the `enabled` version
+	  function enabled() {
+
+	    var self = enabled;
+
+	    // set `diff` timestamp
+	    var curr = +new Date();
+	    var ms = curr - (prevTime || curr);
+	    self.diff = ms;
+	    self.prev = prevTime;
+	    self.curr = curr;
+	    prevTime = curr;
+
+	    // add the `color` if not set
+	    if (null == self.useColors) self.useColors = exports.useColors();
+	    if (null == self.color && self.useColors) self.color = selectColor();
+
+	    var args = Array.prototype.slice.call(arguments);
+
+	    args[0] = exports.coerce(args[0]);
+
+	    if ('string' !== typeof args[0]) {
+	      // anything else let's inspect with %o
+	      args = ['%o'].concat(args);
+	    }
+
+	    // apply any `formatters` transformations
+	    var index = 0;
+	    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+	      // if we encounter an escaped % then don't increase the array index
+	      if (match === '%%') return match;
+	      index++;
+	      var formatter = exports.formatters[format];
+	      if ('function' === typeof formatter) {
+	        var val = args[index];
+	        match = formatter.call(self, val);
+
+	        // now we need to remove `args[index]` since it's inlined in the `format`
+	        args.splice(index, 1);
+	        index--;
+	      }
+	      return match;
+	    });
+
+	    if ('function' === typeof exports.formatArgs) {
+	      args = exports.formatArgs.apply(self, args);
+	    }
+	    var logFn = enabled.log || exports.log || console.log.bind(console);
+	    logFn.apply(self, args);
+	  }
+	  enabled.enabled = true;
+
+	  var fn = exports.enabled(namespace) ? enabled : disabled;
+
+	  fn.namespace = namespace;
+
+	  return fn;
+	}
+
+	/**
+	 * Enables a debug mode by namespaces. This can include modes
+	 * separated by a colon and wildcards.
+	 *
+	 * @param {String} namespaces
+	 * @api public
+	 */
+
+	function enable(namespaces) {
+	  exports.save(namespaces);
+
+	  var split = (namespaces || '').split(/[\s,]+/);
+	  var len = split.length;
+
+	  for (var i = 0; i < len; i++) {
+	    if (!split[i]) continue; // ignore empty strings
+	    namespaces = split[i].replace(/\*/g, '.*?');
+	    if (namespaces[0] === '-') {
+	      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+	    } else {
+	      exports.names.push(new RegExp('^' + namespaces + '$'));
+	    }
+	  }
+	}
+
+	/**
+	 * Disable debug output.
+	 *
+	 * @api public
+	 */
+
+	function disable() {
+	  exports.enable('');
+	}
+
+	/**
+	 * Returns true if the given mode name is enabled, false otherwise.
+	 *
+	 * @param {String} name
+	 * @return {Boolean}
+	 * @api public
+	 */
+
+	function enabled(name) {
+	  var i, len;
+	  for (i = 0, len = exports.skips.length; i < len; i++) {
+	    if (exports.skips[i].test(name)) {
+	      return false;
+	    }
+	  }
+	  for (i = 0, len = exports.names.length; i < len; i++) {
+	    if (exports.names[i].test(name)) {
+	      return true;
+	    }
+	  }
+	  return false;
+	}
+
+	/**
+	 * Coerce `val`.
+	 *
+	 * @param {Mixed} val
+	 * @return {Mixed}
+	 * @api private
+	 */
+
+	function coerce(val) {
+	  if (val instanceof Error) return val.stack || val.message;
+	  return val;
+	}
+
+
+/***/ },
+/* 15 */
 /***/ function(module, exports) {
 
-	module.exports = "<p>\n  {{message}}\n  {{#if raw}}\n    <a href=\"#\" data-action=\"raw\"><i class=\"icon icon-info-circle\"></i></a>\n  {{/if}}\n<p>\n{{#if raw}}\n  <div class=\"raw-output\" style=\"display:none\">{{{raw}}}</div>\n{{/if}}"
+	/**
+	 * Helpers.
+	 */
+
+	var s = 1000;
+	var m = s * 60;
+	var h = m * 60;
+	var d = h * 24;
+	var y = d * 365.25;
+
+	/**
+	 * Parse or format the given `val`.
+	 *
+	 * Options:
+	 *
+	 *  - `long` verbose formatting [false]
+	 *
+	 * @param {String|Number} val
+	 * @param {Object} options
+	 * @return {String|Number}
+	 * @api public
+	 */
+
+	module.exports = function(val, options){
+	  options = options || {};
+	  if ('string' == typeof val) return parse(val);
+	  return options.long
+	    ? long(val)
+	    : short(val);
+	};
+
+	/**
+	 * Parse the given `str` and return milliseconds.
+	 *
+	 * @param {String} str
+	 * @return {Number}
+	 * @api private
+	 */
+
+	function parse(str) {
+	  str = '' + str;
+	  if (str.length > 10000) return;
+	  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
+	  if (!match) return;
+	  var n = parseFloat(match[1]);
+	  var type = (match[2] || 'ms').toLowerCase();
+	  switch (type) {
+	    case 'years':
+	    case 'year':
+	    case 'yrs':
+	    case 'yr':
+	    case 'y':
+	      return n * y;
+	    case 'days':
+	    case 'day':
+	    case 'd':
+	      return n * d;
+	    case 'hours':
+	    case 'hour':
+	    case 'hrs':
+	    case 'hr':
+	    case 'h':
+	      return n * h;
+	    case 'minutes':
+	    case 'minute':
+	    case 'mins':
+	    case 'min':
+	    case 'm':
+	      return n * m;
+	    case 'seconds':
+	    case 'second':
+	    case 'secs':
+	    case 'sec':
+	    case 's':
+	      return n * s;
+	    case 'milliseconds':
+	    case 'millisecond':
+	    case 'msecs':
+	    case 'msec':
+	    case 'ms':
+	      return n;
+	  }
+	}
+
+	/**
+	 * Short format for `ms`.
+	 *
+	 * @param {Number} ms
+	 * @return {String}
+	 * @api private
+	 */
+
+	function short(ms) {
+	  if (ms >= d) return Math.round(ms / d) + 'd';
+	  if (ms >= h) return Math.round(ms / h) + 'h';
+	  if (ms >= m) return Math.round(ms / m) + 'm';
+	  if (ms >= s) return Math.round(ms / s) + 's';
+	  return ms + 'ms';
+	}
+
+	/**
+	 * Long format for `ms`.
+	 *
+	 * @param {Number} ms
+	 * @return {String}
+	 * @api private
+	 */
+
+	function long(ms) {
+	  return plural(ms, d, 'day')
+	    || plural(ms, h, 'hour')
+	    || plural(ms, m, 'minute')
+	    || plural(ms, s, 'second')
+	    || ms + ' ms';
+	}
+
+	/**
+	 * Pluralization helper.
+	 */
+
+	function plural(ms, n, name) {
+	  if (ms < n) return;
+	  if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
+	  return Math.ceil(ms / n) + ' ' + name + 's';
+	}
+
 
 /***/ },
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */
+/* 16 */
+/***/ function(module, exports) {
+
+	module.exports = Backbone;
+
+/***/ },
+/* 17 */,
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Mn = __webpack_require__(3);
-	var POS = __webpack_require__(5);
-	var Radio = __webpack_require__(4);
-	var _ = __webpack_require__(6);
+	var app = __webpack_require__(2);
 
-	module.exports = POS.Application = Mn.Application.extend({
-	  _initChannel: function () {
-	    this.channelName = _.result(this, 'channelName') || 'global';
-	    this.channel = _.result(this, 'channel') ||
-	    Radio.channel(this.channelName);
+	module.exports = app.prototype.LayoutView = Mn.LayoutView.extend({
+
+	  working: function( action ) {
+	    if (action === 'start') {
+	      this.$el.addClass('working');
+	    } else {
+	      this.$el.removeClass('working');
+	    }
 	  }
+
 	});
 
 /***/ },
-/* 60 */,
-/* 61 */
-/***/ function(module, exports) {
-
-	module.exports = accounting;
-
-/***/ },
-/* 62 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {var Service = __webpack_require__(2);
-	var Products = __webpack_require__(69);
-	var Orders = __webpack_require__(77);
-	var Cart = __webpack_require__(80);
-	var Customers = __webpack_require__(82);
-	var Coupons = __webpack_require__(84);
-	var Settings = __webpack_require__(65);
-	var SettingsCollection = __webpack_require__(63);
-	var Gateways = __webpack_require__(86);
-	var Variations = __webpack_require__(88);
-	var FilteredCollection = __webpack_require__(90);
-	var debug = __webpack_require__(7)('entities');
-	var POS = __webpack_require__(5);
-	//var $ = require('jquery');
-	var _ = __webpack_require__(6);
+	/* WEBPACK VAR INJECTION */(function(global) {var Service = __webpack_require__(20);
+	var Products = __webpack_require__(21);
+	var Orders = __webpack_require__(46);
+	var Cart = __webpack_require__(48);
+	var Customers = __webpack_require__(50);
+	var Coupons = __webpack_require__(52);
+	var Settings = __webpack_require__(54);
+	var SettingsCollection = __webpack_require__(55);
+	var Gateways = __webpack_require__(56);
+	var FilteredCollection = __webpack_require__(35);
+	var debug = __webpack_require__(13)('entities');
+	var App = __webpack_require__(2);
+	var _ = __webpack_require__(5);
 	var storage = global.localStorage || window.localStorage;
 	var JSON = global.JSON || window.JSON;
-	//var Radio = require('backbone.radio');
 
 	var EntitiesService = Service.extend({
 	  channelName: 'entities',
@@ -1989,7 +1323,6 @@
 	    customers : Customers,
 	    coupons   : Coupons,
 	    gateways  : Gateways,
-	    variations: Variations,
 	    settings  : SettingsCollection
 	  },
 
@@ -1997,7 +1330,6 @@
 	    collection  : 'getCollection',
 	    model       : 'getModel',
 	    filtered    : 'getFiltered',
-	    variations  : 'getVariations',
 	    option      : 'getOption',
 	    settings    : 'getSettings',
 	    localStorage: 'getLocalStorage'
@@ -2048,6 +1380,13 @@
 	    return ( this[prop] || this.attach(options) );
 	  },
 
+	  getAllCollections: function(){
+	    return _.reduce( this.collections, function(result, col, key){
+	      result[key] = this.getCollection({ name: key });
+	      return result;
+	    }, {}, this);
+	  },
+
 	  getModel: function(options){
 	    var prop = '_' + options.name;
 	    if( options.init ) {
@@ -2094,10 +1433,20 @@
 	    }
 	  },
 
+	  serialize: function(value){
+	    return JSON.stringify(value);
+	  },
+
+	  deserialize: function(value){
+	    try { value = JSON.parse(value); }
+	    catch(e) { debug(e); }
+	    return value || undefined;
+	  },
+
 	  getLocalStorage: function(options){
 	    options = options || {};
-	    var string = storage.getItem('wc_pos_' + options.name);
-	    var obj = JSON.parse(string) || undefined;
+	    var data = storage.getItem('wc_pos_' + options.name);
+	    var obj = this.deserialize(data);
 	    if(options.key && obj && obj[options.key]){
 	      return obj[options.key];
 	    }
@@ -2106,13 +1455,12 @@
 
 	  setLocalStorage: function(options){
 	    options = options || {};
-	    var data = this.getLocalStorage({name: options.name}) || {};
-	    if(_.isObject(data)){
-	      _.extend(data, options.data);
-	    } else {
-	      data = options.data;
+	    var data = options.data;
+	    var old = this.getLocalStorage({name: options.name});
+	    if( _.isObject(old) && _.isObject(data) ){
+	      data = _.extend(old, data);
 	    }
-	    storage.setItem('wc_pos_' + options.name, JSON.stringify(data));
+	    storage.setItem('wc_pos_' + options.name, this.serialize(data));
 	  },
 
 	  remove: function(options){
@@ -2126,42 +1474,539 @@
 	    }
 	  },
 
-	  getVariations: function(options){
-	    var parent_id = options.parent.get('id');
-	    if( !this._variations || !this._variations[parent_id] ){
-	      var vars = new Variations(options.parent.get('variations'), options);
-	      this._variations = this._variations || {};
-	      this._variations[parent_id] = new FilteredCollection(vars, options);
-	    }
-	    return this._variations[parent_id];
+	  idbCollections: function(){
+	    return _.reduce( this.getAllCollections(), function(result, col, key){
+	      if( col instanceof App.IndexedDBCollection ){
+	        result[key] = col;
+	      }
+	      return result;
+	    }, {}, this);
 	  }
 
 	});
 
 	module.exports = EntitiesService;
-	POS.attach('Entities.Service', EntitiesService);
+	App.prototype.set('Entities.Service', EntitiesService);
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 63 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Collection = __webpack_require__(64);
-	var Model = __webpack_require__(65);
+	var Mn = __webpack_require__(3);
+	var Radio = __webpack_require__(4);
+	var app = __webpack_require__(2);
+	var _ = __webpack_require__(5);
 
-	module.exports = Collection.extend({
-	  model: Model
+	module.exports = app.prototype.Service = Mn.Object.extend({
+	  constructor: function(options) {
+	    options = options || {};
+
+	    if (this.channelName) {
+	      this.channel = Radio.channel(_.result(this, 'channelName'));
+	    }
+
+	    // add reference to the app, like old Marionette.Module
+	    if(options.app){
+	      this.app = options.app;
+	    }
+
+	    Mn.Object.apply(this, arguments);
+	  },
+
+	  start: function(){
+	    this.triggerMethod('before:start');
+	    this._isStarted = true;
+	    this.triggerMethod('start');
+	  },
+
+	  stop: function(){
+	    this.triggerMethod('before:stop');
+	    this._isStarted = false;
+	    this.triggerMethod('stop');
+	  },
+
+	  isStarted: function(){
+	    return this._isStarted === true;
+	  }
+
 	});
 
 /***/ },
-/* 64 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var bb = __webpack_require__(11);
-	var POS = __webpack_require__(5);
-	//var Radio = require('backbone.radio');
+	var DualCollection = __webpack_require__(22);
+	var Model = __webpack_require__(28);
 
-	module.exports = POS.Collection = bb.Collection.extend({
+	module.exports = DualCollection.extend({
+	  model: Model,
+	  name: 'products'
+	});
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Dual Collection makes sure the data locally and the data on the server
+	 * stay in sync.
+	 */
+
+	var Backbone = __webpack_require__(16);
+	var Radio = Backbone.Radio;
+	var debug = __webpack_require__(13)('dualCollection');
+	var IDBCollection = __webpack_require__(23);
+	var app = __webpack_require__(2);
+	var _ = __webpack_require__(5);
+	var $ = __webpack_require__(6);
+	var moment = __webpack_require__(27);
+
+	module.exports = app.prototype.DualCollection = IDBCollection.extend({
+	  keyPath: 'local_id',
+	  mergeKeyPath: 'id',
+	  _syncDelayed: true,
+
+	  /**
+	   * Items for download will be placed in queue
+	   * Delay is the pause between the next items in queue
+	   */
+	  queue: [],
+	  delay: 500, // server breathing spacing, can also be set via radio
+
+	  url: function(){
+	    var wc_api = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'wc_api'
+	    });
+	    return wc_api + this.name;
+	  },
+
+	  state: {
+	    pageSize: 10
+	  },
+
+	  /**
+	   *
+	   */
+	  fetch: function(options){
+	    options = options || {};
+	    if(options.remote){
+	      return this.remoteFetch(options);
+	    }
+	    return IDBCollection.prototype.fetch.call(this, options);
+	  },
+
+	  /**
+	   *
+	   */
+	  remoteFetch: function(options){
+	    var self = this;
+	    return this.sync('read', this, options)
+	      .then(function(resp){
+	        var models = self.parse(resp);
+	        return IDBCollection.prototype.merge.call(self, models);
+	      })
+	      .then(function(models){
+	        var ids = _.map(models, function(model){
+	          return model.get('id');
+	        });
+	        self.dequeue(ids);
+	      });
+	  },
+
+	  /**
+	   * Full sync
+	   * - Get any updated records
+	   * - Audit using full list of remote ids vs local
+	   * - Upload any local changes
+	   */
+	  fullSync: function(){
+	    var self = this;
+
+	    if(this._syncing){
+	      debug('sync already in progress');
+	      return;
+	    }
+
+	    this._syncing = true;
+	    debug('fullSync started');
+	    this.trigger('start:fullSync');
+
+	    return this.fetchUpdated()
+	      .then(function(){
+	        return self.auditRecords();
+	      })
+	      .then(function(){
+	        if(self._syncDelayed){
+	          return self.syncDelayed();
+	        }
+	      })
+	      .done(function(){ debug('fullSync complete'); })
+	      .fail(function(err){ debug('fullSync failed', err); })
+	      .always(function(){
+	        self._syncing = false;
+	        self.trigger('end:fullSync');
+	      });
+
+	  },
+
+	  /**
+	   * Fetch updated
+	   * - if collection is empty, fetch the first page
+	   * - else, get the latest updated_at from local collection
+	   * - check server for any new updates
+	   */
+	  fetchUpdated: function(){
+	    var self = this;
+
+	    // no local records, possibly first fetch
+	    if(this.length === 0){
+	      return this.fetch({ remote: true });
+	    }
+
+	    //var last_update = this.formatDate( this.getState('last_update') );
+	    var last_update = _.compact( this.pluck('updated_at') ).sort().pop();
+
+	    //
+	    return this.getRemoteIds(last_update)
+	      .then(function(ids){
+	        self.enqueue(ids);
+	        return self.processQueue({
+	          queue: ids,
+	          all  : true
+	        });
+	      });
+
+	  },
+
+	  /**
+	   * get delayed models and remote create/update
+	   */
+	  syncDelayed: function(){
+	    var models = this.getDelayedModels();
+	    var sync = _.map(models, function(model){
+	      return model.remoteSync(null, model);
+	    });
+	    return $.when.apply(this, sync);
+	  },
+
+	  /**
+	   * returns array of all delayed records
+	   */
+	  getDelayedModels: function() {
+	    return this.filter(function(model){
+	      return model.isDelayed();
+	    });
+	  },
+
+	  /**
+	   * Audit records
+	   * - get full list of remote ids
+	   * - compare to local ids
+	   * - queue records for remote fetch
+	   * - remove any garbage records
+	   */
+	  auditRecords: function(){
+	    var local = this.pluck('id'),
+	        self = this;
+
+	    return this.getRemoteIds()
+	      .then(function(remote){
+	        var add = _.chain(remote).difference(local).compact().value(),
+	            remove = _.chain(local).difference(remote).compact().value();
+	        self.enqueue(add);
+	        self.dequeue(remove);
+	        return self.removeGarbage(remove);
+	      })
+	      .done(function(){ debug('audit complete'); })
+	      .fail(function(err){ debug('audit failed', err); });
+
+	  },
+
+	  /**
+	   * Get array of all entity ids from the server
+	   * - optionally get ids modified since last_update
+	   * - uses ajax for performance
+	   */
+	  getRemoteIds: function(last_update){
+	    var ajaxurl = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'ajaxurl'
+	    });
+
+	    if(last_update){
+	      debug('getting updated ids from server since ' + last_update);
+	    } else {
+	      debug('getting all ids from server');
+	    }
+
+	    return $.getJSON( ajaxurl, {
+	      action        : 'wc_pos_get_all_ids',
+	      type          : this.name,
+	      updated_at_min: last_update
+	    });
+	  },
+
+	  /**
+	   * Remove garbage records, ie: records deleted on server
+	   */
+	  removeGarbage: function(ids){
+	    var models = this.getModelsByRemoteIds(ids);
+
+	    if(models.length === 0){
+	      return;
+	    }
+
+	    this.remove(models);
+	    return this.db.removeBatch(_.pluck(models, 'id'));
+	  },
+
+	  /**
+	   * Turn array of remoteIds into array of models
+	   * idAttribute = 'local_id'
+	   * remoteIdAttribute = 'id
+	   */
+	  getModelsByRemoteIds: function(ids){
+	    return this.filter(function(model){
+	      return _(ids).contains(model.get('id'));
+	    });
+	  },
+
+	  /**
+	   * Add ids to queue for potential download
+	   */
+	  enqueue: function(ids){
+	    if(!_.isArray(ids)){
+	      return this.queue.push(ids);
+	    }
+	    this.queue = _.union(this.queue, ids);
+	  },
+
+	  /**
+	   * Remove ids from queue
+	   */
+	  dequeue: function(ids){
+	    if(!_.isArray(ids)){
+	      this.queue = _.without(this.queue, ids);
+	    } else {
+	      this.queue = _.difference(this.queue, ids);
+	    }
+	  },
+
+	  /**
+	   *
+	   */
+	  hasAllRecords: function(){
+	    return (this.queue.length === 0);
+	  },
+
+	  /**
+	   * Process queue
+	   * - take slice of ids from queue and remote fetch
+	   * - optionally keep processing queue until empty
+	   */
+	  /* jshint -W071, -W074 */
+	  processQueue: function(options){
+	    options = options || {};
+	    var queue = options.queue || _.clone(this.queue);
+	    if(queue.length === 0 || this._processingQueue){
+	      return;
+	    }
+	    this._processingQueue = true;
+	    this.trigger('start:processQueue');
+
+	    var self = this,
+	        deferred = new $.Deferred(),
+	        ids = queue.splice(0, this.state.pageSize).join(',');
+
+	    this.fetch({
+	      remote: true,
+	      data: {
+	        filter: options.filter || {
+	          limit: -1,
+	          'in': ids
+	        }
+	      }
+	    })
+	    .done(function(){
+	      if(!options.all || queue.length === 0){
+	        deferred.resolve();
+	      } else {
+	        deferred.progress(ids);
+	        _.delay(self.processQueue.bind(self), self.getDelay(), options);
+	      }
+	    })
+	    .fail(deferred.reject)
+	    .always(function(){
+	      self._processingQueue = false;
+	      self.trigger('end:processQueue');
+	    });
+
+	    return deferred.promise();
+	  },
+	  /* jshint +W071, +W074 */
+
+	  /**
+	   * Allows delay to be added between process queue
+	   * - may be necessary to ease server load
+	   */
+	  getDelay: function(){
+	    return Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'delay'
+	    }) || this.delay;
+	  },
+
+	  /**
+	   * Clears the IDB storage and resets the collection
+	   */
+	  clear: function(){
+	    if(!this.db){
+	      return;
+	    }
+
+	    var self = this;
+	    return IDBCollection.prototype.clear.call(this)
+	      .then(function(){
+	        self.queue = [];
+	      });
+	  },
+
+	  /*
+	   * Helper function to format Date.now() to RFC3339
+	   * - returns 2015-03-11T02:30:43.925Z (with milliseconds)
+	   * - undefined if no timestamp
+	   */
+	  formatDate: function(timestamp) {
+	    if(timestamp){
+	      //return moment(timestamp).utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+	      return moment(timestamp).toISOString();
+	    }
+	  }
+
+	});
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * TODO: merge sync/idb.js & sync/idbsync.js?
+	 */
+
+	var Collection = __webpack_require__(24);
+	//var debug = require('debug')('idbCollection');
+	var app = __webpack_require__(2);
+	var IndexedDB = __webpack_require__(25);
+	var Radio = __webpack_require__(4);
+
+	module.exports = app.prototype.IndexedDBCollection = Collection.extend({
+	  name          : 'store',
+	  storePrefix   : 'wc_pos_',
+	  dbVersion     : 4005,
+	  keyPath       : 'local_id',
+	  autoIncrement : true,
+	  indexes       : [
+	    {name: 'local_id', keyPath: 'local_id', unique: true},
+	    {name: 'id', keyPath: 'id', unique: true},
+	    {name: 'status', keyPath: 'status', unique: false}
+	  ],
+
+	  constructor: function() {
+	    Collection.apply(this, arguments);
+
+	    var options = {
+	      storeName     : this.name,
+	      storePrefix   : this.storePrefix,
+	      dbVersion     : this.dbVersion,
+	      keyPath       : this.keyPath,
+	      autoIncrement : this.autoIncrement,
+	      indexes       : this.indexes,
+	      defaultErrorHandler : function(error){
+	        Radio.trigger('global', 'error', {
+	          status: error.target.error.name,
+	          message: error.target.error.message
+	        });
+	      }
+	    };
+
+	    this.db = new IndexedDB(options, this);
+	    this.versionCheck();
+	    this.db.open()
+	      // error opening db
+	      .fail(function(error){
+	        Radio.trigger('global', 'error', {
+	          status    : 'indexedDB error',
+	          message   : error
+	        });
+	      });
+	  },
+
+	  merge: function(models){
+	    var self = this;
+	    return this.db.merge(models)
+	      .then(function(){
+	        var models = Array.prototype.slice.apply(arguments);
+	        return self.add(models, {merge: true});
+	      });
+	  },
+
+	  /**
+	   * Clears the IDB storage and resets the collection
+	   */
+	  clear: function(){
+	    if(!this.db){
+	      return;
+	    }
+
+	    var self = this;
+	    return this.db.open()
+	      .then(function(){
+	        self.reset();
+	        return self.db.clear();
+	      });
+	  },
+
+	  /**
+	   * Each website will have a unique idbVersion number
+	   * the version number is incremented on plugin update and some user actions
+	   * this version check will compare the version numbers
+	   * idb is flushed on version change
+	   */
+	  versionCheck: function(){
+	    var name = this.name;
+
+	    var newVersion = parseInt( Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'idbVersion'
+	    }), 10 ) || 0;
+	    var oldVersion = parseInt( Radio.request('entities', 'get', {
+	      type: 'localStorage',
+	      name: name + '_idbVersion'
+	    }), 10 ) || 0;
+
+	    if( newVersion !== oldVersion ){
+	      this.clear().then(function(){
+	        Radio.request('entities', 'set', {
+	          type : 'localStorage',
+	          name : name + '_idbVersion',
+	          data : newVersion
+	        });
+	      });
+	    }
+	  }
+
+	});
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var bb = __webpack_require__(16);
+	var app = __webpack_require__(2);
+
+	module.exports = app.prototype.Collection = bb.Collection.extend({
 	  constructor: function() {
 	    bb.Collection.apply(this, arguments);
 	    this._isNew = true;
@@ -2185,119 +2030,714 @@
 	});
 
 /***/ },
-/* 65 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DeepModel = __webpack_require__(66);
-	var Radio = __webpack_require__(4);
+	/**
+	 * Backbone adapter for idb-wrapper api
+	 */
+	var IDBStore = __webpack_require__(26);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var bb = __webpack_require__(16);
+	var noop = function (){};
+	var defaultErrorHandler = function (error) {
+	  throw error;
+	};
 
-	module.exports = DeepModel.extend({
+	function IndexedDB(options, parent) {
+	  this.parent = parent;
+	  this.options = options;
+	  if(options.defaultErrorHandler){
+	    defaultErrorHandler = options.defaultErrorHandler;
+	  }
+	}
 
-	  initialize: function() {
-	    this.url = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'ajaxurl'
-	    });
-	  },
+	var methods = {
 
-	  sync: function (method, model, options) {
-	    var nonce = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'nonce'
-	    });
-
-	    var id       = 'id=' + model.get('id'),
-	        action   = 'action=wc_pos_admin_settings',
-	        security = 'security=' + nonce;
-
-	    //options.emulateHTTP = true;
-	    options.url = this.url + '?' + action + '&' + id + '&' + security;
-
-	    // button state
-	    if(options.buttons){
-	      this.updateButtonState(options);
+	  /**
+	   *
+	   */
+	  open: function () {
+	    if(this._open){
+	      return this._open;
 	    }
+	    var deferred = new $.Deferred(),
+	        options = this.options || {};
 
-	    return DeepModel.prototype.sync(method, model, options);
-	  },
+	    options.onStoreReady = deferred.resolve;
+	    options.onError = deferred.reject;
 
-	  parse: function (resp) {
-	    // ajax will return false if no option exists
-	    if(!resp){ resp = null; }
-	    return resp;
-	  },
+	    this.store = new IDBStore(options);
 
-	  updateButtonState: function(options){
-	    var success = options.success,
-	        error = options.error,
-	        btn = options.buttons;
-
-	    btn.trigger('state', [ 'loading', '' ]);
-
-	    options.success = function(model, resp, options){
-	      if( success ) { success(model, resp, options); }
-	      btn.trigger('state', [ 'success', null ]);
-	    };
-
-	    options.error = function(jqxhr, textStatus, errorThrown){
-	      if( error ) { error(jqxhr, textStatus, errorThrown); }
-	      var message = null;
-	      if(jqxhr.responseJSON && jqxhr.responseJSON.errors){
-	        message = jqxhr.responseJSON.errors[0].message;
-	      }
-	      btn.trigger('state', ['error', message]);
-	    };
+	    this._open = deferred.promise();
+	    return this._open;
 	  },
 
 	  /**
-	   * Override destroy to restore data
-	   * @param options
-	   * @returns {*}
+	   * Add a new model to the store
 	   */
-	  destroy: function(options){
-	    var self = this;
-	    return this.sync('delete', this, options)
-	      .then(function(data){
-	        data.id = self.id;
-	        self.clear({ silent: true }).set(data);
-	      });
-	  }
+	  create: function(model, options) {
+	    options = options || {};
+	    var onSuccess = options.success || noop,
+	        onError = options.error || defaultErrorHandler,
+	        data = this._returnAttributes(model),
+	        keyPath = this.store.keyPath;
 
-	});
-
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var POS = __webpack_require__(5);
-	var Model = __webpack_require__(67);
-	var DeepModel = __webpack_require__(68);
-
-	module.exports = POS.DeepModel = Model.extend(DeepModel);
-
-/***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var bb = __webpack_require__(11);
-	var POS = __webpack_require__(5);
-	//var Radio = require('backbone.radio');
-
-	module.exports = POS.Model = bb.Model.extend({
-	  constructor: function() {
-	    bb.Model.apply(this, arguments);
+	    return this.put(data)
+	      .then(function(insertedId){
+	        data[keyPath] = insertedId;
+	        onSuccess(data);
+	        return data;
+	      })
+	      .fail(onError);
 	  },
 
-	  parse: function (resp){
-	    return resp && resp[this.name] ? resp[this.name] : resp ;
+	  /**
+	   * Update a model in the store
+	   */
+	  update: function(model, options) {
+	    options = options || {};
+	    var onSuccess = options.success || noop,
+	        onError = options.error || defaultErrorHandler,
+	        data = this._returnAttributes(model),
+	        self = this;
+
+	    return this.put(data)
+	      .then(function(insertedId){
+	        return self.get(insertedId)
+	          .done(onSuccess)
+	          .fail(onError);
+	      })
+	      .fail(onError);
+	  },
+
+	  /**
+	   * Retrieve a model from the store
+	   */
+	  read: function(model, options) {
+	    options = options || {};
+	    var onSuccess = options.success || noop,
+	        onError = options.error || defaultErrorHandler;
+	    return this.get(model.id)
+	      .done(onSuccess)
+	      .fail(onError);
+	  },
+
+	  /**
+	   * Delete a model from the store
+	   */
+	  destroy: function(model, options) {
+	    if (model.isNew()) {
+	      return false;
+	    }
+	    options = options || {};
+	    var onSuccess = options.success || noop,
+	        onError = options.error || defaultErrorHandler;
+
+	    return this.remove(model.id)
+	      .done(onSuccess)
+	      .fail(onError);
+	  },
+
+	  /**
+	   *
+	   */
+	  put: function (key, value) {
+	    var deferred = new $.Deferred();
+
+	    if (this.store.keyPath !== null) {
+	      // in-line keys: one arg only (key == value)
+	      this.store.put(key, deferred.resolve, deferred.reject);
+	    } else {
+	      // out-of-line keys: two args
+	      this.store.put(key, value, deferred.resolve, deferred.reject);
+	    }
+
+	    return deferred.promise();
+	  },
+
+	  /**
+	   *
+	   */
+	  get: function (key) {
+	    var deferred = new $.Deferred();
+	    this.store.get(key, deferred.resolve, deferred.reject);
+	    return deferred.promise();
+	  },
+
+	  /**
+	   *
+	   */
+	  remove: function(key){
+	    if( _.isObject(key) && key.hasOwnProperty(this.store.keyPath) ) {
+	      key = key[this.store.keyPath];
+	    }
+	    return this._remove(key);
+	  },
+
+	  _remove: function (key) {
+	    var deferred = new $.Deferred();
+	    this.store.remove(key, deferred.resolve, deferred.reject);
+	    return deferred.promise();
+	  },
+
+	  /**
+	   * Retrieve a collection from the store
+	   */
+	  getAll: function(options) {
+	    var deferred = new $.Deferred();
+
+	    var onSuccess = function (result) {
+	      options.success.apply(this, arguments);
+	      deferred.resolve(result);
+	    };
+
+	    var onError = function (result) {
+	      options.error.apply(this, arguments);
+	      deferred.reject(result);
+	    };
+
+	    this.store.getAll(onSuccess, onError);
+
+	    return deferred.promise();
+	  },
+
+	  /**
+	   * Iterates over the store using the given options and calling onItem
+	   * for each entry matching the options.
+	   */
+	  iterate: function(options) {
+	    options = options || {};
+	    var deferred = new $.Deferred();
+	    options.onEnd = deferred.resolve;
+	    options.onError = deferred.reject;
+	    var onItem = deferred.notify;
+	    this.store.iterate(onItem, options);
+	    return deferred.promise();
+	  },
+
+	  /**
+	   * Creates a key range using specified options. This key range can be
+	   * handed over to the count() and iterate() methods.
+	   *
+	   * Note: You must provide at least one or both of "lower" or "upper" value.
+	   */
+	  makeKeyRange: function(options) {
+	    return this.store.makeKeyRange(options);
+	  },
+
+	  /**
+	   * Perform a batch operation to save all models in the current collection to
+	   * indexedDB.
+	   */
+	  saveAll: function() {
+	    return this.putBatch(this.parent.toJSON());
+	  },
+
+	  /**
+	   * Perform a batch operation to save and/or remove models in the current
+	   * collection to indexedDB. This is a proxy to the idbstore `batch` method
+	   */
+	  batch: function(dataArray) {
+	    var deferred = new $.Deferred();
+	    this.store.batch(dataArray, deferred.resolve, deferred.reject);
+	    return deferred.promise();
+	  },
+
+	  /**
+	   * Perform a batch put operation to save models to indexedDB. This is a
+	   * proxy to the idbstore `putBatch` method
+	   */
+	  putBatch: function(dataArray) {
+	    if( !_.isArray(dataArray) ){
+	      return this.put(dataArray);
+	    }
+	    return this._putBatch(dataArray);
+	  },
+
+	  _putBatch: function(dataArray) {
+	    var deferred = new $.Deferred();
+	    this.store.putBatch(dataArray, deferred.resolve, deferred.reject);
+	    return deferred.promise();
+	  },
+
+	  /**
+	   * Perform a batch operation to remove models from indexedDB. This is a
+	   * proxy to the idbstore `removeBatch` method
+	   */
+	  removeBatch: function(keyArray) {
+	    if( !_.isArray(keyArray) ){
+	      return this.remove(keyArray);
+	    }
+	    return this._removeBatch(keyArray);
+	  },
+
+	  _removeBatch: function(keyArray){
+	    var deferred = new $.Deferred();
+	    this.store.removeBatch(keyArray, deferred.resolve, deferred.reject);
+	    return deferred.promise();
+	  },
+
+	  /**
+	   * Clears all content from the current indexedDB for this collection/model
+	   */
+	  clear: function() {
+	    var deferred = new $.Deferred();
+	    this.store.clear(deferred.resolve, deferred.reject);
+	    return deferred.promise();
+	  },
+
+	  /**
+	   *
+	   */
+	  query: function(index, keyRange){
+	    var deferred = new $.Deferred();
+
+	    this.store.query(deferred.resolve, {
+	      index: index,
+	      keyRange: keyRange,
+	      onError: deferred.reject
+	    });
+
+	    return deferred.promise();
+	  },
+
+	  /**
+	   * select records by {key: value}
+	   */
+	  getByAttribute: function(attribute){
+	    var index = _.chain(attribute).keys().first().value();
+	    var keyRange = this.store.makeKeyRange({
+	      only: _.chain(attribute).values().first().value()
+	    });
+	    return this.query(index, keyRange);
+	  },
+
+	  merge: function(models){
+	    models = !_.isArray(models) ? [models] : models;
+	    if(!this.parent.mergeKeyPath){
+	      return this.putBatch(models);
+	    }
+	    var merge = _.map(models, this._merge, this);
+	    return $.when.apply(this, merge);
+	  },
+
+	  _merge: function(model){
+	    var mergeKeyPath = this.parent.mergeKeyPath,
+	        keyPath = this.store.keyPath,
+	        self = this,
+	        opts = {};
+
+	    if(model[keyPath]){
+	      return this.update(model);
+	    }
+
+	    opts[mergeKeyPath] = model[mergeKeyPath];
+
+	    return this.getByAttribute(opts)
+	      .then(function(array){
+	        var local = _.first(array);
+	        if(local){
+	          model[keyPath] = local[keyPath];
+	          return self.update(model);
+	        }
+	        return self.create(model);
+	      });
+	  },
+
+	  _returnAttributes: function(model){
+	    if(model instanceof bb.Model){
+	      return model.toJSON();
+	    }
+	    return model;
 	  }
+	};
+
+	_.extend(IndexedDB.prototype, methods);
+	module.exports = IndexedDB;
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	module.exports = IDBStore;
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	module.exports = moment;
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var DualModel = __webpack_require__(29);
+	var _ = __webpack_require__(5);
+	var Variations = __webpack_require__(33);
+	var FilteredCollection = __webpack_require__(35);
+
+	module.exports = DualModel.extend({
+	  name: 'product',
+
+	  // this is an array of fields used by FilterCollection.matchmaker()
+	  fields: ['title'],
+
+	  // data types
+	  schema: {
+	    price         : 'number',
+	    regular_price : 'number',
+	    sale_price    : 'number',
+	    stock_quantity: 'number'
+	  },
+
+	  initialize: function(){
+	    this.on({
+	      'change:updated_at': this.onUpdate
+	    });
+	  },
+
+	  onUpdate: function(){
+	    // update stock
+	    if( this.get('type') === 'variable' ){
+	      var variations = this.getVariations().superset();
+	      variations.set( this.get('variations') );
+	    }
+	  },
+
+	  /**
+	   * Helper functions to display attributes vs variations
+	   */
+	  productAttributes: function(){
+	    return _.chain(this.get('attributes'))
+	      .where({variation: false})
+	      .where({visible: true})
+	      .value();
+	  },
+
+	  productVariations: function(){
+	    return _.where(this.get('attributes'), {variation: true});
+	  },
+
+	  /**
+	   * Special cases for product model filter
+	   * @param {Array} tokens An array of query tokens, see QParser
+	   * @param {Object} methods Helper match methods
+	   * @param {Function} callback
+	   */
+	  matchMaker: function(tokens, methods, callback){
+
+	    var match = _.all(tokens, function(token){
+
+	      // barcode
+	      if( token.type === 'prefix' && token.prefix === 'barcode' ){
+	        if(token.query){ return this.barcodeMatch(token.query); }
+	      }
+
+	      // cat
+	      if( token.type === 'prefix' && token.prefix === 'cat' ){
+	        token.prefix = 'categories';
+	        return methods.prefix(token, this);
+	      }
+
+	    }, this);
+
+	    //if(match){
+	    //  return match;
+	    //}
+
+	    // the original matchMaker
+	    return match ? match : callback(tokens, this);
+
+	  },
+
+	  barcodeMatch: function(barcode){
+	    var type = this.get('type'),
+	        test = this.get('barcode').toLowerCase(),
+	        value = barcode.toString().toLowerCase();
+
+	    if(test === value) {
+	      if(type !== 'variable'){
+	        this.trigger('match:barcode', this);
+	      }
+	      return true;
+	    }
+
+	    if(type !== 'variable'){
+	      return this.partialBarcodeMatch(test, value);
+	    }
+
+	    return this.variableBarcodeMatch(test, value);
+	  },
+
+	  partialBarcodeMatch: function(test, value){
+	    if(test.indexOf( value ) !== -1) {
+	      return true;
+	    }
+	    return false;
+	  },
+
+	  variableBarcodeMatch: function(test, value){
+	    var match;
+
+	    this.getVariations().superset().each(function(variation){
+	      var vtest = variation.get('barcode').toLowerCase();
+	      if(vtest === value){
+	        match = variation;
+	        return;
+	      }
+	      if(vtest.indexOf( value ) !== -1) {
+	        match = 'partial';
+	        return;
+	      }
+	    });
+
+	    if(match){
+	      if(match !== 'partial'){
+	        this.trigger('match:barcode', match, this);
+	      }
+	      return true;
+	    }
+
+	    return this.partialBarcodeMatch(test, value);
+	  },
+
+	  /**
+	   * Construct variable options from variation array
+	   * - variable.attributes includes all options, including those not used
+	   */
+	  getVariationOptions: function(){
+	    if( this._variationOptions ) {
+	      return this._variationOptions;
+	    }
+
+	    var variations = this.get('variations');
+
+	    // pluck all options, eg:
+	    // { Color: ['Black', 'Blue'], Size: ['Small', 'Large'] }
+	    var result = _.pluck(variations, 'attributes')
+	      .reduce(function(result, attrs){
+	        _.each(attrs, function(attr){
+	          if(result[attr.name]){
+	            return result[attr.name].push(attr.option);
+	          }
+	          result[attr.name] = [attr.option];
+	        });
+	        return result;
+	      }, {});
+
+	    // map options with consistent keys
+	    this._variationOptions = _.map(result, function(options, name){
+	      return {
+	        'name': name,
+	        'options': _.uniq( options )
+	      };
+	    });
+
+	    return this._variationOptions;
+	  },
+
+	  /**
+	   *
+	   */
+	  getVariations: function(){
+	    if( this.get('type') !== 'variable' ){ return false; }
+	    if( ! this._variations ){
+	      var variations = new Variations(this.get('variations'), { parent: this });
+	      this._variations = new FilteredCollection(variations);
+	    }
+	    return this._variations;
+	  }
+
 	});
 
 /***/ },
-/* 68 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _ = __webpack_require__(6);
+	var DeepModel = __webpack_require__(30);
+	var app = __webpack_require__(2);
+	var _ = __webpack_require__(5);
+	var debug = __webpack_require__(13)('dualModel');
+
+	module.exports = app.prototype.DualModel = DeepModel.extend({
+	  idAttribute: 'local_id',
+	  remoteIdAttribute: 'id',
+	  fields: ['title'],
+
+	  validate: function(attrs){
+	    var obj = {};
+	    if(attrs[this.idAttribute]) {
+	      obj[this.idAttribute] = parseInt(attrs[this.idAttribute], 10);
+	    }
+	    if(attrs[this.remoteIdAttribute]){
+	      obj[this.remoteIdAttribute] = parseInt(attrs[this.remoteIdAttribute], 10);
+	    }
+	    this.set(obj, {silent: true});
+	  },
+
+	  url: function(){
+	    var remoteId = this.get(this.remoteIdAttribute),
+	        urlRoot = _.result(this.collection, 'url');
+
+	    if(remoteId){
+	      return '' + urlRoot + '/' + remoteId + '/';
+	    }
+	    return urlRoot;
+	  },
+
+	  // delayed states
+	  states: {
+	    //'patch'  : 'UPDATE_FAILED',
+	    'update' : 'UPDATE_FAILED',
+	    'create' : 'CREATE_FAILED',
+	    'delete' : 'DELETE_FAILED'
+	  },
+
+	  hasRemoteId: function() {
+	    return !!this.get(this.remoteIdAttribute);
+	  },
+
+	  isDelayed: function() {
+	    var status = this.get('status');
+	    return status === this.states['update'] ||
+	           status === this.states['create'] ||
+	           status === this.states['delete'];
+	  },
+
+	  /**
+	   * - sync to idb with correct status
+	   * - if remote, sync to remote
+	   */
+	  sync: function(method, model, options){
+	    options = options || {};
+	    var opts = _.clone(options);
+	    opts.remote = undefined;
+	    var m = method === 'patch' ? 'update' : method;
+
+	    this.setStatus(m);
+
+	    return DeepModel.prototype.sync.call(this, m, model, opts)
+	      .then(function(){
+	        if(options.remote){
+	          return model.remoteSync(method, model, options);
+	        }
+	      });
+	  },
+
+	  remoteSync: function(method, model, options){
+	    model = model || this;
+	    options = options || {};
+	    options.remote = true;
+	    method = method || model.getMethod();
+
+	    return DeepModel.prototype.sync.call(this, method, model, options)
+	      .then(function(resp){
+	        if(resp){
+	          var data = model.parse(resp);
+	          return model.merge(data);
+	        }
+	      });
+	  },
+
+	  setStatus: function(method){
+	    if(this.states[method]){
+	      if(method === 'update' && !this.hasRemoteId()){
+	        method = 'create';
+	      }
+	      this.set({ status: this.states[method] });
+	    }
+	  },
+
+	  getMethod: function(){
+	    var status = this.get('status');
+	    var remoteMethod = _.findKey(this.states, function(state) {
+	      return state === status;
+	    });
+	    if(remoteMethod){
+	      return remoteMethod;
+	    } else {
+	      debug('No method given for remote sync');
+	    }
+	  },
+
+	  merge: function(resp){
+	    // todo: merge
+	    // - merge should take bb & json?
+	    this.set(resp);
+	    if(this.isDelayed()){
+	      this.unset('status');
+	    }
+	    if(this.collection && this.collection.db){
+	      return this.collection.merge( this.toJSON() );
+	    }
+	  }
+
+	});
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var app = __webpack_require__(2);
+	var Model = __webpack_require__(31);
+	var DeepModel = __webpack_require__(32);
+
+	module.exports = app.prototype.DeepModel = Model.extend(DeepModel);
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var bb = __webpack_require__(16);
+	var app = __webpack_require__(2);
+	var _ = __webpack_require__(5);
+	//var Radio = require('backbone.radio');
+
+	// parsing functions
+	var parse = {
+	  'float': parseFloat,
+	  'int': parseInt,
+	  'number': function(num){
+	    num = Number(num);
+	    return _.isNaN(num) ? 0 : num;
+	  }
+	};
+
+	module.exports = app.prototype.Model = bb.Model.extend({
+
+	  parse: function (resp){
+	    var data = resp && resp[this.name] ? resp[this.name]  : resp;
+	    if( ! data ){
+	      return;
+	    }
+
+	    // check data type
+	    _.each( this.schema, function( val, attr ) {
+
+	      // if attribute exists
+	      if( ! _.has( data, attr ) ){
+	        return;
+	      }
+
+	      // string, eg: 'float'
+	      if( _.isString(val) && parse[val] ){
+	        data[attr] = parse[val]( data[attr] );
+	      }
+
+	    }, this);
+
+	    return data;
+	  }
+
+	});
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(5);
 
 	/**
 	 * Takes a nested object and returns a shallow object keyed with the path names
@@ -2619,2112 +3059,13 @@
 	module.exports = DeepModel;
 
 /***/ },
-/* 69 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DualCollection = __webpack_require__(70);
-	var Model = __webpack_require__(75);
-
-	module.exports = DualCollection.extend({
-	  model: Model,
-	  name: 'products'
-	});
-
-/***/ },
-/* 70 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Dual Collection makes sure the data locally and the data on the server
-	 * stay in sync.
-	 */
-
-	var Backbone = __webpack_require__(11);
-	var Radio = Backbone.Radio;
-	var debug = __webpack_require__(7)('dualCollection');
-	var IDBCollection = __webpack_require__(71);
-	var POS = __webpack_require__(5);
-	var _ = __webpack_require__(6);
-	var $ = __webpack_require__(10);
-	var moment = __webpack_require__(74);
-
-	module.exports = POS.DualCollection = IDBCollection.extend({
-	  keyPath: 'local_id',
-	  mergeKeyPath: 'id',
-	  _syncDelayed: true,
-
-	  /**
-	   * Items for download will be placed in queue
-	   * Delay is the pause between the next items in queue
-	   */
-	  queue: [],
-	  delay: 500, // server breathing spacing, can also be set via radio
-
-	  url: function(){
-	    var wc_api = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'wc_api'
-	    });
-	    return wc_api + this.name;
-	  },
-
-	  state: {
-	    pageSize: 10
-	  },
-
-	  /**
-	   *
-	   */
-	  fetch: function(options){
-	    options = options || {};
-	    if(options.remote){
-	      return this.remoteFetch(options);
-	    }
-	    return IDBCollection.prototype.fetch.call(this, options);
-	  },
-
-	  /**
-	   *
-	   */
-	  remoteFetch: function(options){
-	    var self = this;
-	    return this.sync('read', this, options)
-	      .then(function(resp){
-	        var models = self.parse(resp);
-	        return IDBCollection.prototype.merge.call(self, models);
-	      })
-	      .then(function(models){
-	        var ids = _.map(models, function(model){
-	          return model.get('id');
-	        });
-	        self.dequeue(ids);
-	      });
-	  },
-
-	  /**
-	   * Full sync
-	   * - Get any updated records
-	   * - Audit using full list of remote ids vs local
-	   * - Upload any local changes
-	   */
-	  fullSync: function(){
-	    var self = this;
-
-	    if(this._syncing){
-	      debug('sync already in progress');
-	      return;
-	    }
-
-	    this._syncing = true;
-	    debug('fullSync started');
-	    this.trigger('start:fullSync');
-
-	    return this.fetchUpdated()
-	      .then(function(){
-	        return self.auditRecords();
-	      })
-	      .then(function(){
-	        if(self._syncDelayed){
-	          return self.syncDelayed();
-	        }
-	      })
-	      .done(function(){ debug('fullSync complete'); })
-	      .fail(function(err){ debug('fullSync failed', err); })
-	      .always(function(){
-	        self._syncing = false;
-	        self.trigger('end:fullSync');
-	      });
-
-	  },
-
-	  /**
-	   * Fetch updated
-	   * - if collection is empty, fetch the first page
-	   * - else, get the latest updated_at from local collection
-	   * - check server for any new updates
-	   */
-	  fetchUpdated: function(){
-	    var self = this;
-
-	    // no local records, possibly first fetch
-	    if(this.length === 0){
-	      return this.fetch({ remote: true });
-	    }
-
-	    //var last_update = this.formatDate( this.getState('last_update') );
-	    var last_update = _.compact( this.pluck('updated_at') ).sort().pop();
-
-	    //
-	    return this.getRemoteIds(last_update)
-	      .then(function(ids){
-	        self.enqueue(ids);
-	        return self.processQueue({
-	          queue: ids,
-	          all  : true
-	        });
-	      });
-
-	  },
-
-	  /**
-	   * get delayed models and remote create/update
-	   */
-	  syncDelayed: function(){
-	    var models = this.getDelayedModels();
-	    var sync = _.map(models, function(model){
-	      return model.remoteSync(null, model);
-	    });
-	    return $.when.apply(this, sync);
-	  },
-
-	  /**
-	   * returns array of all delayed records
-	   */
-	  getDelayedModels: function() {
-	    return this.filter(function(model){
-	      return model.isDelayed();
-	    });
-	  },
-
-	  /**
-	   * Audit records
-	   * - get full list of remote ids
-	   * - compare to local ids
-	   * - queue records for remote fetch
-	   * - remove any garbage records
-	   */
-	  auditRecords: function(){
-	    var local = this.pluck('id'),
-	        self = this;
-
-	    return this.getRemoteIds()
-	      .then(function(remote){
-	        var add = _.chain(remote).difference(local).compact().value(),
-	            remove = _.chain(local).difference(remote).compact().value();
-	        self.enqueue(add);
-	        self.dequeue(remove);
-	        return self.removeGarbage(remove);
-	      })
-	      .done(function(){ debug('audit complete'); })
-	      .fail(function(err){ debug('audit failed', err); });
-
-	  },
-
-	  /**
-	   * Get array of all entity ids from the server
-	   * - optionally get ids modified since last_update
-	   * - uses ajax for performance
-	   */
-	  getRemoteIds: function(last_update){
-	    var ajaxurl = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'ajaxurl'
-	    });
-
-	    if(last_update){
-	      debug('getting updated ids from server since ' + last_update);
-	    } else {
-	      debug('getting all ids from server');
-	    }
-
-	    return $.getJSON( ajaxurl, {
-	      action        : 'wc_pos_get_all_ids',
-	      type          : this.name,
-	      updated_at_min: last_update
-	    });
-	  },
-
-	  /**
-	   * Remove garbage records, ie: records deleted on server
-	   */
-	  removeGarbage: function(ids){
-	    var models = this.getModelsByRemoteIds(ids);
-
-	    if(models.length === 0){
-	      return;
-	    }
-
-	    this.remove(models);
-	    return this.db.removeBatch(_.pluck(models, 'id'));
-	  },
-
-	  /**
-	   * Turn array of remoteIds into array of models
-	   * idAttribute = 'local_id'
-	   * remoteIdAttribute = 'id
-	   */
-	  getModelsByRemoteIds: function(ids){
-	    return this.filter(function(model){
-	      return _(ids).contains(model.get('id'));
-	    });
-	  },
-
-	  /**
-	   * Add ids to queue for potential download
-	   */
-	  enqueue: function(ids){
-	    if(!_.isArray(ids)){
-	      return this.queue.push(ids);
-	    }
-	    this.queue = _.union(this.queue, ids);
-	  },
-
-	  /**
-	   * Remove ids from queue
-	   */
-	  dequeue: function(ids){
-	    if(!_.isArray(ids)){
-	      this.queue = _.without(this.queue, ids);
-	    } else {
-	      this.queue = _.difference(this.queue, ids);
-	    }
-	  },
-
-	  /**
-	   *
-	   */
-	  hasAllRecords: function(){
-	    return (this.queue.length === 0);
-	  },
-
-	  /**
-	   * Process queue
-	   * - take slice of ids from queue and remote fetch
-	   * - optionally keep processing queue until empty
-	   */
-	  /* jshint -W071, -W074 */
-	  processQueue: function(options){
-	    options = options || {};
-	    var queue = options.queue || _.clone(this.queue);
-	    if(queue.length === 0 || this._processingQueue){
-	      return;
-	    }
-	    this._processingQueue = true;
-	    this.trigger('start:processQueue');
-
-	    var self = this,
-	        deferred = new $.Deferred(),
-	        ids = queue.splice(0, this.state.pageSize).join(',');
-
-	    this.fetch({
-	      remote: true,
-	      data: {
-	        filter: options.filter || {
-	          limit: -1,
-	          'in': ids
-	        }
-	      }
-	    })
-	    .done(function(){
-	      if(!options.all || queue.length === 0){
-	        deferred.resolve();
-	      } else {
-	        deferred.progress(ids);
-	        _.delay(self.processQueue.bind(self), self.getDelay(), options);
-	      }
-	    })
-	    .fail(deferred.reject)
-	    .always(function(){
-	      self._processingQueue = false;
-	      self.trigger('end:processQueue');
-	    });
-
-	    return deferred.promise();
-	  },
-	  /* jshint +W071, +W074 */
-
-	  /**
-	   * Allows delay to be added between process queue
-	   * - may be necessary to ease server load
-	   */
-	  getDelay: function(){
-	    return Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'delay'
-	    }) || this.delay;
-	  },
-
-	  /*
-	   * Helper function to format Date.now() to RFC3339
-	   * - returns 2015-03-11T02:30:43.925Z (with milliseconds)
-	   * - undefined if no timestamp
-	   */
-	  formatDate: function(timestamp) {
-	    if(timestamp){
-	      //return moment(timestamp).utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z';
-	      return moment(timestamp).toISOString();
-	    }
-	  }
-
-	});
-
-/***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * TODO: merge sync/idb.js & sync/idbsync.js?
-	 */
-
-	var Collection = __webpack_require__(64);
-	//var debug = require('debug')('idbCollection');
-	var POS = __webpack_require__(5);
-	var IndexedDB = __webpack_require__(72);
+	var Collection = __webpack_require__(24);
+	var Model = __webpack_require__(34);
 	var Radio = __webpack_require__(4);
-
-	module.exports = POS.IndexedDBCollection = Collection.extend({
-	  name          : 'store',
-	  storePrefix   : 'wc_pos_',
-	  dbVersion     : 1,
-	  keyPath       : 'local_id',
-	  autoIncrement : true,
-	  indexes       : [
-	    {name: 'local_id', keyPath: 'local_id', unique: true},
-	    {name: 'id', keyPath: 'id', unique: true},
-	    {name: 'status', keyPath: 'status', unique: false}
-	  ],
-
-	  constructor: function() {
-	    Collection.apply(this, arguments);
-
-	    var options = {
-	      storeName     : this.name,
-	      storePrefix   : this.storePrefix,
-	      dbVersion     : this.dbVersion,
-	      keyPath       : this.keyPath,
-	      autoIncrement : this.autoIncrement,
-	      indexes       : this.indexes,
-	      defaultErrorHandler : function(error){
-	        Radio.trigger('global', 'error', {
-	          status: error.target.error.name,
-	          message: error.target.error.message
-	        });
-	      }
-	    };
-
-	    this.db = new IndexedDB(options, this);
-	    this.db.open();
-	  },
-
-	  merge: function(models){
-	    var self = this;
-	    return this.db.merge(models)
-	      .then(function(){
-	        var models = Array.prototype.slice.apply(arguments);
-	        return self.add(models, {merge: true});
-	      });
-	  }
-
-	});
-
-/***/ },
-/* 72 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Backbone adapter for idb-wrapper api
-	 */
-	var IDBStore = __webpack_require__(73);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	var bb = __webpack_require__(11);
-	var noop = function (){};
-	var defaultErrorHandler = function (error) {
-	  throw error;
-	};
-
-	function IndexedDB(options, parent) {
-	  this.parent = parent;
-	  this.options = options;
-	  if(options.defaultErrorHandler){
-	    defaultErrorHandler = options.defaultErrorHandler;
-	  }
-	}
-
-	var methods = {
-
-	  /**
-	   *
-	   */
-	  open: function () {
-	    if(this._open){
-	      return this._open;
-	    }
-	    var deferred = new $.Deferred(),
-	        options = this.options || {};
-
-	    options.onStoreReady = deferred.resolve;
-	    options.onError = deferred.reject;
-
-	    this.store = new IDBStore(options);
-
-	    this._open = deferred.promise();
-	    return this._open;
-	  },
-
-	  /**
-	   * Add a new model to the store
-	   */
-	  create: function(model, options) {
-	    options = options || {};
-	    var onSuccess = options.success || noop,
-	        onError = options.error || defaultErrorHandler,
-	        data = this._returnAttributes(model),
-	        keyPath = this.store.keyPath;
-
-	    return this.put(data)
-	      .then(function(insertedId){
-	        data[keyPath] = insertedId;
-	        onSuccess(data);
-	        return data;
-	      })
-	      .fail(onError);
-	  },
-
-	  /**
-	   * Update a model in the store
-	   */
-	  update: function(model, options) {
-	    options = options || {};
-	    var onSuccess = options.success || noop,
-	        onError = options.error || defaultErrorHandler,
-	        data = this._returnAttributes(model),
-	        self = this;
-
-	    return this.put(data)
-	      .then(function(insertedId){
-	        return self.get(insertedId)
-	          .done(onSuccess)
-	          .fail(onError);
-	      })
-	      .fail(onError);
-	  },
-
-	  /**
-	   * Retrieve a model from the store
-	   */
-	  read: function(model, options) {
-	    options = options || {};
-	    var onSuccess = options.success || noop,
-	        onError = options.error || defaultErrorHandler;
-	    return this.get(model.id)
-	      .done(onSuccess)
-	      .fail(onError);
-	  },
-
-	  /**
-	   * Delete a model from the store
-	   */
-	  destroy: function(model, options) {
-	    if (model.isNew()) {
-	      return false;
-	    }
-	    options = options || {};
-	    var onSuccess = options.success || noop,
-	        onError = options.error || defaultErrorHandler;
-
-	    return this.remove(model.id)
-	      .done(onSuccess)
-	      .fail(onError);
-	  },
-
-	  /**
-	   *
-	   */
-	  put: function (key, value) {
-	    var deferred = new $.Deferred();
-
-	    if (this.store.keyPath !== null) {
-	      // in-line keys: one arg only (key == value)
-	      this.store.put(key, deferred.resolve, deferred.reject);
-	    } else {
-	      // out-of-line keys: two args
-	      this.store.put(key, value, deferred.resolve, deferred.reject);
-	    }
-
-	    return deferred.promise();
-	  },
-
-	  /**
-	   *
-	   */
-	  get: function (key) {
-	    var deferred = new $.Deferred();
-	    this.store.get(key, deferred.resolve, deferred.reject);
-	    return deferred.promise();
-	  },
-
-	  /**
-	   *
-	   */
-	  remove: function(key){
-	    if( _.isObject(key) && key.hasOwnProperty(this.store.keyPath) ) {
-	      key = key[this.store.keyPath];
-	    }
-	    return this._remove(key);
-	  },
-
-	  _remove: function (key) {
-	    var deferred = new $.Deferred();
-	    this.store.remove(key, deferred.resolve, deferred.reject);
-	    return deferred.promise();
-	  },
-
-	  /**
-	   * Retrieve a collection from the store
-	   */
-	  getAll: function(options) {
-	    var deferred = new $.Deferred();
-
-	    var onSuccess = function (result) {
-	      options.success.apply(this, arguments);
-	      deferred.resolve(result);
-	    };
-
-	    var onError = function (result) {
-	      options.error.apply(this, arguments);
-	      deferred.reject(result);
-	    };
-
-	    this.store.getAll(onSuccess, onError);
-
-	    return deferred.promise();
-	  },
-
-	  /**
-	   * Iterates over the store using the given options and calling onItem
-	   * for each entry matching the options.
-	   */
-	  iterate: function(options) {
-	    options = options || {};
-	    var deferred = new $.Deferred();
-	    options.onEnd = deferred.resolve;
-	    options.onError = deferred.reject;
-	    var onItem = deferred.notify;
-	    this.store.iterate(onItem, options);
-	    return deferred.promise();
-	  },
-
-	  /**
-	   * Creates a key range using specified options. This key range can be
-	   * handed over to the count() and iterate() methods.
-	   *
-	   * Note: You must provide at least one or both of "lower" or "upper" value.
-	   */
-	  makeKeyRange: function(options) {
-	    return this.store.makeKeyRange(options);
-	  },
-
-	  /**
-	   * Perform a batch operation to save all models in the current collection to
-	   * indexedDB.
-	   */
-	  saveAll: function() {
-	    return this.putBatch(this.parent.toJSON());
-	  },
-
-	  /**
-	   * Perform a batch operation to save and/or remove models in the current
-	   * collection to indexedDB. This is a proxy to the idbstore `batch` method
-	   */
-	  batch: function(dataArray) {
-	    var deferred = new $.Deferred();
-	    this.store.batch(dataArray, deferred.resolve, deferred.reject);
-	    return deferred.promise();
-	  },
-
-	  /**
-	   * Perform a batch put operation to save models to indexedDB. This is a
-	   * proxy to the idbstore `putBatch` method
-	   */
-	  putBatch: function(dataArray) {
-	    if( !_.isArray(dataArray) ){
-	      return this.put(dataArray);
-	    }
-	    return this._putBatch(dataArray);
-	  },
-
-	  _putBatch: function(dataArray) {
-	    var deferred = new $.Deferred();
-	    this.store.putBatch(dataArray, deferred.resolve, deferred.reject);
-	    return deferred.promise();
-	  },
-
-	  /**
-	   * Perform a batch operation to remove models from indexedDB. This is a
-	   * proxy to the idbstore `removeBatch` method
-	   */
-	  removeBatch: function(keyArray) {
-	    if( !_.isArray(keyArray) ){
-	      return this.remove(keyArray);
-	    }
-	    return this._removeBatch(keyArray);
-	  },
-
-	  _removeBatch: function(keyArray){
-	    var deferred = new $.Deferred();
-	    this.store.removeBatch(keyArray, deferred.resolve, deferred.reject);
-	    return deferred.promise();
-	  },
-
-	  /**
-	   * Clears all content from the current indexedDB for this collection/model
-	   */
-	  clear: function() {
-	    var deferred = new $.Deferred();
-	    this.store.clear(deferred.resolve, deferred.reject);
-	    return deferred.promise();
-	  },
-
-	  /**
-	   *
-	   */
-	  query: function(index, keyRange){
-	    var deferred = new $.Deferred();
-
-	    this.store.query(deferred.resolve, {
-	      index: index,
-	      keyRange: keyRange,
-	      onError: deferred.reject
-	    });
-
-	    return deferred.promise();
-	  },
-
-	  /**
-	   * select records by {key: value}
-	   */
-	  getByAttribute: function(attribute){
-	    var index = _.chain(attribute).keys().first().value();
-	    var keyRange = this.store.makeKeyRange({
-	      only: _.chain(attribute).values().first().value()
-	    });
-	    return this.query(index, keyRange);
-	  },
-
-	  merge: function(models){
-	    models = !_.isArray(models) ? [models] : models;
-	    if(!this.parent.mergeKeyPath){
-	      return this.putBatch(models);
-	    }
-	    var merge = _.map(models, this._merge, this);
-	    return $.when.apply(this, merge);
-	  },
-
-	  _merge: function(model){
-	    var mergeKeyPath = this.parent.mergeKeyPath,
-	        keyPath = this.store.keyPath,
-	        self = this,
-	        opts = {};
-
-	    if(model[keyPath]){
-	      return this.update(model);
-	    }
-
-	    opts[mergeKeyPath] = model[mergeKeyPath];
-
-	    return this.getByAttribute(opts)
-	      .then(function(array){
-	        var local = _.first(array);
-	        if(local){
-	          model[keyPath] = local[keyPath];
-	          return self.update(model);
-	        }
-	        return self.create(model);
-	      });
-	  },
-
-	  _returnAttributes: function(model){
-	    if(model instanceof bb.Model){
-	      return model.toJSON();
-	    }
-	    return model;
-	  }
-	};
-
-	_.extend(IndexedDB.prototype, methods);
-	module.exports = IndexedDB;
-
-/***/ },
-/* 73 */
-/***/ function(module, exports) {
-
-	module.exports = IDBStore;
-
-/***/ },
-/* 74 */
-/***/ function(module, exports) {
-
-	module.exports = moment;
-
-/***/ },
-/* 75 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var DualModel = __webpack_require__(76);
-	var _ = __webpack_require__(6);
-	var Radio = __webpack_require__(4);
-
-	module.exports = DualModel.extend({
-	  name: 'product',
-
-	  // this is an array of fields used by FilterCollection.matchmaker()
-	  fields: ['title'],
-
-	  // the REST API gives string values for some attributes
-	  // this can cause confusion, so parse to float
-	  parse: function(resp){
-	    resp = resp.product || resp;
-	    _.each(['price', 'regular_price', 'sale_price'], function(attr){
-	      if( _.isString(resp[attr]) ){
-	        resp[attr] = parseFloat(resp[attr]);
-	      }
-	    });
-	    return resp;
-	  },
-
-	  /**
-	   * Helper functions for variation prices
-	   */
-	  min: function(attr){
-	    var variations = this.get('variations');
-	    if(attr === 'sale_price'){
-	      variations = _.where(variations, {on_sale: true});
-	    }
-	    var attrs = _.pluck(variations, attr);
-	    if(attrs.length > 0){
-	      return _(attrs).compact().min();
-	    }
-	    return this.get(attr);
-	  },
-
-	  max: function(attr){
-	    var attrs = _.pluck(this.get('variations'), attr);
-	    if(attrs.length > 0){
-	      return _(attrs).compact().max();
-	    }
-	    return this.get(attr);
-	  },
-
-	  range: function(attr){
-	    if(attr === 'sale_price'){
-	      var min = _.min([this.min('sale_price'), this.min('price')]);
-	      var max = _.max([this.max('sale_price'), this.max('price')]);
-	      return _.uniq([min, max]);
-	    }
-	    return _.uniq([this.min(attr), this.max(attr)]);
-	  },
-
-	  /**
-	   * Helper functions to display attributes vs variations
-	   */
-	  productAttributes: function(){
-	    return _.chain(this.get('attributes'))
-	      .where({variation: false})
-	      .where({visible: true})
-	      .value();
-	  },
-
-	  productVariations: function(){
-	    return _.where(this.get('attributes'), {variation: true});
-	  },
-
-	  /**
-	   * Special cases for product model filter
-	   * @param {Array} tokens An array of query tokens, see QParser
-	   * @param {Object} methods Helper match methods
-	   * @param {Function} callback
-	   */
-	  matchMaker: function(tokens, methods, callback){
-
-	    var match = _.all(tokens, function(token){
-
-	      // barcode
-	      if( token.type === 'prefix' && token.prefix === 'barcode' ){
-	        if(token.query){ return this.barcodeMatch(token.query); }
-	      }
-
-	      // cat
-	      if( token.type === 'prefix' && token.prefix === 'cat' ){
-	        token.prefix = 'categories';
-	        return methods.prefix(token, this);
-	      }
-
-	    }, this);
-
-	    if(match){
-	      return match;
-	    }
-
-	    // the original matchMaker
-	    return callback(tokens, this);
-
-	  },
-
-	  barcodeMatch: function(barcode){
-	    var type = this.get('type'),
-	        test = this.get('barcode').toLowerCase(),
-	        value = barcode.toString().toLowerCase();
-
-	    if(test === value) {
-	      if(type !== 'variable'){
-	        this.trigger('match:barcode', this);
-	      }
-	      return true;
-	    }
-
-	    if(type !== 'variable'){
-	      return this.partialBarcodeMatch(test, value);
-	    }
-
-	    return this.variableBarcodeMatch(test, value);
-	  },
-
-	  partialBarcodeMatch: function(test, value){
-	    if(test.indexOf( value ) !== -1) {
-	      return true;
-	    }
-	    return false;
-	  },
-
-	  variableBarcodeMatch: function(test, value){
-	    var match, variations = Radio.request('entities', 'get', {
-	      type: 'variations',
-	      parent: this
-	    });
-
-	    variations.superset().each(function(variation){
-	      var vtest = variation.get('barcode').toLowerCase();
-	      if(vtest === value){
-	        match = variation;
-	        return;
-	      }
-	      if(vtest.indexOf( value ) !== -1) {
-	        match = 'partial';
-	        return;
-	      }
-	    });
-
-	    if(match){
-	      if(match !== 'partial'){
-	        this.trigger('match:barcode', match, this);
-	      }
-	      return true;
-	    }
-
-	    return this.partialBarcodeMatch(test, value);
-	  }
-
-	});
-
-/***/ },
-/* 76 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var DeepModel = __webpack_require__(66);
-	var POS = __webpack_require__(5);
-	var _ = __webpack_require__(6);
-	//var debug = require('debug')('dualModel');
-
-	module.exports = POS.DualModel = DeepModel.extend({
-	  idAttribute: 'local_id',
-	  remoteIdAttribute: 'id',
-	  fields: ['title'],
-
-	  validate: function(attrs){
-	    var obj = {};
-	    if(attrs[this.idAttribute]) {
-	      obj[this.idAttribute] = parseInt(attrs[this.idAttribute], 10);
-	    }
-	    if(attrs[this.remoteIdAttribute]){
-	      obj[this.remoteIdAttribute] = parseInt(attrs[this.remoteIdAttribute], 10);
-	    }
-	    this.set(obj, {silent: true});
-	  },
-
-	  url: function(){
-	    var remoteId = this.get(this.remoteIdAttribute),
-	        urlRoot = _.result(this.collection, 'url');
-
-	    if(remoteId){
-	      return '' + urlRoot + '/' + remoteId + '/';
-	    }
-	    return urlRoot;
-	  },
-
-	  // delayed states
-	  states: {
-	    'update' : 'UPDATE_FAILED',
-	    'create' : 'CREATE_FAILED',
-	    'delete' : 'DELETE_FAILED'
-	  },
-
-	  hasRemoteId: function() {
-	    return !!this.get(this.remoteIdAttribute);
-	  },
-
-	  isDelayed: function() {
-	    var status = this.get('status');
-	    return status === this.states['update'] ||
-	           status === this.states['create'] ||
-	           status === this.states['delete'];
-	  },
-
-	  /**
-	   * - sync to idb with correct status
-	   * - if remote, sync to remote
-	   */
-	  sync: function(method, model, options){
-	    options = options || {};
-	    var opts = _.clone(options);
-	    opts.remote = undefined;
-
-	    this.setStatus(method);
-
-	    return DeepModel.prototype.sync.call(this, method, model, opts)
-	      .then(function(){
-	        if(options.remote){
-	          return model.remoteSync(method, model, options);
-	        }
-	      });
-	  },
-
-	  remoteSync: function(method, model, options){
-	    model = model || this;
-	    options = options || {};
-	    options.remote = true;
-	    if(method !== 'read'){
-	      method = model.getMethod(method);
-	    }
-	    return DeepModel.prototype.sync.call(this, method, model, options)
-	      .then(function(resp){
-	        if(resp){
-	          var data = model.parse(resp);
-	          return model.merge(data);
-	        }
-	      });
-	  },
-
-	  setStatus: function(method){
-	    if(this.states[method]){
-	      if(method === 'update' && !this.hasRemoteId()){
-	        method = 'create';
-	      }
-	      this.set({ status: this.states[method] });
-	    }
-	  },
-
-	  getMethod: function(method){
-	    var status = this.get('status');
-	    var remoteMethod = _.findKey(this.states, function(state) {
-	      return state === status;
-	    });
-	    if(remoteMethod){
-	      return remoteMethod;
-	    }
-	    return method;
-	  },
-
-	  merge: function(resp){
-	    // todo: merge
-	    // - merge should take bb & json?
-	    this.set(resp);
-	    if(this.isDelayed()){
-	      this.unset('status');
-	    }
-	    if(this.collection && this.collection.db){
-	      return this.collection.merge( this.toJSON() );
-	    }
-	  }
-
-	});
-
-/***/ },
-/* 77 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var DualCollection = __webpack_require__(70);
-	var Model = __webpack_require__(78);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	var bb = __webpack_require__(11);
-
-	module.exports = DualCollection.extend({
-	  model: Model,
-	  name: 'orders',
-	  _syncDelayed: false,
-
-	  /**
-	   * Open orders first
-	   */
-	  //comparator: function( model ){
-	  //  if( model.get('id') === undefined ) { return 0; }
-	  //  return 1;
-	  //},
-
-	  /**
-	   *
-	   */
-	  setActiveOrder: function(id){
-	    var order = this.get(id);
-
-	    if( !order && id !== 'new' ){
-	      order = _.first( this.openOrders() );
-	    }
-
-	    this.active = order;
-	    return order;
-	  },
-
-	  /**
-	   * Promise of an active order
-	   */
-	  getActiveOrder: function(){
-	    var self = this;
-	    var deferred = new $.Deferred();
-
-	    if(!this.active){
-	      this.create().then(function(order){
-	        order.cart.order_id = order.id;
-	        self.active = order;
-	        if(bb.history.getHash() === 'cart/new') {
-	          bb.history.navigate('cart/' + order.id);
-	        }
-	        deferred.resolve(order);
-	      });
-	    } else {
-	      deferred.resolve(this.active);
-	    }
-
-	    return deferred.promise();
-	  },
-
-	  addToCart: function(options){
-	    this.getActiveOrder()
-	      .then(function(order){
-	        order.cart.addToCart(options);
-	      });
-	  },
-
-	  create: function(){
-	    var deferred = new $.Deferred();
-
-	    // Safari has a problem with create, perhaps an autoincrement problem?
-	    // Set local_id as timestamp milliseconds
-	    DualCollection.prototype.create.call(this, { local_id: Date.now() }, {
-	      wait: true,
-	      success: deferred.resolve,
-	      error: deferred.reject
-	    });
-
-	    return deferred.promise();
-	  },
-
-	  /**
-	   *
-	   */
-	  openOrders: function(){
-	    return this.filter(function(model){
-	      return model.isEditable();
-	    });
-	  }
-
-	});
-
-/***/ },
-/* 78 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var DualModel = __webpack_require__(76);
-	var Radio = __webpack_require__(4);
-	var Utils = __webpack_require__(79);
-	var debug = __webpack_require__(7)('order');
-	var POS = __webpack_require__(5);
-	var $ = __webpack_require__(10);
-
-	var Model = DualModel.extend({
-	  name: 'order',
-	  fields: [
-	    'customer.first_name',
-	    'customer.last_name',
-	    'customer.email'
-	  ],
-
-	  /**
-	   * Orders with the following status are closed for editing
-	   */
-	  //closedStatus: [
-	  //  'completed',
-	  //  'on-hold',
-	  //  'cancelled',
-	  //  'refunded',
-	  //  'processing',
-	  //  'failed'
-	  //],
-
-	  /**
-	   *
-	   */
-	  defaults: function(){
-	    var customers = this.getEntities('customers'),
-	        default_customer = customers['default'] || customers.guest || {};
-
-	    return {
-	      note          : '',
-	      order_discount: 0,
-	      customer_id   : default_customer.id,
-	      customer      : default_customer
-	    };
-	  },
-
-	  /**
-	   * - attach tax settings
-	   * - attach cart & gateways if order is open
-	   */
-	  initialize: function(){
-
-	    this.tax = this.getEntities('tax');
-	    this.tax_rates = this.getEntities('tax_rates');
-
-	    if( this.isEditable() ){
-	      this.attachCart();
-	      this.attachGateways();
-	    }
-
-	    // order_discount input
-	    this.on({
-	      'change:order_discount': this.calcTotals,
-	      'change:status': this.isEditable
-	    });
-
-	  },
-
-	  getEntities: function(name){
-	    return Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: name
-	    }) || {};
-	  },
-
-	  /**
-	   * is order editable method, sets _open true or false
-	   */
-	  isEditable: function(){
-	    //return !_.contains(this.closedStatus, this.get('status'));
-	    return this.get('status') === undefined || this.isDelayed();
-	    //return this.isDelayed();
-	  },
-
-	  /**
-	   * Remove items from cart before destroy
-	   */
-	  //destroy: function(options){
-	  //  var self = this;
-	  //  return this.cart.db.removeBatch( this.cart.pluck('local_id') )
-	  //    .always(function(){
-	  //      return DualModel.prototype.destroy.call(self, options);
-	  //    });
-	  //},
-
-	  /**
-	   * Attach cart
-	   */
-	  attachCart: function(){
-	    var cart = Radio.request('entities', 'get', {
-	      init : true,
-	      type : 'collection',
-	      name : 'cart'
-	    });
-
-	    cart.order_id = this.id;
-
-	    this.listenTo(cart, {
-	      'add change' : this.calcTotals,
-	      'remove'     : this.itemRemoved
-	    });
-
-	    if(cart.db){
-	      cart.db.open().then(function(){
-	        cart.fetchCartItems();
-	      });
-	    }
-
-	    this.cart = cart;
-	  },
-
-	  /**
-	   * remove cart items from idb after successful order
-	   */
-	  clearCart: function(){
-	    if(this.cart){
-	      this.cart.db.removeBatch( this.cart.pluck('local_id') );
-	    }
-	  },
-
-	  /**
-	   * Attach gateways
-	   */
-	  attachGateways: function(){
-	    this.gateways = Radio.request('entities', 'get', {
-	      init : true,
-	      type : 'collection',
-	      name : 'gateways'
-	    });
-
-	    this.gateways.fetch();
-	  },
-
-	  /**
-	   *
-	   */
-	  itemRemoved: function(){
-	    if(this.cart.length > 0){
-	      return this.calcTotals();
-	    }
-	    return this.destroy();
-	  },
-
-	  /**
-	   * Sum cart totals
-	   * todo: too many statements
-	   */
-	  /* jshint -W071 */
-	  calcTotals: function(){
-	    var total_tax     = 0,
-	        subtotal_tax  = 0,
-	        shipping_tax  = 0,
-	        cart_discount_tax = 0,
-	        subtotal      = this.cart.sum('subtotal'),
-	        total         = this.cart.sum('total'),
-	        cart_discount = subtotal - total,
-	        order_discount = this.get('order_discount');
-
-	    if( this.tax.calc_taxes === 'yes' ) {
-	      total_tax         = this.cart.sum('total_tax');
-	      subtotal_tax      = this.cart.sum('subtotal_tax');
-	      shipping_tax      = this.cart.sum('total_tax', 'shipping');
-	      cart_discount_tax = subtotal_tax - total_tax;
-	    }
-
-	    total += total_tax;
-	    total -= order_discount;
-
-	    // tax_lines will merge the data - possibly due to deep model
-	    // clear tax_lines before save to ensure clean data
-	    this.unset('tax_lines', { silent: true });
-
-	    // create totals object
-	    var totals = {
-	      'total'             : Utils.round( total, 4 ),
-	      'subtotal'          : Utils.round( subtotal, 4 ),
-	      'total_tax'         : Utils.round( total_tax, 4 ),
-	      'subtotal_tax'      : Utils.round( subtotal_tax, 4 ),
-	      'shipping_tax'      : Utils.round( shipping_tax, 4 ),
-	      'cart_discount'     : Utils.round( cart_discount, 4 ),
-	      'cart_discount_tax' : Utils.round( cart_discount_tax, 4 ),
-	      'tax_lines'         : this.cart.itemizedTax()
-	    };
-
-	    this.save(totals);
-	    debug('update totals', totals);
-	  },
-	  /* jshint +W071 */
-
-	  /**
-	   * Convenience method to sum attributes
-	   */
-	  sum: function(array){
-	    var sum = 0;
-	    for (var i = 0; i < array.length; i++) {
-	      sum += parseFloat( this.get(array[i]) );
-	    }
-	    return sum;
-	  },
-
-	  /**
-	   * process order
-	   * todo: remoteSync resolves w/ an array of models, should match sync?
-	   */
-	  process: function(){
-	    var self = this;
-
-	    return $.when( this.processCart() )
-	      .then(function(){
-	        return self.processGateway();
-	      })
-	      .then(function(){
-	        return self.remoteSync();
-	      })
-	      .then(function(array){
-	        var model = array[0];
-	        if(model.get('status') === 'failed'){
-	          model.save({ status: 'UPDATE_FAILED' });
-	        }
-	      });
-	  },
-
-	  /**
-	   *
-	   */
-	  processCart: function(){
-	    var obj = {
-	      product : [],
-	      shipping: [],
-	      fee     : []
-	    };
-
-	    this.cart.each(function(model){
-	      var type = model.get('type');
-	      if(type !== 'shipping' && type !== 'fee'){
-	        type = 'product';
-	      }
-	      obj[type].push( model.toJSON() );
-	    });
-
-	    // set
-	    this.set({
-	      line_items    : obj.product,
-	      shipping_lines: obj.shipping,
-	      fee_lines     : obj.fee,
-	      tax_lines     : this.cart.itemizedTax() // reset for retry
-	    });
-	  },
-
-	  /**
-	   *
-	   */
-	  processGateway: function(){
-	    var data = this.gateways.findWhere({ active: true }).toJSON();
-	    this.set({
-	      payment_details: data
-	    });
-	  }
-
-	});
-
-	module.exports = Model;
-	POS.attach('Entities.Order.Model', Model);
-
-/***/ },
-/* 79 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var accounting = __webpack_require__(61);
-	var POS = __webpack_require__(5);
-	var _ = __webpack_require__(6);
-	var Utils = {};
-
-	/**
-	 * Using the same function as Woo: /assets/js/admin/round.js
-	 * PHP_ROUND_HALF_EVEN should be the default?!
-	 * @param value
-	 * @param precision
-	 * @param mode
-	 * @returns {number}
-	 */
-	/* jshint -W018, -W071, -W074 */
-	Utils.round = function(value, precision, mode) {
-	  // http://kevin.vanzonneveld.net
-	  // +   original by: Philip Peterson
-	  // +    revised by: Onno Marsman
-	  // +      input by: Greenseed
-	  // +    revised by: T.Wild
-	  // +      input by: meo
-	  // +      input by: William
-	  // +   bugfixed by: Brett Zamir (http://brett-zamir.me)
-	  // +      input by: Josep Sanz (http://www.ws3.es/)
-	  // +    revised by: Rafał Kukawski (http://blog.kukawski.pl/)
-	  // %        note 1: Great work. Ideas for improvement:
-	  // %        note 1:  - code more compliant with developer guidelines
-	  // %        note 1:  - for implementing PHP constant arguments look at
-	  // %        note 1:  the pathinfo() function, it offers the greatest
-	  // %        note 1:  flexibility & compatibility possible
-	  // *     example 1: round(1241757, -3);
-	  // *     returns 1: 1242000
-	  // *     example 2: round(3.6);
-	  // *     returns 2: 4
-	  // *     example 3: round(2.835, 2);
-	  // *     returns 3: 2.84
-	  // *     example 4: round(1.1749999999999, 2);
-	  // *     returns 4: 1.17
-	  // *     example 5: round(58551.799999999996, 2);
-	  // *     returns 5: 58551.8
-
-	  //
-	  //mode = mode || 'PHP_ROUND_HALF_EVEN';
-
-	  if( !_.isFinite( parseInt(precision, 10) ) ) {
-	    precision = accounting.settings.currency.precision;
-	  }
-
-	  var m, f, isHalf, sgn; // helper variables
-	  //precision |= 0; // making sure precision is integer
-	  m = Math.pow(10, precision);
-	  value *= m;
-	  sgn = (value > 0) | -(value < 0); // sign of the number
-	  isHalf = value % 1 === 0.5 * sgn;
-	  f = Math.floor(value);
-
-	  if (isHalf) {
-	    switch (mode) {
-	      case '2':
-	      case 'PHP_ROUND_HALF_DOWN':
-	        value = f + (sgn < 0); // rounds .5 toward zero
-	        break;
-	      case '3':
-	      case 'PHP_ROUND_HALF_EVEN':
-	        value = f + (f % 2 * sgn); // rouds .5 towards the next even integer
-	        break;
-	      case '4':
-	      case 'PHP_ROUND_HALF_ODD':
-	        value = f + !(f % 2); // rounds .5 towards the next odd integer
-	        break;
-	      default:
-	        value = f + (sgn > 0); // rounds .5 away from zero
-	    }
-	  }
-
-	  return (isHalf ? value : Math.round(value)) / m;
-	};
-	/* jshint +W018, +W071, +W074 */
-
-	/**
-	 * Number of significant decimal places
-	 */
-	Utils.decimalPlaces = function(num){
-	  return ((+num).toFixed(4)).replace(/^-?\d*\.?|0+$/g, '').length;
-	};
-
-	/**
-	 *
-	 */
-	Utils.unformat = function( num ) {
-	  return accounting.unformat( num, accounting.settings.number.decimal );
-	};
-
-	/**
-	 *
-	 */
-	Utils.formatNumber = function( num, precision ) {
-	  if( precision === 'auto' ) {
-	    precision = Utils.decimalPlaces(num);
-	  }
-	  if( !_.isFinite( parseInt(precision, 10) ) ) {
-	    precision = accounting.settings.currency.precision;
-	  }
-	  return accounting.formatNumber(num, precision);
-	};
-
-	/**
-	 *
-	 */
-	Utils.formatMoney = function( num, precision ) {
-	  if( precision === 'auto' ) {
-	    precision = Utils.decimalPlaces(num);
-	  }
-	  if( !_.isFinite( parseInt(precision, 10) ) ) {
-	    precision = accounting.settings.currency.precision;
-	  }
-	  // round the number to even
-	  num = Utils.round(num, precision);
-	  return accounting.formatMoney(num);
-	};
-
-	/**
-	 *
-	 */
-	Utils.isPositiveInteger = function( num, allowZero ){
-	  var n = ~~Number(num);
-	  if(allowZero) {
-	    return String(n) === num && n >= 0;
-	  } else {
-	    return String(n) === num && n > 0;
-	  }
-	};
-
-	/**
-	 * Parse error messages from the server
-	 */
-	Utils.parseErrorResponse = function( jqXHR ){
-	  var resp = jqXHR.responseJSON;
-	  if( resp.errors ){
-	    return resp.errors[0].message;
-	  }
-
-	  return jqXHR.responseText;
-	};
-
-	/**
-	 * returns the variable type
-	 * http://wp.me/pQpop-JM
-	 *
-	 *
-	toType({a: 4}); //"object"
-	toType([1, 2, 3]); //"array"
-	(function() {console.log(toType(arguments))})(); //arguments
-	toType(new ReferenceError); //"error"
-	toType(new Date); //"date"
-	toType(/a-z/); //"regexp"
-	toType(Math); //"math"
-	toType(JSON); //"json"
-	toType(new Number(4)); //"number"
-	toType(new String("abc")); //"string"
-	toType(new Boolean(true)); //"boolean"
-
-	 */
-	Utils.toType = function(obj) {
-	  return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
-	};
-
-	module.exports = POS.Utils = Utils;
-
-/***/ },
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var IndexedDBCollection = __webpack_require__(71);
-	var Model = __webpack_require__(81);
-	var _ = __webpack_require__(6);
-	var bb = __webpack_require__(11);
-
-	module.exports = IndexedDBCollection.extend({
-	  model: Model,
-	  name: 'cart',
-	  indexes: [
-	    {name: 'local_id', keyPath: 'local_id', unique: true},
-	    {name: 'order', keyPath: 'order', unique: false},
-	    {name: 'type', keyPath: 'type', unique: false}
-	  ],
-
-	  /**
-	   * Whitelist of attributes taken from product model
-	   */
-	  productAttributes: [
-	    'order',
-	    'title',
-	    'local_id',
-	    'product_id',
-	    'type',
-	    'price',
-	    'regular_price',
-	    'sale_price',
-	    'taxable',
-	    'tax_status',
-	    'tax_class',
-	    'attributes',
-	    'meta',         // variation meta
-	    'method_title', // shipping
-	    'method_id'     // shipping
-	  ],
-
-	  comparator: function( model ){
-	    var type = model.get( 'type' );
-	    if( type === 'fee' ) { return 2; }
-	    if( type === 'shipping' ) { return 1; }
-	    return 0;
-	  },
-
-	  /**
-	   * If collection has order_id, query idb for index: 'order' = order_id
-	   * onSuccess add items to collection
-	   */
-	  fetchCartItems: function () {
-	    if(!this.order_id){
-	      return;
-	    }
-
-	    var onSuccess = this.add.bind(this);
-	    var keyRange = this.db.store.makeKeyRange({
-	      only: this.order_id
-	    });
-
-	    this.db.store.query(onSuccess, {
-	      index: 'order',
-	      keyRange: keyRange
-	    });
-	  },
-
-	  // convenience method to sum attributes in collection
-	  sum: function(attribute, type){
-	    var col = this.toJSON();
-	    if(type){ col = _.where(col, {type: type}); }
-	    return _.pluck(col, attribute).reduce(function(a, b){return a + b;}, 0);
-	  },
-
-	  /**
-	   * add/increase item
-	   * also prune attributes
-	   */
-	  /* jshint -W071, -W074 */
-	  addToCart: function(options){
-	    options = options || {};
-	    var model, attributes = options.model || options;
-	    if(attributes instanceof bb.Model){
-	      attributes = attributes.toJSON();
-	    }
-
-	    if(attributes.id){
-	      model = this.findWhere({ product_id: attributes.id });
-	      attributes.product_id = attributes.id;
-	      delete attributes.id;
-	    }
-
-	    if(model){
-	      model.quantity('increase');
-	    } else {
-	      model = this._addToCart(attributes);
-	    }
-
-	    model.trigger('pulse');
-	  },
-	  /* jshint +W071, +W074 */
-
-	  _addToCart: function(attributes){
-	    attributes.order = this.order_id;
-
-	    // turn variation attributes into line item meta
-	    if(attributes.type === 'variation'){
-	      attributes.meta = _.map(attributes.attributes, function(variant, idx){
-	        return {
-	          key: ++idx,
-	          label: variant.name,
-	          value: variant.label
-	        };
-	      });
-	    }
-
-	    return this.add(_.pick(attributes, this.productAttributes));
-	  },
-
-	  itemizedTax: function(){
-	    var items = _.clone(this.toJSON(), true);
-	    var taxes = _.map(items, function(item){
-	      if(!item.tax) { return; }
-	      _.each(item.tax, function(tax){
-	        tax.shipping = item.type === 'shipping' ? tax.total : 0 ;
-	      });
-	      return item.tax;
-	    });
-	    var obj = this.sumTaxes(taxes);
-
-	    // convert obj to array to be consistent with WC REST API output
-	    var arr = [];
-	    _.each(obj, function(value, key){
-	      //value.rate_id = parseInt(key, 10);
-	      value.rate_id = key.toString(); // make sure it's a string
-	      arr.push(value);
-	    });
-
-	    return arr;
-	  },
-
-	  sumTaxes: function(taxes){
-	    return _.reduce(taxes, function(result, tax){
-	      return _.merge(result, tax, function(a, b){
-	        if(a){
-	          b.total += a.total;
-	          b.subtotal += a.subtotal;
-	          b.shipping += a.shipping;
-	        }
-	        return b;
-	      });
-	    }, {});
-	  }
-
-	});
-
-/***/ },
-/* 81 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Model = __webpack_require__(67);
-	var debug = __webpack_require__(7)('cartItem');
-	var Utils = __webpack_require__(79);
-	var _ = __webpack_require__(6);
-	var Radio = __webpack_require__(4);
-
-	module.exports = Model.extend({
-	  idAttribute: 'local_id',
-
-	  defaults : {
-	    'subtotal'      : 0,
-	    'subtotal_tax'  : 0,
-	    'total_tax'     : 0,
-	    'total'         : 0,
-	    'item_tax'      : 0,
-	    'quantity'      : 1,
-	    'taxable'       : true,
-	    'tax_class'     : ''
-	  },
-
-	  initialize: function() {
-
-	    // attach tax settings
-	    this.tax = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'tax'
-	    }) || {};
-	    this.tax_rates = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'tax_rates'
-	    }) || {};
-
-	    // update on change to quantity, item_price ...
-	    this.on(
-	      'change:quantity ' +
-	      'change:item_price ' +
-	      'change:regular_price ' +
-	      'change:taxable ' +
-	      'change:tax_class',
-	      this.updateLineTotals );
-
-	    // set item price on init, this wil kick off updateLineTotals
-	    if( this.get('item_price') === undefined ) {
-	      this.set({ 'item_price': parseFloat( this.get('price') ) });
-	    }
-	  },
-
-	  /* jshint -W071, -W074 */
-	  /* todo: too many statements, too complex */
-	  updateLineTotals: function() {
-	    var quantity        = this.get('quantity'),
-	        item_price      = this.get('item_price'),
-	        type            = this.get('type'),
-	        regular_price   = parseFloat( this.get('regular_price')),
-	        tax_class       = this.get('tax_class'),
-	        item_tax,
-	        item_subtotal_tax,
-	        rates;
-
-	    // make a copy of the tax rates for this product
-	    if(this.tax_rates[tax_class]){
-	      rates = _.cloneDeep(this.tax_rates[tax_class]);
-	    }
-
-	    // if shipping or fee
-	    if( type === 'shipping' || type === 'fee' ) {
-	      regular_price = item_price;
-	    }
-
-	    // calc taxes
-	    item_tax = this.calcTax({
-	      price    : item_price,
-	      quantity : quantity,
-	      rates    : rates
-	    });
-
-	    item_subtotal_tax = this.calcTax({
-	      price    : regular_price,
-	      quantity : quantity,
-	      rates    : rates,
-	      subtotal : true
-	    });
-
-	    // if price does not include tax
-	    if( this.tax.prices_include_tax === 'yes' ) {
-	      regular_price -= item_subtotal_tax;
-	      item_price -= item_tax;
-	    }
-
-	    // create totals object
-	    var totals = {
-	      'item_subtotal'     : Utils.round( regular_price, 4 ),
-	      'item_subtotal_tax' : Utils.round( item_subtotal_tax, 4 ),
-	      'item_tax'          : Utils.round( item_tax, 4 ),
-	      'subtotal'          : Utils.round( regular_price * quantity, 4 ),
-	      'subtotal_tax'      : Utils.round( item_subtotal_tax * quantity, 4 ),
-	      'total_tax'         : Utils.round( item_tax * quantity, 4 ),
-	      'total'             : Utils.round( item_price * quantity, 4 )
-	    };
-
-	    this.save(totals);
-	    debug('update totals', totals);
-	  },
-	  /* jshint +W071, +W074 */
-
-	  /**
-	   * Calculate the line item tax total
-	   * based on the calc_tax function in woocommerce/includes/class-wc-tax.php
-	   */
-	  calcTax: function(options) {
-	    var item_tax = 0;
-
-	    if(this.tax.calc_taxes === 'yes' && this.get('taxable') && options.rates) {
-	      if( this.tax.prices_include_tax === 'yes' ) {
-	        item_tax = this.calcInclusiveTax(options);
-	      } else {
-	        item_tax = this.calcExclusiveTax(options);
-	      }
-	    } else {
-	      this.set('tax', undefined);
-	    }
-
-	    return item_tax;
-	  },
-
-	  /**
-	   * Calculate the line item tax total
-	   * based on the calc_inclusive_tax function in
-	   * woocommerce/includes/class-wc-tax.php
-	   */
-	  /* todo: too many statements */
-	  /* jshint -W071 */
-	  calcInclusiveTax: function(options) {
-	    var regular_tax_rates = 0,
-	        compound_tax_rates = 0,
-	        non_compound_price = 0,
-	        tax_amount = 0,
-	        item_tax = 0,
-	        price = options.price,
-	        rates = options.rates,
-	        qty = options.quantity;
-
-	    _.each(rates, function(rate, key) {
-	      if( this.get('type') === 'shipping' && rate.shipping === 'no' ){
-	        delete rates[key];
-	        return;
-	      }
-	      if ( rate.compound === 'yes' ) {
-	        compound_tax_rates = compound_tax_rates + parseFloat(rate.rate);
-	      } else {
-	        regular_tax_rates = regular_tax_rates + parseFloat(rate.rate);
-	      }
-	    }, this);
-
-	    var regular_tax_rate  = 1 + ( regular_tax_rates / 100 );
-	    var compound_tax_rate   = 1 + ( compound_tax_rates / 100 );
-	    non_compound_price = price / compound_tax_rate;
-
-	    _.each(rates, function(rate) {
-	      var the_rate = parseFloat(rate.rate) / 100;
-	      var the_price = 0;
-
-	      if ( rate.compound === 'yes' ) {
-	        the_price = price;
-	        the_rate  = the_rate / compound_tax_rate;
-	      }  else {
-	        the_price = non_compound_price;
-	        the_rate  = the_rate / regular_tax_rate;
-	      }
-
-	      var net_price = price - ( the_rate * the_price );
-	      tax_amount = price - net_price;
-
-	      // set the itemized taxes
-	      var prop = options.subtotal ? 'subtotal' : 'total';
-	      rate[prop] = Utils.round( tax_amount * qty, 4 );
-
-	      // sum item taxes
-	      item_tax += tax_amount;
-
-	    }, this);
-
-	    // itemized tax
-	    if( !_.isEmpty(rates) ){
-	      this.set('tax', rates);
-	    }
-
-	    // return the item tax
-	    return item_tax;
-	  },
-	  /* jshint +W071 */
-
-	  /**
-	   * Calculate the line item tax total
-	   * based on the calc_exclusive_tax function in
-	   * woocommerce/includes/class-wc-tax.php
-	   */
-	  calcExclusiveTax: function(options) {
-	    var taxes = [],
-	        pre_compound_total = 0,
-	        tax_amount = 0,
-	        item_tax = 0,
-	        price = options.price,
-	        rates = options.rates,
-	        qty = options.quantity;
-
-	    // multiple taxes
-	    _.each(rates, function(rate, key) {
-	      tax_amount = 0;
-	      if( this.get('type') === 'shipping' && rate.shipping === 'no' ){
-	        delete rates[key];
-	        return;
-	      }
-	      if ( rate.compound !== 'yes' ) {
-	        tax_amount = price * ( parseFloat(rate.rate) / 100 );
-	      }
-	      taxes[ key ] = tax_amount;
-	    }, this);
-
-	    if( taxes.length > 0 ) {
-	      pre_compound_total = taxes.reduce(function(sum, num) {return sum + num;});
-	    }
-
-	    // compound taxes
-	    _.each(rates, function(rate, key) {
-	      if ( rate.compound === 'yes' ) {
-	        var the_price_inc_tax = price + pre_compound_total;
-	        taxes[ key ] = the_price_inc_tax * ( parseFloat(rate.rate) / 100 );
-	      }
-
-	      // set the itemized taxes
-	      var prop = options.subtotal ? 'subtotal' : 'total';
-	      rate[prop] = Utils.round( taxes[ key ] * qty, 4 );
-
-	      // sum item taxes
-	      item_tax += taxes[ key ];
-
-	    }, this);
-
-	    // itemized tax
-	    if( !_.isEmpty(rates) ){
-	      this.set('tax', rates);
-	    }
-
-	    // return the item tax
-	    return item_tax;
-	  },
-
-	  // Convenience method to increase or decrease quantity
-	  quantity: function( type ) {
-	    var quantity = this.get('quantity');
-	    this.set('quantity', (type === 'increase' ? ++quantity : --quantity) );
-	    return this;
-	  },
-
-	  // Convenience method to sum attributes
-	  sum: function(array){
-	    var sum = 0;
-	    for (var i = 0; i < array.length; i++) {
-	      sum += this.get(array[i]);
-	    }
-	    return Utils.round(sum, 4);
-	  }
-
-	});
-
-/***/ },
-/* 82 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Collection = __webpack_require__(64);
-	var Model = __webpack_require__(83);
-	var Radio = __webpack_require__(4);
-
-	module.exports = Collection.extend({
-	  model: Model,
-	  name: 'customers',
-
-	  url: function(){
-	    var wc_api = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'wc_api'
-	    });
-	    return wc_api + 'customers';
-	  },
-
-	  initialize: function(){
-	    var settings = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'customers'
-	    });
-	    if(settings){
-	      this._guest = settings.guest;
-	      this._default = settings['default'] || settings.guest;
-	    }
-	  }
-	});
-
-/***/ },
-/* 83 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Model = __webpack_require__(67);
-
-	module.exports = Model.extend({
-	  name: 'customer'
-	});
-
-/***/ },
-/* 84 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Collection = __webpack_require__(64);
-	var Model = __webpack_require__(85);
-
-	module.exports = Collection.extend({
-	  model: Model
-	});
-
-/***/ },
-/* 85 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Model = __webpack_require__(67);
-
-	module.exports = Model.extend({});
-
-/***/ },
-/* 86 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Collection = __webpack_require__(64);
-	var Model = __webpack_require__(87);
-	var $ = __webpack_require__(10);
-
-	var gateways = [];
-	$('.tmpl-checkout-gateways').each(function(){
-	  gateways.push({
-	    method_id    : $(this).data('gateway'),
-	    method_title : $(this).data('title'),
-	    icon         : $(this).data('icon'),
-	    active       : (1 === $(this).data('default'))
-	  });
-	});
-
-	module.exports = Collection.extend({
-	  model: Model,
-
-	  initialize: function() {
-	    this._isNew = false;
-	    this.on( 'change:active', this.onChangeActive );
-	  },
-
-	  fetch: function(){
-	    this.add(gateways);
-	  },
-
-	  onChangeActive: function(model, active) {
-	    if(!active){ return; }
-	    this.each( function(tab) {
-	      if( model.id !== tab.id ) {
-	        tab.set({ active: false });
-	      }
-	    });
-	  }
-	});
-
-/***/ },
-/* 87 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Model = __webpack_require__(67);
-
-	module.exports = Model.extend({
-	  idAttribute: 'method_id',
-	  defaults: {
-	    active: false
-	  }
-	});
-
-/***/ },
-/* 88 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Collection = __webpack_require__(64);
-	var Model = __webpack_require__(89);
-	//var ? = require('lodash');
-	var Radio = __webpack_require__(4);
+	var _ = __webpack_require__(5);
 
 	module.exports = Collection.extend({
 	  model: Model,
@@ -4739,21 +3080,59 @@
 
 	  initialize: function() {
 	    this._isNew = false;
+	  },
+
+	  /**
+	   * same as _.compact
+	   * except allows 0
+	   */
+	  /* jshint -W074 */
+	  compact: function(array) {
+	    var index = -1,
+	      length = array ? array.length : 0,
+	      resIndex = -1,
+	      result = [];
+
+	    while (++index < length) {
+	      var value = array[index];
+	      if (value === 0 || value) {
+	        result[++resIndex] = value;
+	      }
+	    }
+	    return result;
+	  },
+	  /* jshint +W074 */
+
+	  range: function(attr){
+	    var attrs = this.compact( this.pluck(attr)), min = 0, max = 0;
+	    if( !_.isEmpty(attrs) ) {
+	      min = _(attrs).min();
+	      max = _(attrs).max();
+	    }
+	    return _.uniq([min, max]);
 	  }
 
 	});
 
 /***/ },
-/* 89 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Model = __webpack_require__(67);
-	var _ = __webpack_require__(6);
+	//var Model = require('lib/config/model');
+	var Model = __webpack_require__(30);
 
 	module.exports = Model.extend({
 	  name: 'product',
 	  defaults: {
 	    type: 'variation'
+	  },
+
+	  // data types
+	  schema: {
+	    price         : 'number',
+	    regular_price : 'number',
+	    sale_price    : 'number',
+	    stock_quantity: 'number'
 	  },
 
 	  initialize: function(attributes, options){
@@ -4762,6 +3141,7 @@
 	    this.set({ title: options.parent.get('title') });
 	  },
 
+	  // copy variation to parent
 	  save: function(attributes, options){
 	    var self = this;
 	    return Model.prototype.save.call(this, attributes, options)
@@ -4769,35 +3149,23 @@
 	        self.parent.set({ variations: self.collection.toJSON() });
 	        self.parent.merge();
 	      });
-	  },
-
-	  // the REST API gives string values for some attributes
-	  // this can cause confusion, so parse to float
-	  parse: function(resp){
-	    resp = resp.product || resp;
-	    _.each(['price', 'regular_price', 'sale_price'], function(attr){
-	      if( _.isString(resp[attr]) ){
-	        resp[attr] = parseFloat(resp[attr]);
-	      }
-	    });
-	    return resp;
 	  }
 
 	});
 
 /***/ },
-/* 90 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* jshint -W071, -W003, -W021 */
-	var _ = __webpack_require__(6);
-	var Backbone = __webpack_require__(11);
-	var FilteredCollection = __webpack_require__(93);
-	var SortedCollection = __webpack_require__(95);
-	var PaginatedCollection = __webpack_require__(91);
-	var proxyCollection = __webpack_require__(92);
-	var proxyEvents = __webpack_require__(97);
-	var query = __webpack_require__(98);
+	var _ = __webpack_require__(5);
+	var Backbone = __webpack_require__(16);
+	var FilteredCollection = __webpack_require__(36);
+	var SortedCollection = __webpack_require__(39);
+	var PaginatedCollection = __webpack_require__(41);
+	var proxyCollection = __webpack_require__(37);
+	var proxyEvents = __webpack_require__(42);
+	var query = __webpack_require__(43);
 
 	// extend FilteredCollection with query methods
 	_.extend(FilteredCollection.prototype, query);
@@ -4939,12 +3307,584 @@
 	/* jshint +W071, +W003, +W021 */
 
 /***/ },
-/* 91 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _ = __webpack_require__(6);
-	var Backbone = __webpack_require__(11);
-	var proxyCollection = __webpack_require__(92);
+	var _ = __webpack_require__(5);
+	var Backbone = __webpack_require__(16);
+	var proxyCollection = __webpack_require__(37);
+	var createFilter = __webpack_require__(38);
+
+	// Beware of `this`
+	// All of the following functions are meant to be called in the context
+	// of the FilteredCollection object, but are not public functions.
+
+	function invalidateCache() {
+	  this._filterResultCache = {};
+	}
+
+	function invalidateCacheForFilter(filterName) {
+	  for (var cid in this._filterResultCache) {
+	    if (this._filterResultCache.hasOwnProperty(cid)) {
+	      delete this._filterResultCache[cid][filterName];
+	    }
+	  }
+	}
+
+	function addFilter(filterName, filterObj) {
+	  // If we've already had a filter of this name, we need to invalidate
+	  // any and all of the cached results
+	  if (this._filters[filterName]) {
+	    invalidateCacheForFilter.call(this, filterName);
+	  }
+
+	  this._filters[filterName] = filterObj;
+	  this.trigger('filtered:add', filterName);
+	}
+
+	function removeFilter(filterName) {
+	  delete this._filters[filterName];
+
+	  /* todo: integrate query methods */
+	  delete this._query;
+	  delete this._tokens;
+
+	  invalidateCacheForFilter.call(this, filterName);
+	  this.trigger('filtered:remove', filterName);
+	}
+
+	function execFilterOnModel(model) {
+	  if (!this._filterResultCache[model.cid]) {
+	    this._filterResultCache[model.cid] = {};
+	  }
+
+	  var cache = this._filterResultCache[model.cid];
+
+	  for (var filterName in this._filters) {
+	    if (this._filters.hasOwnProperty(filterName)) {
+	      // if we haven't already calculated this, calculate it and cache
+	      if (!cache.hasOwnProperty(filterName)) {
+	        cache[filterName] = this._filters[filterName].fn(model);
+	      }
+	      if (!cache[filterName]) {
+	        return false;
+	      }
+	    }
+	  }
+	  return true;
+	}
+
+	function execFilter() {
+	  var filtered = [];
+
+	  // Filter the collection
+	  if (this._superset) {
+	    filtered = this._superset.filter(_.bind(execFilterOnModel, this));
+	  }
+
+	  this._collection.reset(filtered);
+	  this.length = this._collection.length;
+	}
+
+	function onAddChange(model) {
+	  // reset the cached results
+	  this._filterResultCache[model.cid] = {};
+
+	  if (execFilterOnModel.call(this, model)) {
+	    if (!this._collection.get(model.cid)) {
+	      var index = this.superset().indexOf(model);
+
+	      // Find the index at which to insert the model in the
+	      // filtered collection by finding the index of the
+	      // previous non-filtered model in the filtered collection
+	      var filteredIndex = null;
+	      for (var i = index - 1; i >= 0; i -= 1) {
+	        if (this.contains(this.superset().at(i))) {
+	          filteredIndex = this.indexOf(this.superset().at(i)) + 1;
+	          break;
+	        }
+	      }
+	      filteredIndex = filteredIndex || 0;
+
+	      this._collection.add(model, { at: filteredIndex });
+	    }
+	  } else {
+	    if (this._collection.get(model.cid)) {
+	      this._collection.remove(model);
+	    }
+	  }
+	  this.length = this._collection.length;
+	}
+
+	// This fires on 'change:[attribute]' events. We only want to
+	// remove this model if it fails the test, but not add it if
+	// it does. If we remove it, it will prevent the 'change'
+	// events from being forwarded, and if we add it, it will cause
+	// an unneccesary 'change' event to be forwarded without the
+	// 'change:[attribute]' that goes along with it.
+	function onModelAttributeChange(model) {
+	  // reset the cached results
+	  this._filterResultCache[model.cid] = {};
+
+	  if (!execFilterOnModel.call(this, model)) {
+	    if (this._collection.get(model.cid)) {
+	      this._collection.remove(model);
+	    }
+	  }
+	}
+
+	function onAll(eventName, model, value) {
+	  if (eventName.slice(0, 7) === "change:") {
+	    onModelAttributeChange.call(this, arguments[1]);
+	  }
+	}
+
+	function onModelRemove(model) {
+	  if (this.contains(model)) {
+	    this._collection.remove(model);
+	  }
+	  this.length = this._collection.length;
+	}
+
+	function Filtered(superset) {
+	  // Save a reference to the original collection
+	  this._superset = superset;
+
+	  // The idea is to keep an internal backbone collection with the filtered
+	  // set, and expose limited functionality.
+	  this._collection = new Backbone.Collection(superset.toArray());
+	  proxyCollection(this._collection, this);
+
+	  // Set up the filter data structures
+	  this.resetFilters();
+
+	  this.listenTo(this._superset, 'reset sort', execFilter);
+	  this.listenTo(this._superset, 'add change', onAddChange);
+	  this.listenTo(this._superset, 'remove', onModelRemove);
+	  this.listenTo(this._superset, 'all', onAll);
+	}
+
+	var methods = {
+
+	  defaultFilterName: '__default',
+
+	  filterBy: function(filterName, filter) {
+	    // Allow the user to skip the filter name if they're only using one filter
+	    if (!filter) {
+	      filter = filterName;
+	      filterName = this.defaultFilterName;
+	    }
+
+	    addFilter.call(this, filterName, createFilter(filter));
+
+	    execFilter.call(this);
+	    return this;
+	  },
+
+	  removeFilter: function(filterName) {
+	    if (!filterName) {
+	      filterName = this.defaultFilterName;
+	    }
+
+	    removeFilter.call(this, filterName);
+
+	    execFilter.call(this);
+	    return this;
+	  },
+
+	  resetFilters: function() {
+	    this._filters = {};
+	    invalidateCache.call(this);
+
+	    this.trigger('filtered:reset');
+
+	    execFilter.call(this);
+	    return this;
+	  },
+
+	  superset: function() {
+	    return this._superset;
+	  },
+
+	  refilter: function(arg) {
+	    if (typeof arg === "object" && arg.cid) {
+	      // is backbone model, refilter that one
+	      onAddChange.call(this, arg);
+	    } else {
+	      // refilter everything
+	      invalidateCache.call(this);
+	      execFilter.call(this);
+	    }
+
+	    return this;
+	  },
+
+	  getFilters: function() {
+	    return  _.keys(this._filters);
+	  },
+
+	  hasFilter: function(name) {
+	    return _.contains(this.getFilters(), name);
+	  },
+
+	  destroy: function() {
+	    this.stopListening();
+	    this._collection.reset([]);
+	    this._superset = this._collection;
+	    this.length = 0;
+
+	    this.trigger('filtered:destroy');
+	  }
+
+	};
+
+	// Build up the prototype
+	_.extend(Filtered.prototype, methods, Backbone.Events);
+
+	module.exports = Filtered;
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var _ = __webpack_require__(5);
+	var Backbone = __webpack_require__(16);
+
+	// Methods in the collection prototype that we won't expose
+	var blacklistedMethods = [
+	  "_onModelEvent", "_prepareModel", "_removeReference", "_reset", "add",
+	  "initialize", "sync", "remove", "reset", "set", "push", "pop", "unshift",
+	  "shift", "sort", "parse", "fetch", "create", "model", "off", "on",
+	  "listenTo", "listenToOnce", "bind", "trigger", "once", "stopListening"
+	];
+
+	var eventWhiteList = [
+	  'add', 'remove', 'reset', 'sort', 'destroy', 'sync', 'request', 'error'
+	];
+
+	function proxyCollection(from, target) {
+
+	  function updateLength() {
+	    target.length = from.length;
+	  }
+
+	  function pipeEvents(eventName) {
+	    var args = _.toArray(arguments);
+	    var isChangeEvent = eventName === 'change' ||
+	                        eventName.slice(0, 7) === 'change:';
+
+	    // In the case of a `reset` event, the Collection.models reference
+	    // is updated to a new array, so we need to update our reference.
+	    if (eventName === 'reset') {
+	      target.models = from.models;
+	    }
+
+	    if (_.contains(eventWhiteList, eventName)) {
+	      if (_.contains(['add', 'remove', 'destroy'], eventName)) {
+	        args[2] = target;
+	      } else if (_.contains(['reset', 'sort'], eventName)) {
+	        args[1] = target;
+	      }
+	      target.trigger.apply(this, args);
+	    } else if (isChangeEvent) {
+	      // In some cases I was seeing change events fired after the model
+	      // had already been removed from the collection.
+	      if (target.contains(args[1])) {
+	        target.trigger.apply(this, args);
+	      }
+	    }
+	  }
+
+	  var methods = {};
+
+	  _.each(_.functions(Backbone.Collection.prototype), function(method) {
+	    if (!_.contains(blacklistedMethods, method)) {
+	      methods[method] = function() {
+	        return from[method].apply(from, arguments);
+	      };
+	    }
+	  });
+
+	  _.extend(target, Backbone.Events, methods);
+
+	  target.listenTo(from, 'all', updateLength);
+	  target.listenTo(from, 'all', pipeEvents);
+	  target.models = from.models;
+
+	  updateLength();
+	  return target;
+	}
+
+	module.exports = proxyCollection;
+
+
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(5);
+
+	// Converts a key and value into a function that accepts a model
+	// and returns a boolean.
+	function convertKeyValueToFunction(key, value) {
+	  return function(model) {
+	    return model.get(key) === value;
+	  };
+	}
+
+	// Converts a key and an associated filter function into a function
+	// that accepts a model and returns a boolean.
+	function convertKeyFunctionToFunction(key, fn) {
+	  return function(model) {
+	    return fn(model.get(key));
+	  };
+	}
+
+	function createFilterObject(filterFunction, keys) {
+	  // Make sure the keys value is either an array or null
+	  if (!_.isArray(keys)) {
+	    keys = null;
+	  }
+	  return { fn: filterFunction, keys: keys };
+	}
+
+	// Accepts an object in the form of:
+	//
+	//   {
+	//     key: value,
+	//     key: function(val) { ... }
+	//   }
+	//
+	// and turns it into a function that accepts a model an returns a
+	// boolean + a list of the keys that the function depends on.
+	function createFilterFromObject(filterObj) {
+	  var keys = _.keys(filterObj);
+
+	  var filterFunctions = _.map(keys, function(key) {
+	    var val = filterObj[key];
+	    if (_.isFunction(val)) {
+	      return convertKeyFunctionToFunction(key, val);
+	    }
+	    return convertKeyValueToFunction(key, val);
+	  });
+
+	  // Iterate through each of the generated filter functions. If any
+	  // are false, kill the computation and return false. The function
+	  // is only true if all of the subfunctions are true.
+	  var filterFunction = function(model) {
+	    for (var i = 0; i < filterFunctions.length; i++) {
+	      if (!filterFunctions[i](model)) {
+	        return false;
+	      }
+	    }
+	    return true;
+	  };
+
+	  return createFilterObject(filterFunction, keys);
+	}
+
+	// Expects one of the following:
+	//
+	//   - A filter function that accepts a model + (optional) array of
+	//     keys to listen to changes for or null)
+	//   - An object describing a filter
+	function createFilter(filter, keys) {
+	  // This must go first because _.isObject(fn) === true
+	  if (_.isFunction(filter)) {
+	    return createFilterObject(filter, keys);
+	  }
+
+	  // If the filter is an object describing a filter, generate the
+	  // appropriate function.
+	  if (_.isObject(filter)) {
+	    return createFilterFromObject(filter);
+	  }
+	}
+
+	module.exports = createFilter;
+
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var _ = __webpack_require__(5);
+	var Backbone =__webpack_require__(16);
+	var proxyCollection = __webpack_require__(37);
+	var sortedIndex = __webpack_require__(40);
+
+	function lookupIterator(value) {
+	  return _.isFunction(value) ? value : function(obj){ return obj.get(value); };
+	}
+
+	function modelInsertIndex(model) {
+	  if (!this._comparator) {
+	    return this._superset.indexOf(model);
+	  } else {
+	    return sortedIndex(this._collection.models, model, lookupIterator(this._comparator), this._reverse);
+	  }
+	}
+
+	function onAdd(model) {
+	  var index = modelInsertIndex.call(this, model);
+	  this._collection.add(model, { at: index });
+	}
+
+	function onRemove(model) {
+	  if (this.contains(model)) {
+	    this._collection.remove(model);
+	  }
+	}
+
+	function onChange(model) {
+	  if (this.contains(model) && this._collection.indexOf(model) !== modelInsertIndex.call(this, model)) {
+	    this._collection.remove(model);
+	    onAdd.call(this, model);
+	  }
+	}
+
+	function sort() {
+	  if (!this._comparator) {
+	    this._collection.reset(this._superset.toArray());
+	    return;
+	  }
+
+	  // Evaluate the type of comparator based on http://backbonejs.org/#Collection-comparator
+	  var newOrder;
+	  if (_.isString(this._comparator) || this._comparator.length === 1) {
+	    newOrder = this._superset.sortBy(this._comparator);
+	  } else {
+	    newOrder = this._superset.models.sort(this._comparator);
+	  }
+	  this._collection.reset(this._reverse ? newOrder.reverse() : newOrder);
+	}
+
+	function Sorted(superset) {
+	  // Save a reference to the original collection
+	  this._superset = superset;
+	  this._reverse = false;
+	  this._comparator = null;
+
+	  // The idea is to keep an internal backbone collection with the paginated
+	  // set, and expose limited functionality.
+	  this._collection = new Backbone.Collection(superset.toArray());
+	  proxyCollection(this._collection, this);
+
+	  this.listenTo(this._superset, 'add', onAdd);
+	  this.listenTo(this._superset, 'remove', onRemove);
+	  this.listenTo(this._superset, 'change', onChange);
+	  this.listenTo(this._superset, 'reset', sort);
+	}
+
+	var methods = {
+
+	  setSort: function(comparator, direction) {
+	    this._reverse = direction === 'desc' ? true : false;
+	    this._comparator = comparator;
+
+	    sort.call(this);
+
+	    if (!comparator) {
+	      this.trigger('sorted:remove');
+	    } else {
+	      this.trigger('sorted:add');
+	    }
+
+	    return this;
+	  },
+
+	  reverseSort: function() {
+	    this._reverse = !this._reverse;
+	    sort.call(this);
+
+	    return this;
+	  },
+
+	  removeSort: function() {
+	    this.setSort();
+	    return this;
+	  },
+
+	  superset: function() {
+	    return this._superset;
+	  },
+
+	  destroy: function() {
+	    this.stopListening();
+	    this._collection.reset([]);
+	    this._superset = this._collection;
+	    this.length = 0;
+
+	    this.trigger('sorted:destroy');
+	  }
+
+	};
+
+	// Build up the prototype
+	_.extend(Sorted.prototype, methods, Backbone.Events);
+
+	module.exports = Sorted;
+
+
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	var _ = __webpack_require__(5);
+
+	// Underscore provides a .sortedIndex function that works
+	// when sorting ascending based on a function or a key, but there's no
+	// way to do the same thing when sorting descending. This is a slight
+	// modification of the underscore / backbone code to do the same thing
+	// but descending.
+
+	function comparatorAdapter(fieldExtractor, reverse) {
+	  return function(left, right) {
+	    var l = fieldExtractor(left);
+	    var r = fieldExtractor(right);
+
+	    if(l === r) return 0;
+
+	    return reverse ? (l < r ? 1 : -1) : (l < r ? -1 : 1);
+	  };
+	}
+
+	function lookupIterator(value, reverse) {
+	  return value.length === 2 ? value : comparatorAdapter(value, reverse);
+	}
+
+	function sortedIndex(array, obj, iterator, reverse) {
+	  iterator = iterator === null ? _.identity : lookupIterator(iterator, reverse);
+
+	  var low = 0, high = array.length;
+	  while (low < high) {
+	      var mid = (low + high) >>> 1;
+	    if(iterator(array[mid], obj) < 0) {
+	      low = mid + 1;
+	    } else {
+	      high = mid;
+	    }
+	  }
+
+	  return low;
+	}
+
+	module.exports = sortedIndex;
+
+
+/***/ },
+/* 41 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(5);
+	var Backbone = __webpack_require__(16);
+	var proxyCollection = __webpack_require__(37);
 
 	function getPageLimits() {
 	  if(this._infinite){
@@ -5201,582 +4141,10 @@
 	module.exports =  Paginated;
 
 /***/ },
-/* 92 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
-	
-	var _ = __webpack_require__(6);
-	var Backbone = __webpack_require__(11);
-
-	// Methods in the collection prototype that we won't expose
-	var blacklistedMethods = [
-	  "_onModelEvent", "_prepareModel", "_removeReference", "_reset", "add",
-	  "initialize", "sync", "remove", "reset", "set", "push", "pop", "unshift",
-	  "shift", "sort", "parse", "fetch", "create", "model", "off", "on",
-	  "listenTo", "listenToOnce", "bind", "trigger", "once", "stopListening"
-	];
-
-	var eventWhiteList = [
-	  'add', 'remove', 'reset', 'sort', 'destroy', 'sync', 'request', 'error'
-	];
-
-	function proxyCollection(from, target) {
-
-	  function updateLength() {
-	    target.length = from.length;
-	  }
-
-	  function pipeEvents(eventName) {
-	    var args = _.toArray(arguments);
-	    var isChangeEvent = eventName === 'change' ||
-	                        eventName.slice(0, 7) === 'change:';
-
-	    // In the case of a `reset` event, the Collection.models reference
-	    // is updated to a new array, so we need to update our reference.
-	    if (eventName === 'reset') {
-	      target.models = from.models;
-	    }
-
-	    if (_.contains(eventWhiteList, eventName)) {
-	      if (_.contains(['add', 'remove', 'destroy'], eventName)) {
-	        args[2] = target;
-	      } else if (_.contains(['reset', 'sort'], eventName)) {
-	        args[1] = target;
-	      }
-	      target.trigger.apply(this, args);
-	    } else if (isChangeEvent) {
-	      // In some cases I was seeing change events fired after the model
-	      // had already been removed from the collection.
-	      if (target.contains(args[1])) {
-	        target.trigger.apply(this, args);
-	      }
-	    }
-	  }
-
-	  var methods = {};
-
-	  _.each(_.functions(Backbone.Collection.prototype), function(method) {
-	    if (!_.contains(blacklistedMethods, method)) {
-	      methods[method] = function() {
-	        return from[method].apply(from, arguments);
-	      };
-	    }
-	  });
-
-	  _.extend(target, Backbone.Events, methods);
-
-	  target.listenTo(from, 'all', updateLength);
-	  target.listenTo(from, 'all', pipeEvents);
-	  target.models = from.models;
-
-	  updateLength();
-	  return target;
-	}
-
-	module.exports = proxyCollection;
-
-
-
-/***/ },
-/* 93 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(6);
-	var Backbone = __webpack_require__(11);
-	var proxyCollection = __webpack_require__(92);
-	var createFilter = __webpack_require__(94);
-
-	// Beware of `this`
-	// All of the following functions are meant to be called in the context
-	// of the FilteredCollection object, but are not public functions.
-
-	function invalidateCache() {
-	  this._filterResultCache = {};
-	}
-
-	function invalidateCacheForFilter(filterName) {
-	  for (var cid in this._filterResultCache) {
-	    if (this._filterResultCache.hasOwnProperty(cid)) {
-	      delete this._filterResultCache[cid][filterName];
-	    }
-	  }
-	}
-
-	function addFilter(filterName, filterObj) {
-	  // If we've already had a filter of this name, we need to invalidate
-	  // any and all of the cached results
-	  if (this._filters[filterName]) {
-	    invalidateCacheForFilter.call(this, filterName);
-	  }
-
-	  this._filters[filterName] = filterObj;
-	  this.trigger('filtered:add', filterName);
-	}
-
-	function removeFilter(filterName) {
-	  delete this._filters[filterName];
-
-	  /* todo: integrate query methods */
-	  delete this._query;
-	  delete this._tokens;
-
-	  invalidateCacheForFilter.call(this, filterName);
-	  this.trigger('filtered:remove', filterName);
-	}
-
-	function execFilterOnModel(model) {
-	  if (!this._filterResultCache[model.cid]) {
-	    this._filterResultCache[model.cid] = {};
-	  }
-
-	  var cache = this._filterResultCache[model.cid];
-
-	  for (var filterName in this._filters) {
-	    if (this._filters.hasOwnProperty(filterName)) {
-	      // if we haven't already calculated this, calculate it and cache
-	      if (!cache.hasOwnProperty(filterName)) {
-	        cache[filterName] = this._filters[filterName].fn(model);
-	      }
-	      if (!cache[filterName]) {
-	        return false;
-	      }
-	    }
-	  }
-	  return true;
-	}
-
-	function execFilter() {
-	  var filtered = [];
-
-	  // Filter the collection
-	  if (this._superset) {
-	    filtered = this._superset.filter(_.bind(execFilterOnModel, this));
-	  }
-
-	  this._collection.reset(filtered);
-	  this.length = this._collection.length;
-	}
-
-	function onAddChange(model) {
-	  // reset the cached results
-	  this._filterResultCache[model.cid] = {};
-
-	  if (execFilterOnModel.call(this, model)) {
-	    if (!this._collection.get(model.cid)) {
-	      var index = this.superset().indexOf(model);
-
-	      // Find the index at which to insert the model in the
-	      // filtered collection by finding the index of the
-	      // previous non-filtered model in the filtered collection
-	      var filteredIndex = null;
-	      for (var i = index - 1; i >= 0; i -= 1) {
-	        if (this.contains(this.superset().at(i))) {
-	          filteredIndex = this.indexOf(this.superset().at(i)) + 1;
-	          break;
-	        }
-	      }
-	      filteredIndex = filteredIndex || 0;
-
-	      this._collection.add(model, { at: filteredIndex });
-	    }
-	  } else {
-	    if (this._collection.get(model.cid)) {
-	      this._collection.remove(model);
-	    }
-	  }
-	  this.length = this._collection.length;
-	}
-
-	// This fires on 'change:[attribute]' events. We only want to
-	// remove this model if it fails the test, but not add it if
-	// it does. If we remove it, it will prevent the 'change'
-	// events from being forwarded, and if we add it, it will cause
-	// an unneccesary 'change' event to be forwarded without the
-	// 'change:[attribute]' that goes along with it.
-	function onModelAttributeChange(model) {
-	  // reset the cached results
-	  this._filterResultCache[model.cid] = {};
-
-	  if (!execFilterOnModel.call(this, model)) {
-	    if (this._collection.get(model.cid)) {
-	      this._collection.remove(model);
-	    }
-	  }
-	}
-
-	function onAll(eventName, model, value) {
-	  if (eventName.slice(0, 7) === "change:") {
-	    onModelAttributeChange.call(this, arguments[1]);
-	  }
-	}
-
-	function onModelRemove(model) {
-	  if (this.contains(model)) {
-	    this._collection.remove(model);
-	  }
-	  this.length = this._collection.length;
-	}
-
-	function Filtered(superset) {
-	  // Save a reference to the original collection
-	  this._superset = superset;
-
-	  // The idea is to keep an internal backbone collection with the filtered
-	  // set, and expose limited functionality.
-	  this._collection = new Backbone.Collection(superset.toArray());
-	  proxyCollection(this._collection, this);
-
-	  // Set up the filter data structures
-	  this.resetFilters();
-
-	  this.listenTo(this._superset, 'reset sort', execFilter);
-	  this.listenTo(this._superset, 'add change', onAddChange);
-	  this.listenTo(this._superset, 'remove', onModelRemove);
-	  this.listenTo(this._superset, 'all', onAll);
-	}
-
-	var methods = {
-
-	  defaultFilterName: '__default',
-
-	  filterBy: function(filterName, filter) {
-	    // Allow the user to skip the filter name if they're only using one filter
-	    if (!filter) {
-	      filter = filterName;
-	      filterName = this.defaultFilterName;
-	    }
-
-	    addFilter.call(this, filterName, createFilter(filter));
-
-	    execFilter.call(this);
-	    return this;
-	  },
-
-	  removeFilter: function(filterName) {
-	    if (!filterName) {
-	      filterName = this.defaultFilterName;
-	    }
-
-	    removeFilter.call(this, filterName);
-
-	    execFilter.call(this);
-	    return this;
-	  },
-
-	  resetFilters: function() {
-	    this._filters = {};
-	    invalidateCache.call(this);
-
-	    this.trigger('filtered:reset');
-
-	    execFilter.call(this);
-	    return this;
-	  },
-
-	  superset: function() {
-	    return this._superset;
-	  },
-
-	  refilter: function(arg) {
-	    if (typeof arg === "object" && arg.cid) {
-	      // is backbone model, refilter that one
-	      onAddChange.call(this, arg);
-	    } else {
-	      // refilter everything
-	      invalidateCache.call(this);
-	      execFilter.call(this);
-	    }
-
-	    return this;
-	  },
-
-	  getFilters: function() {
-	    return  _.keys(this._filters);
-	  },
-
-	  hasFilter: function(name) {
-	    return _.contains(this.getFilters(), name);
-	  },
-
-	  destroy: function() {
-	    this.stopListening();
-	    this._collection.reset([]);
-	    this._superset = this._collection;
-	    this.length = 0;
-
-	    this.trigger('filtered:destroy');
-	  }
-
-	};
-
-	// Build up the prototype
-	_.extend(Filtered.prototype, methods, Backbone.Events);
-
-	module.exports = Filtered;
-
-/***/ },
-/* 94 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(6);
-
-	// Converts a key and value into a function that accepts a model
-	// and returns a boolean.
-	function convertKeyValueToFunction(key, value) {
-	  return function(model) {
-	    return model.get(key) === value;
-	  };
-	}
-
-	// Converts a key and an associated filter function into a function
-	// that accepts a model and returns a boolean.
-	function convertKeyFunctionToFunction(key, fn) {
-	  return function(model) {
-	    return fn(model.get(key));
-	  };
-	}
-
-	function createFilterObject(filterFunction, keys) {
-	  // Make sure the keys value is either an array or null
-	  if (!_.isArray(keys)) {
-	    keys = null;
-	  }
-	  return { fn: filterFunction, keys: keys };
-	}
-
-	// Accepts an object in the form of:
-	//
-	//   {
-	//     key: value,
-	//     key: function(val) { ... }
-	//   }
-	//
-	// and turns it into a function that accepts a model an returns a
-	// boolean + a list of the keys that the function depends on.
-	function createFilterFromObject(filterObj) {
-	  var keys = _.keys(filterObj);
-
-	  var filterFunctions = _.map(keys, function(key) {
-	    var val = filterObj[key];
-	    if (_.isFunction(val)) {
-	      return convertKeyFunctionToFunction(key, val);
-	    }
-	    return convertKeyValueToFunction(key, val);
-	  });
-
-	  // Iterate through each of the generated filter functions. If any
-	  // are false, kill the computation and return false. The function
-	  // is only true if all of the subfunctions are true.
-	  var filterFunction = function(model) {
-	    for (var i = 0; i < filterFunctions.length; i++) {
-	      if (!filterFunctions[i](model)) {
-	        return false;
-	      }
-	    }
-	    return true;
-	  };
-
-	  return createFilterObject(filterFunction, keys);
-	}
-
-	// Expects one of the following:
-	//
-	//   - A filter function that accepts a model + (optional) array of
-	//     keys to listen to changes for or null)
-	//   - An object describing a filter
-	function createFilter(filter, keys) {
-	  // This must go first because _.isObject(fn) === true
-	  if (_.isFunction(filter)) {
-	    return createFilterObject(filter, keys);
-	  }
-
-	  // If the filter is an object describing a filter, generate the
-	  // appropriate function.
-	  if (_.isObject(filter)) {
-	    return createFilterFromObject(filter);
-	  }
-	}
-
-	module.exports = createFilter;
-
-
-
-/***/ },
-/* 95 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var _ = __webpack_require__(6);
-	var Backbone =__webpack_require__(11);
-	var proxyCollection = __webpack_require__(92);
-	var sortedIndex = __webpack_require__(96);
-
-	function lookupIterator(value) {
-	  return _.isFunction(value) ? value : function(obj){ return obj.get(value); };
-	}
-
-	function modelInsertIndex(model) {
-	  if (!this._comparator) {
-	    return this._superset.indexOf(model);
-	  } else {
-	    return sortedIndex(this._collection.models, model, lookupIterator(this._comparator), this._reverse);
-	  }
-	}
-
-	function onAdd(model) {
-	  var index = modelInsertIndex.call(this, model);
-	  this._collection.add(model, { at: index });
-	}
-
-	function onRemove(model) {
-	  if (this.contains(model)) {
-	    this._collection.remove(model);
-	  }
-	}
-
-	function onChange(model) {
-	  if (this.contains(model) && this._collection.indexOf(model) !== modelInsertIndex.call(this, model)) {
-	    this._collection.remove(model);
-	    onAdd.call(this, model);
-	  }
-	}
-
-	function sort() {
-	  if (!this._comparator) {
-	    this._collection.reset(this._superset.toArray());
-	    return;
-	  }
-
-	  // Evaluate the type of comparator based on http://backbonejs.org/#Collection-comparator
-	  var newOrder;
-	  if (_.isString(this._comparator) || this._comparator.length === 1) {
-	    newOrder = this._superset.sortBy(this._comparator);
-	  } else {
-	    newOrder = this._superset.models.sort(this._comparator);
-	  }
-	  this._collection.reset(this._reverse ? newOrder.reverse() : newOrder);
-	}
-
-	function Sorted(superset) {
-	  // Save a reference to the original collection
-	  this._superset = superset;
-	  this._reverse = false;
-	  this._comparator = null;
-
-	  // The idea is to keep an internal backbone collection with the paginated
-	  // set, and expose limited functionality.
-	  this._collection = new Backbone.Collection(superset.toArray());
-	  proxyCollection(this._collection, this);
-
-	  this.listenTo(this._superset, 'add', onAdd);
-	  this.listenTo(this._superset, 'remove', onRemove);
-	  this.listenTo(this._superset, 'change', onChange);
-	  this.listenTo(this._superset, 'reset', sort);
-	}
-
-	var methods = {
-
-	  setSort: function(comparator, direction) {
-	    this._reverse = direction === 'desc' ? true : false;
-	    this._comparator = comparator;
-
-	    sort.call(this);
-
-	    if (!comparator) {
-	      this.trigger('sorted:remove');
-	    } else {
-	      this.trigger('sorted:add');
-	    }
-
-	    return this;
-	  },
-
-	  reverseSort: function() {
-	    this._reverse = !this._reverse;
-	    sort.call(this);
-
-	    return this;
-	  },
-
-	  removeSort: function() {
-	    this.setSort();
-	    return this;
-	  },
-
-	  superset: function() {
-	    return this._superset;
-	  },
-
-	  destroy: function() {
-	    this.stopListening();
-	    this._collection.reset([]);
-	    this._superset = this._collection;
-	    this.length = 0;
-
-	    this.trigger('sorted:destroy');
-	  }
-
-	};
-
-	// Build up the prototype
-	_.extend(Sorted.prototype, methods, Backbone.Events);
-
-	module.exports = Sorted;
-
-
-
-/***/ },
-/* 96 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	var _ = __webpack_require__(6);
-
-	// Underscore provides a .sortedIndex function that works
-	// when sorting ascending based on a function or a key, but there's no
-	// way to do the same thing when sorting descending. This is a slight
-	// modification of the underscore / backbone code to do the same thing
-	// but descending.
-
-	function comparatorAdapter(fieldExtractor, reverse) {
-	  return function(left, right) {
-	    var l = fieldExtractor(left);
-	    var r = fieldExtractor(right);
-
-	    if(l === r) return 0;
-
-	    return reverse ? (l < r ? 1 : -1) : (l < r ? -1 : 1);
-	  };
-	}
-
-	function lookupIterator(value, reverse) {
-	  return value.length === 2 ? value : comparatorAdapter(value, reverse);
-	}
-
-	function sortedIndex(array, obj, iterator, reverse) {
-	  iterator = iterator === null ? _.identity : lookupIterator(iterator, reverse);
-
-	  var low = 0, high = array.length;
-	  while (low < high) {
-	      var mid = (low + high) >>> 1;
-	    if(iterator(array[mid], obj) < 0) {
-	      low = mid + 1;
-	    } else {
-	      high = mid;
-	    }
-	  }
-
-	  return low;
-	}
-
-	module.exports = sortedIndex;
-
-
-/***/ },
-/* 97 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
 
 	function proxyEvents(from, eventNames) {
 	  _.each(eventNames, function (eventName) {
@@ -5791,15 +4159,15 @@
 	module.exports = proxyEvents;
 
 /***/ },
-/* 98 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * query methods to extend Filtered Collection
 	 */
 
-	var _ = __webpack_require__(6);
-	var query = __webpack_require__(99);
+	var _ = __webpack_require__(5);
+	var query = __webpack_require__(44);
 
 	module.exports = {
 
@@ -5854,11 +4222,11 @@
 	};
 
 /***/ },
-/* 99 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var _ = __webpack_require__(6);
-	var Parser = __webpack_require__(100);
+	var _ = __webpack_require__(5);
+	var Parser = __webpack_require__(45);
 	var parser = new Parser();
 
 	function toType(obj) {
@@ -5978,11 +4346,11 @@
 	};
 
 /***/ },
-/* 100 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* jshint -W071, -W074 */
-	var _ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
 
 	/**
 	 *
@@ -6258,12 +4626,2167 @@
 	/* jshint +W071, +W074 */
 
 /***/ },
-/* 101 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Service = __webpack_require__(2);
-	var TabsView = __webpack_require__(102);
-	var TabsCollection = __webpack_require__(106);
+	var DualCollection = __webpack_require__(22);
+	var Model = __webpack_require__(47);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var bb = __webpack_require__(16);
+
+	module.exports = DualCollection.extend({
+	  model: Model,
+	  name: 'orders',
+	  _syncDelayed: false,
+
+	  /**
+	   * Open orders first
+	   */
+	  //comparator: function( model ){
+	  //  if( model.get('id') === undefined ) { return 0; }
+	  //  return 1;
+	  //},
+
+	  /**
+	   *
+	   */
+	  setActiveOrder: function(id){
+	    var order = this.get(id);
+
+	    if( !order && id !== 'new' ){
+	      order = _.first( this.openOrders() );
+	    }
+
+	    this.active = order;
+	    return order;
+	  },
+
+	  /**
+	   * Promise of an active order
+	   */
+	  getActiveOrder: function(){
+	    var self = this;
+	    var deferred = new $.Deferred();
+
+	    if(!this.active){
+	      this.create().then(function(order){
+	        order.cart.order_id = order.id;
+	        self.active = order;
+	        if(bb.history.getHash() === 'cart/new') {
+	          bb.history.navigate('cart/' + order.id);
+	        }
+	        deferred.resolve(order);
+	      });
+	    } else {
+	      deferred.resolve(this.active);
+	    }
+
+	    return deferred.promise();
+	  },
+
+	  addToCart: function(options){
+	    this.getActiveOrder()
+	      .then(function(order){
+	        order.cart.addToCart(options);
+	      });
+	  },
+
+	  create: function(){
+	    var deferred = new $.Deferred();
+
+	    // Safari has a problem with create, perhaps an autoincrement problem?
+	    // Set local_id as timestamp milliseconds
+	    DualCollection.prototype.create.call(this, { local_id: Date.now() }, {
+	      wait: true,
+	      success: deferred.resolve,
+	      error: deferred.reject
+	    });
+
+	    return deferred.promise();
+	  },
+
+	  /**
+	   *
+	   */
+	  openOrders: function(){
+	    return this.filter(function(model){
+	      return model.isEditable();
+	    });
+	  }
+
+	});
+
+/***/ },
+/* 47 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//var DualModel = require('lib/config/dual-model');
+	var DualModel = __webpack_require__(29);
+	var Radio = __webpack_require__(4);
+	var Utils = __webpack_require__(8);
+	var debug = __webpack_require__(13)('order');
+	var App = __webpack_require__(2);
+	var $ = __webpack_require__(6);
+
+	var Model = DualModel.extend({
+	  name: 'order',
+	  fields: [
+	    'customer.first_name',
+	    'customer.last_name',
+	    'customer.email'
+	  ],
+
+	  /**
+	   * Orders with the following status are closed for editing
+	   */
+	  //closedStatus: [
+	  //  'completed',
+	  //  'on-hold',
+	  //  'cancelled',
+	  //  'refunded',
+	  //  'processing',
+	  //  'failed'
+	  //],
+
+	  /**
+	   *
+	   */
+	  defaults: {
+	    note            : '',
+	    order_discount  : 0
+	  },
+
+	  /**
+	   * - attach tax settings
+	   * - attach cart & gateways if order is open
+	   */
+	  /* jshint -W071, -W074 */
+	  initialize: function(attributes){
+	    attributes = attributes || {};
+
+	    if(!attributes.customer){
+	      var customers = this.getEntities('customers');
+	      var customer = customers['default'] || customers.guest || {};
+	      this.set({
+	        customer_id : customer.id,
+	        customer    : customer
+	      });
+	    }
+
+	    this.tax = this.getEntities('tax');
+	    this.tax_rates = this.getEntities('tax_rates');
+
+	    if( this.isEditable() ){
+	      this.attachCart();
+	      this.attachGateways();
+	    }
+
+	    // order_discount input
+	    this.on({
+	      'change:order_discount': this.calcTotals,
+	      'change:status': this.isEditable
+	    });
+
+	  },
+	  /* jshint +W071, +W074 */
+
+	  getEntities: function(name){
+	    return Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: name
+	    }) || {};
+	  },
+
+	  /**
+	   * is order editable method, sets _open true or false
+	   */
+	  isEditable: function(){
+	    //return !_.contains(this.closedStatus, this.get('status'));
+	    return this.get('status') === undefined || this.isDelayed();
+	    //return this.isDelayed();
+	  },
+
+	  /**
+	   * Remove items from cart before destroy
+	   */
+	  destroy: function(options){
+	    var self = this;
+	    return this.cart.db.removeBatch( this.cart.pluck('local_id') )
+	      .always(function(){
+	        return DualModel.prototype.destroy.call(self, options);
+	      });
+	  },
+
+	  /**
+	   * Attach cart
+	   */
+	  attachCart: function(){
+	    var cart = Radio.request('entities', 'get', {
+	      init : true,
+	      type : 'collection',
+	      name : 'cart'
+	    });
+
+	    cart.order_id = this.id;
+
+	    this.listenTo(cart, {
+	      'add change' : this.calcTotals,
+	      'remove'     : this.itemRemoved
+	    });
+
+	    if(cart.db){
+	      cart.db.open().then(function(){
+	        cart.fetchCartItems();
+	      });
+	    }
+
+	    this.cart = cart;
+	  },
+
+	  /**
+	   * remove cart items from idb after successful order
+	   */
+	  clearCart: function(){
+	    if(this.cart){
+	      this.cart.db.removeBatch( this.cart.pluck('local_id') );
+	    }
+	  },
+
+	  /**
+	   * Attach gateways
+	   */
+	  attachGateways: function(){
+	    this.gateways = Radio.request('entities', 'get', {
+	      init : true,
+	      type : 'collection',
+	      name : 'gateways'
+	    });
+
+	    var gateways = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'gateways'
+	    });
+	    this.gateways.add(gateways);
+	  },
+
+	  /**
+	   *
+	   */
+	  itemRemoved: function(){
+	    if(this.cart.length > 0){
+	      return this.calcTotals();
+	    }
+	    return this.destroy();
+	  },
+
+	  /**
+	   * Sum cart totals
+	   * todo: too many statements
+	   */
+	  /* jshint -W071 */
+	  calcTotals: function(){
+	    var total_tax     = 0,
+	        subtotal_tax  = 0,
+	        shipping_tax  = 0,
+	        cart_discount_tax = 0,
+	        subtotal      = this.cart.sum('subtotal'),
+	        total         = this.cart.sum('total'),
+	        cart_discount = subtotal - total,
+	        order_discount = this.get('order_discount');
+
+	    if( this.tax.calc_taxes === 'yes' ) {
+	      total_tax         = this.cart.sum('total_tax');
+	      subtotal_tax      = this.cart.sum('subtotal_tax');
+	      shipping_tax      = this.cart.sum('total_tax', 'shipping');
+	      cart_discount_tax = subtotal_tax - total_tax;
+	    }
+
+	    total += total_tax;
+	    total -= order_discount;
+
+	    // tax_lines will merge the data - possibly due to deep model
+	    // clear tax_lines before save to ensure clean data
+	    this.unset('tax_lines', { silent: true });
+
+	    // create totals object
+	    var totals = {
+	      'total'             : Utils.round( total, 4 ),
+	      'subtotal'          : Utils.round( subtotal, 4 ),
+	      'total_tax'         : Utils.round( total_tax, 4 ),
+	      'subtotal_tax'      : Utils.round( subtotal_tax, 4 ),
+	      'shipping_tax'      : Utils.round( shipping_tax, 4 ),
+	      'cart_discount'     : Utils.round( cart_discount, 4 ),
+	      'cart_discount_tax' : Utils.round( cart_discount_tax, 4 ),
+	      'tax_lines'         : this.cart.itemizedTax()
+	    };
+
+	    this.save(totals);
+	    debug('update totals', totals);
+	  },
+	  /* jshint +W071 */
+
+	  /**
+	   * Convenience method to sum attributes
+	   */
+	  sum: function(array){
+	    var sum = 0;
+	    for (var i = 0; i < array.length; i++) {
+	      sum += parseFloat( this.get(array[i]) );
+	    }
+	    return sum;
+	  },
+
+	  /**
+	   * process order
+	   * todo: remoteSync resolves w/ an array of models, should match sync?
+	   */
+	  process: function(){
+	    var self = this;
+
+	    return $.when( this.processCart() )
+	      .then(function(){
+	        return self.processGateway();
+	      })
+	      .then(function(){
+	        var method = self.get('id') ? 'update' : 'create';
+	        return self.remoteSync(method);
+	      })
+	      .then(function(array){
+	        var model = array[0];
+	        if(model.get('status') === 'failed'){
+	          model.save({ status: 'UPDATE_FAILED' });
+	        }
+	      });
+	  },
+
+	  /**
+	   *
+	   */
+	  processCart: function(){
+	    var obj = {
+	      product : [],
+	      shipping: [],
+	      fee     : []
+	    };
+
+	    this.cart.each(function(model){
+	      var type = model.get('type');
+	      if(type !== 'shipping' && type !== 'fee'){
+	        type = 'product';
+	      }
+	      obj[type].push( model.toJSON() );
+	    });
+
+	    // set
+	    this.set({
+	      line_items    : obj.product,
+	      shipping_lines: obj.shipping,
+	      fee_lines     : obj.fee,
+	      tax_lines     : this.cart.itemizedTax() // reset for retry
+	    });
+	  },
+
+	  /**
+	   *
+	   */
+	  processGateway: function(){
+	    var data = this.gateways.findWhere({ active: true }).toJSON();
+	    this.set({
+	      payment_details: data
+	    });
+	  }
+
+	});
+
+	module.exports = Model;
+	App.prototype.set('Entities.Order.Model', Model);
+
+/***/ },
+/* 48 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var IndexedDBCollection = __webpack_require__(23);
+	var Model = __webpack_require__(49);
+	var _ = __webpack_require__(5);
+	var bb = __webpack_require__(16);
+
+	module.exports = IndexedDBCollection.extend({
+	  model: Model,
+	  name: 'cart',
+	  indexes: [
+	    {name: 'local_id', keyPath: 'local_id', unique: true},
+	    {name: 'order', keyPath: 'order', unique: false},
+	    {name: 'type', keyPath: 'type', unique: false}
+	  ],
+
+	  /**
+	   * Whitelist of attributes taken from product model
+	   */
+	  productAttributes: [
+	    'order',
+	    'title',
+	    'local_id',
+	    'product_id',
+	    'type',
+	    'price',
+	    'regular_price',
+	    'sale_price',
+	    'taxable',
+	    'tax_status',
+	    'tax_class',
+	    'attributes',
+	    'meta',         // variation meta
+	    'method_title', // shipping
+	    'method_id'     // shipping
+	  ],
+
+	  comparator: function( model ){
+	    var type = model.get( 'type' );
+	    if( type === 'fee' ) { return 2; }
+	    if( type === 'shipping' ) { return 1; }
+	    return 0;
+	  },
+
+	  /**
+	   * If collection has order_id, query idb for index: 'order' = order_id
+	   * onSuccess add items to collection
+	   */
+	  fetchCartItems: function () {
+	    if(!this.order_id){
+	      return;
+	    }
+
+	    var onSuccess = this.add.bind(this);
+	    var keyRange = this.db.store.makeKeyRange({
+	      only: this.order_id
+	    });
+
+	    this.db.store.query(onSuccess, {
+	      index: 'order',
+	      keyRange: keyRange
+	    });
+	  },
+
+	  // convenience method to sum attributes in collection
+	  sum: function(attribute, type){
+	    var col = this.toJSON();
+	    if(type){ col = _.where(col, {type: type}); }
+	    return _.pluck(col, attribute).reduce(function(a, b){return a + b;}, 0);
+	  },
+
+	  /**
+	   * add/increase item
+	   * also prune attributes
+	   */
+	  /* jshint -W071, -W074 */
+	  addToCart: function(options){
+	    options = options || {};
+	    var model, attributes = options.model || options;
+	    if(attributes instanceof bb.Model){
+	      attributes = attributes.toJSON();
+	    }
+
+	    if(attributes.id){
+	      model = this.findWhere({ product_id: attributes.id });
+	      attributes.product_id = attributes.id;
+	      delete attributes.id;
+	    }
+
+	    if(model){
+	      model.quantity('increase');
+	    } else {
+	      model = this._addToCart(attributes);
+	    }
+
+	    model.trigger('pulse');
+	  },
+	  /* jshint +W071, +W074 */
+
+	  _addToCart: function(attributes){
+	    attributes.order = this.order_id;
+
+	    // turn variation attributes into line item meta
+	    if(attributes.type === 'variation'){
+	      attributes.meta = _.map(attributes.attributes, function(variant, idx){
+	        return {
+	          key: ++idx,
+	          label: variant.name,
+	          value: variant.option
+	        };
+	      });
+	    }
+
+	    return this.add(_.pick(attributes, this.productAttributes));
+	  },
+
+	  itemizedTax: function(){
+	    var items = _.clone(this.toJSON(), true);
+	    var taxes = _.map(items, function(item){
+	      if(!item.tax) { return; }
+	      _.each(item.tax, function(tax){
+	        tax.shipping = item.type === 'shipping' ? tax.total : 0 ;
+	      });
+	      return item.tax;
+	    });
+	    var obj = this.sumTaxes(taxes);
+
+	    // convert obj to array to be consistent with WC REST API output
+	    var arr = [];
+	    _.each(obj, function(value, key){
+	      //value.rate_id = parseInt(key, 10);
+	      value.rate_id = key.toString(); // make sure it's a string
+	      arr.push(value);
+	    });
+
+	    return arr;
+	  },
+
+	  sumTaxes: function(taxes){
+	    return _.reduce(taxes, function(result, tax){
+	      return _.merge(result, tax, function(a, b){
+	        if(a){
+	          b.total += a.total;
+	          b.subtotal += a.subtotal;
+	          b.shipping += a.shipping;
+	        }
+	        return b;
+	      });
+	    }, {});
+	  }
+
+	});
+
+/***/ },
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Model = __webpack_require__(31);
+	var debug = __webpack_require__(13)('cartItem');
+	var Utils = __webpack_require__(8);
+	var _ = __webpack_require__(5);
+	var Radio = __webpack_require__(4);
+
+	module.exports = Model.extend({
+	  idAttribute: 'local_id',
+
+	  defaults : {
+	    'subtotal'      : 0,
+	    'subtotal_tax'  : 0,
+	    'total_tax'     : 0,
+	    'total'         : 0,
+	    'item_tax'      : 0,
+	    'quantity'      : 1,
+	    'taxable'       : true,
+	    'tax_class'     : ''
+	  },
+
+	  /* jshint -W074 */
+	  initialize: function() {
+
+	    // attach tax settings
+	    this.tax = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'tax'
+	    }) || {};
+	    this.tax_rates = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'tax_rates'
+	    }) || {};
+
+	    // update on change to quantity, item_price ...
+	    this.on(
+	      'change:quantity ' +
+	      'change:item_price ' +
+	      'change:regular_price ' +
+	      'change:taxable ' +
+	      'change:tax_class',
+	      this.updateLineTotals );
+
+	    // set item price on init, this wil kick off updateLineTotals
+	    if( this.get('item_price') === undefined ) {
+	      var price = parseFloat( this.get('price') );
+	      this.set({ 'item_price': _.isNaN(price) ? 0 : price });
+	    }
+	  },
+	  /* jshint +W074 */
+
+	  /* jshint -W071, -W074 */
+	  /* todo: too many statements, too complex */
+	  updateLineTotals: function() {
+	    var quantity        = this.get('quantity'),
+	        item_price      = this.get('item_price'),
+	        type            = this.get('type'),
+	        regular_price   = parseFloat( this.get('regular_price')),
+	        tax_class       = this.get('tax_class'),
+	        item_tax,
+	        item_subtotal_tax,
+	        rates;
+
+	    // make a copy of the tax rates for this product
+	    if(this.tax_rates[tax_class]){
+	      rates = _.cloneDeep(this.tax_rates[tax_class]);
+	    }
+
+	    // if shipping or fee
+	    if( type === 'shipping' || type === 'fee' ) {
+	      regular_price = item_price;
+	    }
+
+	    // calc taxes
+	    item_tax = this.calcTax({
+	      price    : item_price,
+	      quantity : quantity,
+	      rates    : rates
+	    });
+
+	    item_subtotal_tax = this.calcTax({
+	      price    : regular_price,
+	      quantity : quantity,
+	      rates    : rates,
+	      subtotal : true
+	    });
+
+	    // if price does not include tax
+	    if( this.tax.prices_include_tax === 'yes' ) {
+	      regular_price -= item_subtotal_tax;
+	      item_price -= item_tax;
+	    }
+
+	    // create totals object
+	    var totals = {
+	      'item_subtotal'     : Utils.round( regular_price, 4 ),
+	      'item_subtotal_tax' : Utils.round( item_subtotal_tax, 4 ),
+	      'item_tax'          : Utils.round( item_tax, 4 ),
+	      'subtotal'          : Utils.round( regular_price * quantity, 4 ),
+	      'subtotal_tax'      : Utils.round( item_subtotal_tax * quantity, 4 ),
+	      'total_tax'         : Utils.round( item_tax * quantity, 4 ),
+	      'total'             : Utils.round( item_price * quantity, 4 )
+	    };
+
+	    this.save(totals);
+	    debug('update totals', totals);
+	  },
+	  /* jshint +W071, +W074 */
+
+	  /**
+	   * Calculate the line item tax total
+	   * based on the calc_tax function in woocommerce/includes/class-wc-tax.php
+	   */
+	  calcTax: function(options) {
+	    var item_tax = 0;
+
+	    if(this.tax.calc_taxes === 'yes' && this.get('taxable') && options.rates) {
+	      if( this.tax.prices_include_tax === 'yes' ) {
+	        item_tax = this.calcInclusiveTax(options);
+	      } else {
+	        item_tax = this.calcExclusiveTax(options);
+	      }
+	    } else {
+	      this.set('tax', undefined);
+	    }
+
+	    return item_tax;
+	  },
+
+	  /**
+	   * Calculate the line item tax total
+	   * based on the calc_inclusive_tax function in
+	   * woocommerce/includes/class-wc-tax.php
+	   */
+	  /* todo: too many statements */
+	  /* jshint -W071 */
+	  calcInclusiveTax: function(options) {
+	    var regular_tax_rates = 0,
+	        compound_tax_rates = 0,
+	        non_compound_price = 0,
+	        tax_amount = 0,
+	        item_tax = 0,
+	        price = options.price,
+	        rates = options.rates,
+	        qty = options.quantity;
+
+	    _.each(rates, function(rate, key) {
+	      if( this.get('type') === 'shipping' && rate.shipping === 'no' ){
+	        delete rates[key];
+	        return;
+	      }
+	      if ( rate.compound === 'yes' ) {
+	        compound_tax_rates = compound_tax_rates + parseFloat(rate.rate);
+	      } else {
+	        regular_tax_rates = regular_tax_rates + parseFloat(rate.rate);
+	      }
+	    }, this);
+
+	    var regular_tax_rate  = 1 + ( regular_tax_rates / 100 );
+	    var compound_tax_rate   = 1 + ( compound_tax_rates / 100 );
+	    non_compound_price = price / compound_tax_rate;
+
+	    _.each(rates, function(rate) {
+	      var the_rate = parseFloat(rate.rate) / 100;
+	      var the_price = 0;
+
+	      if ( rate.compound === 'yes' ) {
+	        the_price = price;
+	        the_rate  = the_rate / compound_tax_rate;
+	      }  else {
+	        the_price = non_compound_price;
+	        the_rate  = the_rate / regular_tax_rate;
+	      }
+
+	      var net_price = price - ( the_rate * the_price );
+	      tax_amount = price - net_price;
+
+	      // set the itemized taxes
+	      var prop = options.subtotal ? 'subtotal' : 'total';
+	      rate[prop] = Utils.round( tax_amount * qty, 4 );
+
+	      // sum item taxes
+	      item_tax += tax_amount;
+
+	    }, this);
+
+	    // itemized tax
+	    if( !_.isEmpty(rates) ){
+	      this.set('tax', rates);
+	    }
+
+	    // return the item tax
+	    return item_tax;
+	  },
+	  /* jshint +W071 */
+
+	  /**
+	   * Calculate the line item tax total
+	   * based on the calc_exclusive_tax function in
+	   * woocommerce/includes/class-wc-tax.php
+	   */
+	  calcExclusiveTax: function(options) {
+	    var taxes = [],
+	        pre_compound_total = 0,
+	        tax_amount = 0,
+	        item_tax = 0,
+	        price = options.price,
+	        rates = options.rates,
+	        qty = options.quantity;
+
+	    // multiple taxes
+	    _.each(rates, function(rate, key) {
+	      tax_amount = 0;
+	      if( this.get('type') === 'shipping' && rate.shipping === 'no' ){
+	        delete rates[key];
+	        return;
+	      }
+	      if ( rate.compound !== 'yes' ) {
+	        tax_amount = price * ( parseFloat(rate.rate) / 100 );
+	      }
+	      taxes[ key ] = tax_amount;
+	    }, this);
+
+	    if( taxes.length > 0 ) {
+	      pre_compound_total = taxes.reduce(function(sum, num) {return sum + num;});
+	    }
+
+	    // compound taxes
+	    _.each(rates, function(rate, key) {
+	      if ( rate.compound === 'yes' ) {
+	        var the_price_inc_tax = price + pre_compound_total;
+	        taxes[ key ] = the_price_inc_tax * ( parseFloat(rate.rate) / 100 );
+	      }
+
+	      // set the itemized taxes
+	      var prop = options.subtotal ? 'subtotal' : 'total';
+	      rate[prop] = Utils.round( taxes[ key ] * qty, 4 );
+
+	      // sum item taxes
+	      item_tax += taxes[ key ];
+
+	    }, this);
+
+	    // itemized tax
+	    if( !_.isEmpty(rates) ){
+	      this.set('tax', rates);
+	    }
+
+	    // return the item tax
+	    return item_tax;
+	  },
+
+	  // Convenience method to increase or decrease quantity
+	  quantity: function( type ) {
+	    var quantity = this.get('quantity');
+	    this.set('quantity', (type === 'increase' ? ++quantity : --quantity) );
+	    return this;
+	  },
+
+	  // Convenience method to sum attributes
+	  sum: function(array){
+	    var sum = 0;
+	    for (var i = 0; i < array.length; i++) {
+	      sum += this.get(array[i]);
+	    }
+	    return Utils.round(sum, 4);
+	  }
+
+	});
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var DualCollection = __webpack_require__(22);
+	var Model = __webpack_require__(51);
+	var Radio = __webpack_require__(4);
+
+	module.exports = DualCollection.extend({
+	  model: Model,
+	  name: 'customers',
+	  indexes: [
+	    {name: 'local_id', keyPath: 'local_id', unique: true},
+	    {name: 'id', keyPath: 'id', unique: true},
+	    {name: 'status', keyPath: 'status', unique: false},
+	    {name: 'email', keyPath: 'email', unique: true},
+	    {name: 'username', keyPath: 'username', unique: true}
+	  ],
+
+	  initialize: function(){
+	    var settings = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'customers'
+	    });
+	    if(settings){
+	      this._guest = settings.guest;
+	      this._default = settings['default'] || settings.guest;
+	    }
+	  },
+
+	  getGuestCustomer: function(){
+	    return this._guest;
+	  },
+
+	  getDefaultCustomer: function(){
+	    return this._default;
+	  }
+
+	});
+
+/***/ },
+/* 51 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var DualModel = __webpack_require__(29);
+	var App = __webpack_require__(2);
+
+	var CustomersModel = DualModel.extend({
+	  name: 'customer',
+	  // this is an array of fields used by FilterCollection.matchmaker()
+	  fields: ['email', 'username', 'first_name', 'last_name']
+	});
+
+	module.exports = CustomersModel;
+	App.prototype.set('Entities.Customers.Model', CustomersModel);
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Collection = __webpack_require__(24);
+	var Model = __webpack_require__(53);
+
+	module.exports = Collection.extend({
+	  model: Model
+	});
+
+/***/ },
+/* 53 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Model = __webpack_require__(31);
+
+	module.exports = Model.extend({});
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var DeepModel = __webpack_require__(30);
+	var Radio = __webpack_require__(4);
+	var polyglot = __webpack_require__(10);
+
+	module.exports = DeepModel.extend({
+
+	  initialize: function() {
+	    this.url = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'ajaxurl'
+	    });
+	  },
+
+	  sync: function (method, model, options) {
+	    var nonce = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'nonce'
+	    });
+
+	    var id       = 'id=' + model.get('id'),
+	        action   = 'action=wc_pos_admin_settings',
+	        security = 'security=' + nonce;
+
+	    //options.emulateHTTP = true;
+	    options.url = this.url + '?' + action + '&' + id + '&' + security;
+
+	    // button state
+	    if(options.buttons){
+	      this.updateButtonState(options);
+	    }
+
+	    return DeepModel.prototype.sync(method, model, options);
+	  },
+
+	  parse: function (resp) {
+	    // ajax will return false if no option exists
+	    if(!resp){ resp = null; }
+	    return resp;
+	  },
+
+	  updateButtonState: function(options){
+	    var success = options.success,
+	        error = options.error,
+	        btn = options.buttons;
+
+	    btn.trigger('state', [ 'loading', '' ]);
+
+	    options.success = function(model, resp, options){
+	      if( success ) { success(model, resp, options); }
+	      btn.trigger('state', [ 'success', null ]);
+	    };
+
+	    options.error = function(jqxhr, textStatus, errorThrown){
+	      if( error ) { error(jqxhr, textStatus, errorThrown); }
+	      var message = null;
+
+	      // code 405 = not allowed HTTP methods
+	      if( jqxhr.status && jqxhr.status === 405 ){
+	        message = polyglot.t('messages.legacy') +
+	            '. <a href="#tools">' + polyglot.t('buttons.legacy') + '</a>.';
+	      }
+
+	      // other errors
+	      if( !message && jqxhr.responseJSON && jqxhr.responseJSON.errors ){
+	        message = jqxhr.responseJSON.errors[0].message;
+	      }
+	      btn.trigger('state', ['error', message]);
+	    };
+	  },
+
+	  /**
+	   * Override destroy to restore data
+	   * @param options
+	   * @returns {*}
+	   */
+	  destroy: function(options){
+	    var self = this;
+	    return this.sync('delete', this, options)
+	      .then(function(data){
+	        data.id = self.id;
+	        self.clear({ silent: true }).set(data);
+	      });
+	  }
+
+	});
+
+/***/ },
+/* 55 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Collection = __webpack_require__(24);
+	var Model = __webpack_require__(54);
+
+	module.exports = Collection.extend({
+	  model: Model
+	});
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Collection = __webpack_require__(24);
+	var Model = __webpack_require__(57);
+
+	module.exports = Collection.extend({
+	  model: Model,
+
+	  initialize: function() {
+	    this._isNew = false;
+	    this.on( 'change:active', this.onChangeActive );
+	  },
+
+	  onChangeActive: function(model, active) {
+	    if(!active){ return; }
+	    this.each( function(tab) {
+	      if( model.id !== tab.id ) {
+	        tab.set({ active: false });
+	      }
+	    });
+	  }
+	});
+
+/***/ },
+/* 57 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Model = __webpack_require__(31);
+
+	module.exports = Model.extend({
+	  idAttribute: 'method_id',
+
+	  defaults: {
+	    active: false
+	  }
+	});
+
+/***/ },
+/* 58 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Service = __webpack_require__(20);
+	var Backbone = __webpack_require__(16);
+	var LayoutView = __webpack_require__(59);
+	var AlertView = __webpack_require__(66);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var globalChannel = __webpack_require__(4).channel('global');
+
+	module.exports = Service.extend({
+	  channelName: 'modal',
+
+	  initialize: function(options){
+	    this.container = options.container;
+	    this.start();
+	  },
+
+	  onStart: function(){
+	    this.channel.reply({
+	      'open'    : this.open,
+	      'close'   : this.close,
+	      'alert'   : this.alert,
+	      'confirm' : this.confirm,
+	      'prompt'  : this.prompt
+	    }, this);
+
+	    this.layout = new LayoutView();
+	    this.container.show(this.layout);
+
+	    this.channel.reply({
+	      'update': this.layout.update
+	    }, this.layout);
+
+	    globalChannel.on({
+	      'error'   : this.error
+	    }, this);
+
+	    this.listenTo(Backbone.history, {
+	      'route' : this.onRoute
+	    });
+	  },
+
+	  onStop: function(){
+	    delete this.layout;
+	    this.container.reset();
+	    this.channel.reset();
+	  },
+
+	  onRoute: function(){
+	    if (this.fragment !== Backbone.history.fragment) {
+	      this.close();
+	    }
+	  },
+
+	  //alert: function(options){
+	  //  var deferred = $.Deferred();
+	  //  var view = new AlertView(options);
+	  //
+	  //  view.on({
+	  //    'confirm' : deferred.resolve,
+	  //    'cancel'  : deferred.resolve
+	  //  });
+	  //
+	  //  return deferred;
+	  //},
+	  //
+	  //confirm: function(options){
+	  //  var deferred = $.Deferred();
+	  //  var view = new ConfirmView(options);
+	  //
+	  //  view.on({
+	  //    'confirm' : deferred.resolve,
+	  //    'cancel'  : deferred.reject
+	  //  });
+	  //
+	  //  return deferred;
+	  //},
+	  //
+	  //prompt: function(options){
+	  //  var deferred = $.Deferred();
+	  //  var view = new PromptView(options);
+	  //
+	  //  view.on({
+	  //    'submit' : deferred.resolve,
+	  //    'cancel' : deferred.reject
+	  //  });
+	  //
+	  //  return deferred;
+	  //},
+
+	  open: function(view){
+	    var self = this;
+	    this.fragment = Backbone.history.fragment;
+	    return this.close().then(function() {
+	      self.isOpen = true;
+	      return self.layout.open(view);
+	    });
+	  },
+
+	  close: function(){
+	    if (this.isOpen) {
+	      this.isOpen = false;
+	      return this.layout.close();
+	    } else {
+	      return $.Deferred().resolve();
+	    }
+	  },
+
+	  error: function(options){
+	    options = options || {};
+
+	    if(options.jqXHR){
+	      this.parseXHR(options);
+	    }
+
+	    var view = new AlertView({
+	      className : 'error',
+	      title     : options.status,
+	      message   : options.message,
+	      raw       : options.raw
+	    });
+
+	    this.open(view);
+	  },
+
+	  parseXHR: function(options){
+	    if( _.isObject(options.thrownError) ){
+	      options.status = options.thrownError.name;
+	      options.message = options.thrownError.message;
+	    } else {
+	      options.status = options.jqXHR.statusText;
+	      if( options.jqXHR.responseJSON && options.jqXHR.responseJSON.errors[0] ){
+	        options.message = options.jqXHR.responseJSON.errors[0].message;
+	      }
+	    }
+	    options.raw = options.jqXHR.responseText;
+	  }
+
+	});
+
+/***/ },
+/* 59 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+	var Header = __webpack_require__(60);
+	var _ = __webpack_require__(5);
+	var $ = __webpack_require__(6);
+	var hbs = __webpack_require__(7);
+	var Tmpl = __webpack_require__(63);
+	var Radio = __webpack_require__(4);
+	var debug = __webpack_require__(13)('modalLayout');
+	var App = __webpack_require__(2);
+	__webpack_require__(64);
+
+	module.exports = LayoutView.extend({
+	  template: hbs.compile(Tmpl),
+
+	  // if wp-admin, add css prefix
+	  className: function(){
+	    return App.prototype.namespace('modal');
+	  },
+
+	  attributes: {
+	    'tabindex' : -1,
+	    'role' : 'dialog'
+	  },
+
+	  buttons: [
+	    {
+	      type: 'message'
+	    },{
+	      action: 'save',
+	      icon: 'prepend',
+	      className: 'btn-primary'
+	    }
+	  ],
+
+	  regions: {
+	    header  : '.modal-header',
+	    content : '.modal-body',
+	    footer  : '.modal-footer'
+	  },
+
+	  initialize: function () {
+	    this.$el.modal({ show: false, backdrop: 'static' });
+	  },
+
+	  events: {
+	    'click [data-action="close"]' : function(e){
+	      e.preventDefault();
+	      Radio.request('modal', 'close');
+	    }
+	  },
+
+	  triggers: {
+	    'show.bs.modal'   : { preventDefault: false, event: 'before:open' },
+	    'shown.bs.modal'  : { preventDefault: false, event: 'open' },
+	    'hide.bs.modal'   : { preventDefault: false, event: 'before:close' },
+	    'hidden.bs.modal' : { preventDefault: false, event: 'close' }
+	  },
+
+	  open: function(view){
+	    var deferred = $.Deferred();
+	    this.once('open', deferred.resolve);
+	    this.setup(view);
+	    this.content.show(view);
+	    this.$el.modal('show');
+	    return deferred;
+	  },
+
+	  close: function() {
+	    var deferred = $.Deferred();
+	    this.once('close', function() {
+	      this.tearDown();
+	      deferred.resolve();
+	    });
+	    this.$el.modal('hide');
+	    return deferred;
+	  },
+
+	  setup: function(view){
+	    var attributes = view.modal || {};
+
+	    _.defaults(attributes, {
+	      header: {},
+	      footer: {}
+	    });
+
+	    _.each(attributes, function(attr, key){
+	      var method = $.camelCase('modal-' + key);
+	      if(this[method]){
+	        this[method](attr);
+	      } else {
+	        debug('no method matching ' + method);
+	      }
+	    }, this);
+	  },
+
+	  tearDown: function(){
+	    this.header.empty();
+	    this.content.empty();
+	    this.footer.empty();
+	    this.$('.modal-dialog').removeClass().addClass('modal-dialog');
+	  },
+
+	  update: function(options){
+	    options = options || {};
+	    _.each(options, function(attr, key){
+	      this[key].currentView.triggerMethod('Update', attr);
+	    }, this);
+	  },
+
+	  modalHeader: function(options){
+	    var view = new Header(options);
+	    this.header.show(view);
+	  },
+
+	  modalFooter: function(options){
+	    options.buttons = options.buttons || this.buttons;
+	    var view = Radio.request('buttons', 'view', options);
+	    this.footer.show(view);
+	  },
+
+	  modalTitle: function(title){
+	    //title = title || this.$('.modal-header h1').data('title');
+	    this.$('.modal-header h1').html(title);
+	  },
+
+	  modalClassName: function(className){
+	    if(className){
+	      this.$('.modal-dialog').addClass(className);
+	    }
+	  },
+
+	  getButtons: function(){
+	    return this.getRegion('footer').currentView;
+	  }
+
+	});
+
+/***/ },
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var hbs = __webpack_require__(7);
+	var Tmpl = __webpack_require__(62);
+	var _ = __webpack_require__(5);
+	var polyglot = __webpack_require__(10);
+
+	module.exports = ItemView.extend({
+	  template: hbs.compile(Tmpl),
+
+	  initialize: function(options){
+	    options = options || {};
+	    var defaults = {
+	      title: polyglot.t('messages.loading'),
+	      close: polyglot.t('buttons.close')
+	    };
+	    this.data = _.defaults(options, defaults);
+	  },
+
+	  templateHelpers: function(){
+	    this.data.iconPrefix = window.adminpage ? 'wc_pos-icon' : 'icon';
+	    return this.data;
+	  },
+
+	  onUpdate: function(options){
+	    _.extend(this.data, options);
+	    this.render();
+	  }
+	});
+
+/***/ },
+/* 61 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Mn = __webpack_require__(3);
+	var app = __webpack_require__(2);
+
+	module.exports = app.prototype.ItemView = Mn.ItemView;
+
+/***/ },
+/* 62 */
+/***/ function(module, exports) {
+
+	module.exports = "<h4 class=\"{{namespace 'modal-title'}} modal-title\">\n  {{{title}}}\n</h4>\n<a class=\"{{namespace 'btn'}} close\" data-action=\"close\">\n  <i class=\"{{namespace 'icon-times'}}\" title=\"{{close}}\"></i>\n</a>"
+
+/***/ },
+/* 63 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"{{namespace 'modal-dialog'}} modal-dialog\">\n  <div class=\"{{namespace 'modal-content'}} modal-content\">\n    <div class=\"{{namespace 'modal-header'}} modal-header\"></div>\n    <div class=\"{{namespace 'modal-body'}} modal-body\"></div>\n    <div class=\"{{namespace 'modal-footer'}} modal-footer\"></div>\n  </div>\n</div>"
+
+/***/ },
+/* 64 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, module, __webpack_require__(65)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
+	    factory(exports, module, require('./util'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, mod, global.Util);
+	    global.modal = mod.exports;
+	  }
+	})(this, function (exports, module, _util) {
+	  'use strict';
+
+	  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	  var _Util = _interopRequireDefault(_util);
+
+	  /**
+	   * --------------------------------------------------------------------------
+	   * Bootstrap (v4.0.0): modal.js
+	   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+	   * --------------------------------------------------------------------------
+	   */
+
+	  var Modal = (function ($) {
+
+	    /**
+	     * ------------------------------------------------------------------------
+	     * Constants
+	     * ------------------------------------------------------------------------
+	     */
+
+	    var NAME = 'modal';
+	    var VERSION = '4.0.0';
+	    var DATA_KEY = 'bs.modal';
+	    var EVENT_KEY = '.' + DATA_KEY;
+	    var DATA_API_KEY = '.data-api';
+	    var JQUERY_NO_CONFLICT = $.fn[NAME];
+	    var TRANSITION_DURATION = 300;
+	    var BACKDROP_TRANSITION_DURATION = 150;
+
+	    var Default = {
+	      backdrop: true,
+	      keyboard: true,
+	      focus: true,
+	      show: true
+	    };
+
+	    var DefaultType = {
+	      backdrop: '(boolean|string)',
+	      keyboard: 'boolean',
+	      focus: 'boolean',
+	      show: 'boolean'
+	    };
+
+	    var Event = {
+	      HIDE: 'hide' + EVENT_KEY,
+	      HIDDEN: 'hidden' + EVENT_KEY,
+	      SHOW: 'show' + EVENT_KEY,
+	      SHOWN: 'shown' + EVENT_KEY,
+	      FOCUSIN: 'focusin' + EVENT_KEY,
+	      RESIZE: 'resize' + EVENT_KEY,
+	      CLICK_DISMISS: 'click.dismiss' + EVENT_KEY,
+	      KEYDOWN_DISMISS: 'keydown.dismiss' + EVENT_KEY,
+	      MOUSEUP_DISMISS: 'mouseup.dismiss' + EVENT_KEY,
+	      MOUSEDOWN_DISMISS: 'mousedown.dismiss' + EVENT_KEY,
+	      CLICK_DATA_API: 'click' + EVENT_KEY + DATA_API_KEY
+	    };
+
+	    var ClassName = {
+	      SCROLLBAR_MEASURER: 'modal-scrollbar-measure',
+	      BACKDROP: 'modal-backdrop',
+	      OPEN: 'modal-open',
+	      FADE: 'fade',
+	      IN: 'in'
+	    };
+
+	    var Selector = {
+	      DIALOG: '.modal-dialog',
+	      DATA_TOGGLE: '[data-toggle="modal"]',
+	      DATA_DISMISS: '[data-dismiss="modal"]',
+	      FIXED_CONTENT: '.navbar-fixed-top, .navbar-fixed-bottom, .is-fixed'
+	    };
+
+	    /**
+	     * ------------------------------------------------------------------------
+	     * Class Definition
+	     * ------------------------------------------------------------------------
+	     */
+
+	    var Modal = (function () {
+	      function Modal(element, config) {
+	        _classCallCheck(this, Modal);
+
+	        this._config = this._getConfig(config);
+	        this._element = element;
+	        this._dialog = $(element).find(Selector.DIALOG)[0];
+	        this._backdrop = null;
+	        this._isShown = false;
+	        this._isBodyOverflowing = false;
+	        this._ignoreBackdropClick = false;
+	        this._originalBodyPadding = 0;
+	        this._scrollbarWidth = 0;
+	      }
+
+	      /**
+	       * ------------------------------------------------------------------------
+	       * Data Api implementation
+	       * ------------------------------------------------------------------------
+	       */
+
+	      // getters
+
+	      _createClass(Modal, [{
+	        key: 'toggle',
+
+	        // public
+
+	        value: function toggle(relatedTarget) {
+	          return this._isShown ? this.hide() : this.show(relatedTarget);
+	        }
+	      }, {
+	        key: 'show',
+	        value: function show(relatedTarget) {
+	          var _this = this;
+
+	          var showEvent = $.Event(Event.SHOW, {
+	            relatedTarget: relatedTarget
+	          });
+
+	          $(this._element).trigger(showEvent);
+
+	          if (this._isShown || showEvent.isDefaultPrevented()) {
+	            return;
+	          }
+
+	          this._isShown = true;
+
+	          this._checkScrollbar();
+	          this._setScrollbar();
+
+	          $(document.body).addClass(ClassName.OPEN);
+
+	          this._setEscapeEvent();
+	          this._setResizeEvent();
+
+	          $(this._element).on(Event.CLICK_DISMISS, Selector.DATA_DISMISS, $.proxy(this.hide, this));
+
+	          $(this._dialog).on(Event.MOUSEDOWN_DISMISS, function () {
+	            $(_this._element).one(Event.MOUSEUP_DISMISS, function (event) {
+	              if ($(event.target).is(_this._element)) {
+	                that._ignoreBackdropClick = true;
+	              }
+	            });
+	          });
+
+	          this._showBackdrop($.proxy(this._showElement, this, relatedTarget));
+	        }
+	      }, {
+	        key: 'hide',
+	        value: function hide(event) {
+	          if (event) {
+	            event.preventDefault();
+	          }
+
+	          var hideEvent = $.Event(Event.HIDE);
+
+	          $(this._element).trigger(hideEvent);
+
+	          if (!this._isShown || hideEvent.isDefaultPrevented()) {
+	            return;
+	          }
+
+	          this._isShown = false;
+
+	          this._setEscapeEvent();
+	          this._setResizeEvent();
+
+	          $(document).off(Event.FOCUSIN);
+
+	          $(this._element).removeClass(ClassName.IN);
+
+	          $(this._element).off(Event.CLICK_DISMISS);
+	          $(this._dialog).off(Event.MOUSEDOWN_DISMISS);
+
+	          if (_Util['default'].supportsTransitionEnd() && $(this._element).hasClass(ClassName.FADE)) {
+
+	            $(this._element).one(_Util['default'].TRANSITION_END, $.proxy(this._hideModal, this)).emulateTransitionEnd(TRANSITION_DURATION);
+	          } else {
+	            this._hideModal();
+	          }
+	        }
+	      }, {
+	        key: 'dispose',
+	        value: function dispose() {
+	          $.removeData(this._element, DATA_KEY);
+
+	          $(window).off(EVENT_KEY);
+	          $(document).off(EVENT_KEY);
+	          $(this._element).off(EVENT_KEY);
+	          $(this._backdrop).off(EVENT_KEY);
+
+	          this._config = null;
+	          this._element = null;
+	          this._dialog = null;
+	          this._backdrop = null;
+	          this._isShown = null;
+	          this._isBodyOverflowing = null;
+	          this._ignoreBackdropClick = null;
+	          this._originalBodyPadding = null;
+	          this._scrollbarWidth = null;
+	        }
+
+	        // private
+
+	      }, {
+	        key: '_getConfig',
+	        value: function _getConfig(config) {
+	          config = $.extend({}, Default, config);
+	          _Util['default'].typeCheckConfig(NAME, config, DefaultType);
+	          return config;
+	        }
+	      }, {
+	        key: '_showElement',
+	        value: function _showElement(relatedTarget) {
+	          var _this2 = this;
+
+	          var transition = _Util['default'].supportsTransitionEnd() && $(this._element).hasClass(ClassName.FADE);
+
+	          if (!this._element.parentNode || this._element.parentNode.nodeType !== Node.ELEMENT_NODE) {
+	            // don't move modals dom position
+	            document.body.appendChild(this._element);
+	          }
+
+	          this._element.style.display = 'block';
+	          this._element.scrollTop = 0;
+
+	          if (transition) {
+	            _Util['default'].reflow(this._element);
+	          }
+
+	          $(this._element).addClass(ClassName.IN);
+
+	          if (this._config.focus) {
+	            this._enforceFocus();
+	          }
+
+	          var shownEvent = $.Event(Event.SHOWN, {
+	            relatedTarget: relatedTarget
+	          });
+
+	          var transitionComplete = function transitionComplete() {
+	            if (_this2._config.focus) {
+	              _this2._element.focus();
+	            }
+	            $(_this2._element).trigger(shownEvent);
+	          };
+
+	          if (transition) {
+	            $(this._dialog).one(_Util['default'].TRANSITION_END, transitionComplete).emulateTransitionEnd(TRANSITION_DURATION);
+	          } else {
+	            transitionComplete();
+	          }
+	        }
+	      }, {
+	        key: '_enforceFocus',
+	        value: function _enforceFocus() {
+	          var _this3 = this;
+
+	          $(document).off(Event.FOCUSIN) // guard against infinite focus loop
+	          .on(Event.FOCUSIN, function (event) {
+	            if (_this3._element !== event.target && !$(_this3._element).has(event.target).length) {
+	              _this3._element.focus();
+	            }
+	          });
+	        }
+	      }, {
+	        key: '_setEscapeEvent',
+	        value: function _setEscapeEvent() {
+	          var _this4 = this;
+
+	          if (this._isShown && this._config.keyboard) {
+	            $(this._element).on(Event.KEYDOWN_DISMISS, function (event) {
+	              if (event.which === 27) {
+	                _this4.hide();
+	              }
+	            });
+	          } else if (!this._isShown) {
+	            $(this._element).off(Event.KEYDOWN_DISMISS);
+	          }
+	        }
+	      }, {
+	        key: '_setResizeEvent',
+	        value: function _setResizeEvent() {
+	          if (this._isShown) {
+	            $(window).on(Event.RESIZE, $.proxy(this._handleUpdate, this));
+	          } else {
+	            $(window).off(Event.RESIZE);
+	          }
+	        }
+	      }, {
+	        key: '_hideModal',
+	        value: function _hideModal() {
+	          var _this5 = this;
+
+	          this._element.style.display = 'none';
+	          this._showBackdrop(function () {
+	            $(document.body).removeClass(ClassName.OPEN);
+	            _this5._resetAdjustments();
+	            _this5._resetScrollbar();
+	            $(_this5._element).trigger(Event.HIDDEN);
+	          });
+	        }
+	      }, {
+	        key: '_removeBackdrop',
+	        value: function _removeBackdrop() {
+	          if (this._backdrop) {
+	            $(this._backdrop).remove();
+	            this._backdrop = null;
+	          }
+	        }
+	      }, {
+	        key: '_showBackdrop',
+	        value: function _showBackdrop(callback) {
+	          var _this6 = this;
+
+	          var animate = $(this._element).hasClass(ClassName.FADE) ? ClassName.FADE : '';
+
+	          if (this._isShown && this._config.backdrop) {
+	            var doAnimate = _Util['default'].supportsTransitionEnd() && animate;
+
+	            this._backdrop = document.createElement('div');
+	            this._backdrop.className = ClassName.BACKDROP;
+
+	            if (animate) {
+	              $(this._backdrop).addClass(animate);
+	            }
+
+	            $(this._backdrop).appendTo(document.body);
+
+	            $(this._element).on(Event.CLICK_DISMISS, function (event) {
+	              if (_this6._ignoreBackdropClick) {
+	                _this6._ignoreBackdropClick = false;
+	                return;
+	              }
+	              if (event.target !== event.currentTarget) {
+	                return;
+	              }
+	              if (_this6._config.backdrop === 'static') {
+	                _this6._element.focus();
+	              } else {
+	                _this6.hide();
+	              }
+	            });
+
+	            if (doAnimate) {
+	              _Util['default'].reflow(this._backdrop);
+	            }
+
+	            $(this._backdrop).addClass(ClassName.IN);
+
+	            if (!callback) {
+	              return;
+	            }
+
+	            if (!doAnimate) {
+	              callback();
+	              return;
+	            }
+
+	            $(this._backdrop).one(_Util['default'].TRANSITION_END, callback).emulateTransitionEnd(BACKDROP_TRANSITION_DURATION);
+	          } else if (!this._isShown && this._backdrop) {
+	            $(this._backdrop).removeClass(ClassName.IN);
+
+	            var callbackRemove = function callbackRemove() {
+	              _this6._removeBackdrop();
+	              if (callback) {
+	                callback();
+	              }
+	            };
+
+	            if (_Util['default'].supportsTransitionEnd() && $(this._element).hasClass(ClassName.FADE)) {
+	              $(this._backdrop).one(_Util['default'].TRANSITION_END, callbackRemove).emulateTransitionEnd(BACKDROP_TRANSITION_DURATION);
+	            } else {
+	              callbackRemove();
+	            }
+	          } else if (callback) {
+	            callback();
+	          }
+	        }
+
+	        // ----------------------------------------------------------------------
+	        // the following methods are used to handle overflowing modals
+	        // todo (fat): these should probably be refactored out of modal.js
+	        // ----------------------------------------------------------------------
+
+	      }, {
+	        key: '_handleUpdate',
+	        value: function _handleUpdate() {
+	          this._adjustDialog();
+	        }
+	      }, {
+	        key: '_adjustDialog',
+	        value: function _adjustDialog() {
+	          var isModalOverflowing = this._element.scrollHeight > document.documentElement.clientHeight;
+
+	          if (!this._isBodyOverflowing && isModalOverflowing) {
+	            this._element.style.paddingLeft = this._scrollbarWidth + 'px';
+	          }
+
+	          if (this._isBodyOverflowing && !isModalOverflowing) {
+	            this._element.style.paddingRight = this._scrollbarWidth + 'px~';
+	          }
+	        }
+	      }, {
+	        key: '_resetAdjustments',
+	        value: function _resetAdjustments() {
+	          this._element.style.paddingLeft = '';
+	          this._element.style.paddingRight = '';
+	        }
+	      }, {
+	        key: '_checkScrollbar',
+	        value: function _checkScrollbar() {
+	          var fullWindowWidth = window.innerWidth;
+	          if (!fullWindowWidth) {
+	            // workaround for missing window.innerWidth in IE8
+	            var documentElementRect = document.documentElement.getBoundingClientRect();
+	            fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left);
+	          }
+	          this._isBodyOverflowing = document.body.clientWidth < fullWindowWidth;
+	          this._scrollbarWidth = this._getScrollbarWidth();
+	        }
+	      }, {
+	        key: '_setScrollbar',
+	        value: function _setScrollbar() {
+	          var bodyPadding = parseInt($(Selector.FIXED_CONTENT).css('padding-right') || 0, 10);
+
+	          this._originalBodyPadding = document.body.style.paddingRight || '';
+
+	          if (this._isBodyOverflowing) {
+	            document.body.style.paddingRight = bodyPadding + this._scrollbarWidth + 'px';
+	          }
+	        }
+	      }, {
+	        key: '_resetScrollbar',
+	        value: function _resetScrollbar() {
+	          document.body.style.paddingRight = this._originalBodyPadding;
+	        }
+	      }, {
+	        key: '_getScrollbarWidth',
+	        value: function _getScrollbarWidth() {
+	          // thx d.walsh
+	          var scrollDiv = document.createElement('div');
+	          scrollDiv.className = ClassName.SCROLLBAR_MEASURER;
+	          document.body.appendChild(scrollDiv);
+	          var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+	          document.body.removeChild(scrollDiv);
+	          return scrollbarWidth;
+	        }
+
+	        // static
+
+	      }], [{
+	        key: '_jQueryInterface',
+	        value: function _jQueryInterface(config, relatedTarget) {
+	          return this.each(function () {
+	            var data = $(this).data(DATA_KEY);
+	            var _config = $.extend({}, Modal.Default, $(this).data(), typeof config === 'object' && config);
+
+	            if (!data) {
+	              data = new Modal(this, _config);
+	              $(this).data(DATA_KEY, data);
+	            }
+
+	            if (typeof config === 'string') {
+	              if (data[config] === undefined) {
+	                throw new Error('No method named "' + config + '"');
+	              }
+	              data[config](relatedTarget);
+	            } else if (_config.show) {
+	              data.show(relatedTarget);
+	            }
+	          });
+	        }
+	      }, {
+	        key: 'VERSION',
+	        get: function get() {
+	          return VERSION;
+	        }
+	      }, {
+	        key: 'Default',
+	        get: function get() {
+	          return Default;
+	        }
+	      }]);
+
+	      return Modal;
+	    })();
+
+	    $(document).on(Event.CLICK_DATA_API, Selector.DATA_TOGGLE, function (event) {
+	      var _this7 = this;
+
+	      var target = undefined;
+	      var selector = _Util['default'].getSelectorFromElement(this);
+
+	      if (selector) {
+	        target = $(selector)[0];
+	      }
+
+	      var config = $(target).data(DATA_KEY) ? 'toggle' : $.extend({}, $(target).data(), $(this).data());
+
+	      if (this.tagName === 'A') {
+	        event.preventDefault();
+	      }
+
+	      var $target = $(target).one(Event.SHOW, function (showEvent) {
+	        if (showEvent.isDefaultPrevented()) {
+	          // only register focus restorer if modal will actually get shown
+	          return;
+	        }
+
+	        $target.one(Event.HIDDEN, function () {
+	          if ($(_this7).is(':visible')) {
+	            _this7.focus();
+	          }
+	        });
+	      });
+
+	      Modal._jQueryInterface.call($(target), config, this);
+	    });
+
+	    /**
+	     * ------------------------------------------------------------------------
+	     * jQuery
+	     * ------------------------------------------------------------------------
+	     */
+
+	    $.fn[NAME] = Modal._jQueryInterface;
+	    $.fn[NAME].Constructor = Modal;
+	    $.fn[NAME].noConflict = function () {
+	      $.fn[NAME] = JQUERY_NO_CONFLICT;
+	      return Modal._jQueryInterface;
+	    };
+
+	    return Modal;
+	  })(jQuery);
+
+	  module.exports = Modal;
+	});
+
+
+/***/ },
+/* 65 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, module], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
+	    factory(exports, module);
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, mod);
+	    global.util = mod.exports;
+	  }
+	})(this, function (exports, module) {
+	  /**
+	   * --------------------------------------------------------------------------
+	   * Bootstrap (v4.0.0): util.js
+	   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+	   * --------------------------------------------------------------------------
+	   */
+
+	  'use strict';
+
+	  var Util = (function ($) {
+
+	    /**
+	     * ------------------------------------------------------------------------
+	     * Private TransitionEnd Helpers
+	     * ------------------------------------------------------------------------
+	     */
+
+	    var transition = false;
+
+	    var TransitionEndEvent = {
+	      WebkitTransition: 'webkitTransitionEnd',
+	      MozTransition: 'transitionend',
+	      OTransition: 'oTransitionEnd otransitionend',
+	      transition: 'transitionend'
+	    };
+
+	    // shoutout AngusCroll (https://goo.gl/pxwQGp)
+	    function toType(obj) {
+	      return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+	    }
+
+	    function isElement(obj) {
+	      return (obj[0] || obj).nodeType;
+	    }
+
+	    function getSpecialTransitionEndEvent() {
+	      return {
+	        bindType: transition.end,
+	        delegateType: transition.end,
+	        handle: function handle(event) {
+	          if ($(event.target).is(this)) {
+	            return event.handleObj.handler.apply(this, arguments);
+	          }
+	        }
+	      };
+	    }
+
+	    function transitionEndTest() {
+	      if (window.QUnit) {
+	        return false;
+	      }
+
+	      var el = document.createElement('bootstrap');
+
+	      for (var _name in TransitionEndEvent) {
+	        if (el.style[_name] !== undefined) {
+	          return { end: TransitionEndEvent[_name] };
+	        }
+	      }
+
+	      return false;
+	    }
+
+	    function transitionEndEmulator(duration) {
+	      var _this = this;
+
+	      var called = false;
+
+	      $(this).one(Util.TRANSITION_END, function () {
+	        called = true;
+	      });
+
+	      setTimeout(function () {
+	        if (!called) {
+	          Util.triggerTransitionEnd(_this);
+	        }
+	      }, duration);
+
+	      return this;
+	    }
+
+	    function setTransitionEndSupport() {
+	      transition = transitionEndTest();
+
+	      $.fn.emulateTransitionEnd = transitionEndEmulator;
+
+	      if (Util.supportsTransitionEnd()) {
+	        $.event.special[Util.TRANSITION_END] = getSpecialTransitionEndEvent();
+	      }
+	    }
+
+	    /**
+	     * --------------------------------------------------------------------------
+	     * Public Util Api
+	     * --------------------------------------------------------------------------
+	     */
+
+	    var Util = {
+
+	      TRANSITION_END: 'bsTransitionEnd',
+
+	      getUID: function getUID(prefix) {
+	        do {
+	          prefix += ~ ~(Math.random() * 1000000);
+	        } while (document.getElementById(prefix));
+	        return prefix;
+	      },
+
+	      getSelectorFromElement: function getSelectorFromElement(element) {
+	        var selector = element.getAttribute('data-target');
+
+	        if (!selector) {
+	          selector = element.getAttribute('href') || '';
+	          selector = /^#[a-z]/i.test(selector) ? selector : null;
+	        }
+
+	        return selector;
+	      },
+
+	      reflow: function reflow(element) {
+	        new Function('bs', 'return bs')(element.offsetHeight);
+	      },
+
+	      triggerTransitionEnd: function triggerTransitionEnd(element) {
+	        $(element).trigger(transition.end);
+	      },
+
+	      supportsTransitionEnd: function supportsTransitionEnd() {
+	        return Boolean(transition);
+	      },
+
+	      typeCheckConfig: function typeCheckConfig(componentName, config, configTypes) {
+	        for (var property in configTypes) {
+	          if (configTypes.hasOwnProperty(property)) {
+	            var expectedTypes = configTypes[property];
+	            var value = config[property];
+	            var valueType = undefined;
+
+	            if (value && isElement(value)) {
+	              valueType = 'element';
+	            } else {
+	              valueType = toType(value);
+	            }
+
+	            if (!new RegExp(expectedTypes).test(valueType)) {
+	              throw new Error(componentName.toUpperCase() + ': ' + ('Option "' + property + '" provided type "' + valueType + '" ') + ('but expected type "' + expectedTypes + '".'));
+	            }
+	          }
+	        }
+	      }
+	    };
+
+	    setTransitionEndSupport();
+
+	    return Util;
+	  })(jQuery);
+
+	  module.exports = Util;
+	});
+
+
+/***/ },
+/* 66 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var View = __webpack_require__(61);
+	var hbs = __webpack_require__(7);
+	var Tmpl = __webpack_require__(67);
+
+	module.exports = View.extend({
+	  template: hbs.compile(Tmpl),
+
+	  initialize: function(options){
+	    options = options || {};
+	    this.message = options.message;
+	    this.raw = options.raw;
+
+	    this.modal = {
+	      className: options.className,
+	      header: {
+	        title: options.title
+	      },
+	      footer: {
+	        buttons: [{
+	          action: 'close'
+	        }]
+	      }
+	    };
+	  },
+
+	  templateHelpers: function(){
+	    var data = {};
+	    data.message = this.message;
+	    data.raw = this.raw;
+	    return data;
+	  },
+
+	  ui: {
+	    raw: '*[data-action="raw"]',
+	    output: '.raw-output'
+	  },
+
+	  events: {
+	    'click @ui.raw': 'toggleRaw'
+	  },
+
+	  toggleRaw: function(e){
+	    e.preventDefault();
+	    this.ui.output.toggle();
+	  }
+
+	});
+
+/***/ },
+/* 67 */
+/***/ function(module, exports) {
+
+	module.exports = "<p>\n  {{message}}\n  {{#if raw}}\n    <a href=\"#\" data-action=\"raw\"><i class=\"{{namespace 'icon-info-circle'}}\"></i></a>\n  {{/if}}\n<p>\n{{#if raw}}\n  <div class=\"raw-output\" style=\"display:none\">{{{raw}}}</div>\n{{/if}}"
+
+/***/ },
+/* 68 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Service = __webpack_require__(20);
+	var TabsView = __webpack_require__(69);
+	var TabsCollection = __webpack_require__(73);
 	//var _ = require('lodash');
 
 	module.exports = Service.extend({
@@ -6295,17 +6818,18 @@
 	});
 
 /***/ },
-/* 102 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CollectionView = __webpack_require__(103);
-	var Tab = __webpack_require__(104);
+	var CollectionView = __webpack_require__(70);
+	var Tab = __webpack_require__(71);
 
 	var View = CollectionView.extend({
 	  tagName: 'ul',
 	  childView: Tab,
 	  attributes: {
-	    'role': 'tablist'
+	    'class' : 'tabs',
+	    'role'  : 'tablist'
 	  },
 
 	  setActive: function(id){
@@ -6328,13 +6852,13 @@
 	module.exports = View;
 
 /***/ },
-/* 103 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Mn = __webpack_require__(3);
-	var POS = __webpack_require__(5);
+	var app = __webpack_require__(2);
 
-	module.exports = POS.CollectionView = Mn.CollectionView.extend({
+	module.exports = app.prototype.CollectionView = Mn.CollectionView.extend({
 	  //// Marionette's default implementation ignores the index, always
 	  //// appending the new view to the end. Let's be a little more clever.
 	  //appendHtml: function(collectionView, itemView, index){
@@ -6347,12 +6871,12 @@
 	});
 
 /***/ },
-/* 104 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hbs = __webpack_require__(16);
-	var ItemView = __webpack_require__(15);
-	var Tmpl = __webpack_require__(105);
+	var hbs = __webpack_require__(7);
+	var ItemView = __webpack_require__(61);
+	var Tmpl = __webpack_require__(72);
 
 	var View = ItemView.extend({
 	  tagName: 'li',
@@ -6391,17 +6915,17 @@
 	module.exports = View;
 
 /***/ },
-/* 105 */
+/* 72 */
 /***/ function(module, exports) {
 
 	module.exports = "{{#unless fixed}}\n<a href=\"#\" data-action=\"remove\">\n  <i class=\"icon icon-times-circle\"></i>\n</a>\n{{/unless}}\n{{{ label }}}"
 
 /***/ },
-/* 106 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Collection = __webpack_require__(64);
-	var Model = __webpack_require__(107);
+	var Collection = __webpack_require__(24);
+	var Model = __webpack_require__(74);
 
 	var TabsCollection = Collection.extend({
 	  model: Model,
@@ -6423,7 +6947,7 @@
 
 	  ensureActiveTab: function() {
 	    var activeTabs = this.where({'active': true});
-	    if( activeTabs.length === 0 ) {
+	    if( this.length > 0 && activeTabs.length === 0 ) {
 	      this.at(0).set({active: true});
 	    }
 	  }
@@ -6433,10 +6957,10 @@
 	module.exports = TabsCollection;
 
 /***/ },
-/* 107 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Model = __webpack_require__(67);
+	var Model = __webpack_require__(31);
 
 	var TabModel = Model.extend({
 	  defaults: {
@@ -6450,11 +6974,11 @@
 	module.exports = TabModel;
 
 /***/ },
-/* 108 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Service = __webpack_require__(2);
-	var View = __webpack_require__(109);
+	var Service = __webpack_require__(20);
+	var View = __webpack_require__(76);
 
 	module.exports = Service.extend({
 
@@ -6476,15 +7000,15 @@
 	});
 
 /***/ },
-/* 109 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ItemView = __webpack_require__(15);
-	var hbs = __webpack_require__(16);
-	var _ = __webpack_require__(6);
-	var tmpl = __webpack_require__(110);
-	var polyglot = __webpack_require__(17);
-	var ButtonsBehavior = __webpack_require__(111);
+	var ItemView = __webpack_require__(61);
+	var hbs = __webpack_require__(7);
+	var _ = __webpack_require__(5);
+	var tmpl = __webpack_require__(77);
+	var polyglot = __webpack_require__(10);
+	var ButtonsBehavior = __webpack_require__(78);
 
 	module.exports = ItemView.extend({
 
@@ -6521,19 +7045,19 @@
 	});
 
 /***/ },
-/* 110 */
+/* 77 */
 /***/ function(module, exports) {
 
 	module.exports = "{{#each buttons}}\n\n  {{#if this.button}}\n    <button class=\"btn {{this.className}}\"\n            {{#if this.action}}data-action=\"{{this.action}}\"{{/if}}\n      {{#if this.toggle}}data-toggle=\"{{this.toggle}}\"{{/if}}\n      {{#if this.loading}}data-loading=\"{{this.loadingText}}\"{{/if}}\n      {{#if this.icon}}data-icon=\"{{this.icon}}\"{{/if}}\n      {{#if this.disabled}}disabled{{/if}}\n      >\n      {{this.label}}\n    </button>\n  {{/if}}\n\n  {{#if this.link}}\n    <a href=\"#\" class=\"btn {{this.className}}\"\n       {{#if this.action}}data-action=\"{{this.action}}\"{{/if}}\n      {{#if this.toggle}}data-toggle=\"{{this.toggle}}\"{{/if}}\n      {{#if this.loading}}data-loading=\"{{this.loadingText}}\"{{/if}}\n      {{#if this.icon}}data-icon=\"{{this.icon}}\"{{/if}}\n      >\n      {{this.label}}\n    </a>\n  {{/if}}\n\n  {{#if this.input}}\n    <input type=\"button\" class=\"btn {{this.className}}\" value=\"{{this.label}}\"\n           {{#if this.action}}data-action=\"{{this.action}}\"{{/if}}\n      {{#if this.toggle}}data-toggle=\"{{this.toggle}}\"{{/if}}\n      {{#if this.loading}}data-loading=\"{{this.loadingText}}\"{{/if}}\n      >\n  {{/if}}\n\n  {{#if this.message}}\n    <p class=\"message {{this.className}}\"></p>\n  {{/if}}\n\n{{/each}}"
 
 /***/ },
-/* 111 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Behavior = __webpack_require__(112);
-	var POS = __webpack_require__(5);
-	var $ = __webpack_require__(10);
-	var polyglot = __webpack_require__(17);
+	var Behavior = __webpack_require__(79);
+	var App = __webpack_require__(2);
+	var $ = __webpack_require__(6);
+	var polyglot = __webpack_require__(10);
 	var d = 'disabled';
 
 	var Buttons = Behavior.extend({
@@ -6550,6 +7074,14 @@
 	    'click @ui.action': 'action',
 	    'click @ui.toggle': 'toggle',
 	    'state @ui.btns'  : 'setState'
+	  },
+
+	  namespace: function( str ){
+	    // test for wp-admin
+	    if(window.adminpage){
+	      str = 'wc_pos-' + str;
+	    }
+	    return str;
 	  },
 
 	  action: function(e){
@@ -6614,9 +7146,13 @@
 	  updateIcon: function(btn, state){
 	    if(btn.data('icon') === undefined){ return; }
 	    var pos = btn.data('icon') || 'prepend';
-	    var icon = state !== 'reset' ? '<i class="icon-' + state + '"></i>' : '';
+	    var icon = state !== 'reset' ? this.icon(state) : '';
 	    btn.children('i').remove();
 	    btn[pos](icon);
+	  },
+
+	  icon: function(state){
+	    return '<i class="' + this.namespace( 'icon-' + state ) + '"></i>';
 	  },
 
 	  updateInput: function(btn, state){
@@ -6639,7 +7175,7 @@
 	    }
 	    this.ui.message
 	      .removeClass('loading success error')
-	      .addClass(state)
+	      .addClass( this.namespace( 'text-' + state ) )
 	      .html(message);
 	  },
 
@@ -6658,33 +7194,96 @@
 	});
 
 	module.exports = Buttons;
-	POS.attach('Behaviors.Buttons', Buttons);
+	App.prototype.set('Behaviors.Buttons', Buttons);
 
 /***/ },
-/* 112 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Mn = __webpack_require__(3);
-	var POS = __webpack_require__(5);
+	var app = __webpack_require__(2);
 
-	module.exports = POS.Behavior = Mn.Behavior;
+	module.exports = app.prototype.Behavior = Mn.Behavior;
 
 /***/ },
-/* 113 */,
-/* 114 */,
-/* 115 */
+/* 80 */,
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var bb = __webpack_require__(11);
+	var bb = __webpack_require__(16);
 	var Mn = __webpack_require__(3);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	var POS = __webpack_require__(5);
-	var LoadingService = __webpack_require__(116);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var Route = __webpack_require__(82);
+	var app = __webpack_require__(2);
+
+	module.exports = app.prototype.Router = Mn.AppRouter.extend({
+	  constructor: function() {
+	    this.channel = bb.Radio.channel('router');
+	    this.on('all', this._onRouterEvent);
+	    this.listenTo(bb.history, 'route', this._onHistoryRoute);
+	    Mn.AppRouter.apply(this, arguments);
+	  },
+
+	  _onRouterEvent: function(name) {
+	    var args = _.toArray(arguments).slice(1);
+	    this.channel.trigger.apply(this.channel, [name, this].concat(args));
+	  },
+
+	  _onHistoryRoute: function(router) {
+	    if (this === router) {
+	      this.active = true;
+	    } else {
+	      this.active = false;
+	      this._currentRoute = undefined;
+	    }
+	  },
+
+	  execute: function(callback, args) {
+	    var self = this;
+
+	    if (!this.active) {
+	      this.triggerMethod.apply(this, ['before:enter'].concat(args));
+	    }
+
+	    this.triggerMethod.apply(this, ['before:route'].concat(args));
+
+	    $.when(this._execute(callback, args)).then(function() {
+	      if (!self.active) {
+	        self.triggerMethod.apply(self, ['enter'].concat(args));
+	      }
+
+	      self.triggerMethod.apply(self, ['route'].concat(args));
+	    });
+	  },
+
+	  _execute: function(callback, args) {
+	    var route = callback.apply(this, args);
+	    this._currentRoute = route;
+
+	    if (route instanceof Route) {
+	      route.router = this;
+	      return route.enter(args);
+	    }
+	  },
+
+	  triggerMethod: Mn.triggerMethod
+	});
+
+/***/ },
+/* 82 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var bb = __webpack_require__(16);
+	var Mn = __webpack_require__(3);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var app = __webpack_require__(2);
+	var LoadingService = __webpack_require__(83);
 	var Radio = __webpack_require__(4);
 	var globalChannel = Radio.channel('global');
 
-	module.exports = POS.Route = Mn.Object.extend({
+	module.exports = app.prototype.Route = Mn.Object.extend({
 	  constructor: function() {
 	    this.initialize.apply(this, arguments);
 	  },
@@ -6741,13 +7340,13 @@
 	});
 
 /***/ },
-/* 116 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Service = __webpack_require__(2);
-	var View = __webpack_require__(117);
-	var _ = __webpack_require__(6);
-	var debug = __webpack_require__(7)('loading');
+	var Service = __webpack_require__(20);
+	var View = __webpack_require__(84);
+	var _ = __webpack_require__(5);
+	var debug = __webpack_require__(13)('loading');
 
 	module.exports = Service.extend({
 	  channelName: 'loading',
@@ -6781,19 +7380,24 @@
 	});
 
 /***/ },
-/* 117 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ItemView = __webpack_require__(15);
-	var _ = __webpack_require__(6);
-	var POS = __webpack_require__(5);
+	var ItemView = __webpack_require__(61);
+	var _ = __webpack_require__(5);
+	var App = __webpack_require__(2);
 
 	var View = ItemView.extend({
 	  className: 'loading',
+	  iconPrefix: 'icon-',
 
 	  initialize: function () {
 	    this.on('update:message', this.render);
 	    this.timeout = setTimeout(_.bind(this.fail, this), 60000);
+	    // test for wp-admin
+	    if(window.adminpage){
+	      this.iconPrefix = 'wc_pos-icon-';
+	    }
 	  },
 
 	  render: function () {
@@ -6801,7 +7405,7 @@
 	    if (!_.isEmpty(this.options.message)) {
 	      message = '<p>' + this.options.message + '</p>';
 	    }
-	    this.$el.html('<p><i class="icon icon-spinner icon-lg"></i></p>' + message);
+	    this.$el.html('<p>' + this.icon() + '</p>' + message);
 	    return this;
 	  },
 
@@ -6820,27 +7424,35 @@
 	      this.options.message = 'Script Error';
 	    }
 	    this.render();
-	    this.$('.icon').removeClass('icon-spinner').addClass('icon-fail');
+	    this.$('i').removeClass('icon-spinner').addClass('icon-fail');
+	  },
+
+	  icon: function(){
+	    return '<i class="' +
+	      this.iconPrefix + 'spinner ' +
+	      this.iconPrefix + 'lg"></i>';
 	  }
 
 	});
 
 	module.exports = View;
-	POS.attach('Components.Loading.View', View);
+	App.prototype.set('Components.Loading.View', View);
 
 /***/ },
-/* 118 */,
-/* 119 */
+/* 85 */,
+/* 86 */,
+/* 87 */,
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ItemView = __webpack_require__(15);
-	var bb = __webpack_require__(11);
-	var POS = __webpack_require__(5);
-	__webpack_require__(120);
-	__webpack_require__(121);
-	__webpack_require__(122);
+	var ItemView = __webpack_require__(61);
+	var bb = __webpack_require__(16);
+	var app = __webpack_require__(2);
+	__webpack_require__(89);
+	__webpack_require__(90);
+	__webpack_require__(91);
 
-	module.exports = POS.FormView = ItemView.extend({
+	module.exports = app.prototype.FormView = ItemView.extend({
 
 	  constructor: function() {
 	    return ItemView.prototype.constructor.apply(this, arguments);
@@ -6859,14 +7471,16 @@
 	      valid: function(view, attr) {
 	        view
 	          .$('input[name="' + attr + '"]')
+	          .removeClass('form-control-error')
 	          .parent()
-	          .removeClass('error');
+	          .removeClass('has-error');
 	      },
 	      invalid: function(view, attr) {
 	        view
 	          .$('input[name="' + attr + '"]')
+	          .addClass('form-control-error')
 	          .parent()
-	          .addClass('error');
+	          .addClass('has-error');
 	      }
 	    });
 
@@ -6886,7 +7500,7 @@
 	});
 
 /***/ },
-/* 120 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;// Backbone.Stickit v0.9.2, MIT Licensed
@@ -6896,7 +7510,7 @@
 
 	  // Set up Stickit appropriately for the environment. Start with AMD.
 	  if (true)
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(6), __webpack_require__(11), exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(5), __webpack_require__(16), exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 	  // Next for Node.js or CommonJS.
 	  else if (typeof exports === 'object')
@@ -7584,7 +8198,7 @@
 
 
 /***/ },
-/* 121 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Backbone.Validation v0.11.5
@@ -7596,7 +8210,7 @@
 	// http://thedersen.com/projects/backbone-validation
 	(function (factory) {
 	  if (true) {
-	    module.exports = factory(__webpack_require__(11), __webpack_require__(6));
+	    module.exports = factory(__webpack_require__(16), __webpack_require__(5));
 	  } else if (typeof define === 'function' && define.amd) {
 	    define(['backbone', 'underscore'], factory);
 	  }
@@ -8307,11 +8921,11 @@
 	}));
 
 /***/ },
-/* 122 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var bb = __webpack_require__(11);
-	var _ = __webpack_require__(6);
+	var bb = __webpack_require__(16);
+	var _ = __webpack_require__(5);
 
 	/**
 	 * AutoGrow
@@ -8324,8 +8938,39 @@
 	});
 
 	/**
+	 * Select2
+	 */
+	bb.Stickit.addHandler({
+	  selector: 'select.select2',
+	  initialize: function($el, model, opt){
+	    $el.trigger('stickit:init', opt.observe); // on-the-fly select options
+	    var options = _.get( opt, ['view', 'select2', opt.observe ], {} );
+	    $el.select2( options );
+	  },
+	  getVal: function($el){
+	    /**
+	     * below is the default select getVal method
+	     * it relies on data-stickit-bind-val attr
+	     */
+
+	    //var selected = $el.find('option:selected');
+	    //
+	    //if ($el.prop('multiple')) {
+	    //  return _.map(selected, function(el) {
+	    //    return Backbone.$(el).data('stickit-bind-val');
+	    //  });
+	    //} else {
+	    //  return selected.data('stickit-bind-val');
+	    //}
+
+	    return $el.val();
+	  }
+	});
+
+	/**
 	 * Multiple selects with Select2
-	 * ... bit of a hack here due to strange model.set behavior with arrays
+	 * ... bit of a hack here, setting an array only registers a change
+	 * ie: if last element removed no change is registered
 	 */
 	bb.Stickit.addHandler({
 	  selector: 'select[multiple].select2',
@@ -8338,800 +8983,2367 @@
 	});
 
 /***/ },
-/* 123 */
+/* 92 */,
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var bb = __webpack_require__(11);
-	var Mn = __webpack_require__(3);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	var Route = __webpack_require__(115);
-	var POS = __webpack_require__(5);
+	var Behavior = __webpack_require__(79);
+	var App = __webpack_require__(2);
+	var _ = __webpack_require__(5);
+	var $ = __webpack_require__(6);
+	var Drop = __webpack_require__(94);
+	var App = __webpack_require__(2);
+	var namespace = App.prototype.namespace('tooltip');
 
-	module.exports = POS.Router = Mn.AppRouter.extend({
-	  constructor: function() {
-	    this.channel = bb.Radio.channel('router');
-	    this.on('all', this._onRouterEvent);
-	    this.listenTo(bb.history, 'route', this._onHistoryRoute);
-	    Mn.AppRouter.apply(this, arguments);
-	  },
-
-	  _onRouterEvent: function(name) {
-	    var args = _.toArray(arguments).slice(1);
-	    this.channel.trigger.apply(this.channel, [name, this].concat(args));
-	  },
-
-	  _onHistoryRoute: function(router) {
-	    if (this === router) {
-	      this.active = true;
-	    } else {
-	      this.active = false;
-	      this._currentRoute = undefined;
-	    }
-	  },
-
-	  execute: function(callback, args) {
-	    var self = this;
-
-	    if (!this.active) {
-	      this.triggerMethod.apply(this, ['before:enter'].concat(args));
-	    }
-
-	    this.triggerMethod.apply(this, ['before:route'].concat(args));
-
-	    $.when(this._execute(callback, args)).then(function() {
-	      if (!self.active) {
-	        self.triggerMethod.apply(self, ['enter'].concat(args));
-	      }
-
-	      self.triggerMethod.apply(self, ['route'].concat(args));
-	    });
-	  },
-
-	  _execute: function(callback, args) {
-	    var route = callback.apply(this, args);
-	    this._currentRoute = route;
-
-	    if (route instanceof Route) {
-	      route.router = this;
-	      return route.enter(args);
-	    }
-	  },
-
-	  triggerMethod: Mn.triggerMethod
+	var _Drop = Drop.createContext({
+	  classPrefix: namespace
 	});
 
-/***/ },
-/* 124 */,
-/* 125 */,
-/* 126 */,
-/* 127 */
-/***/ function(module, exports, __webpack_require__) {
+	var defaults = {
+	  position: 'top center',
+	  openOn: 'hover',
+	  classes: namespace + '-theme-arrows',
+	  constrainToWindow: true,
+	  constrainToScrollParent: false,
+	  remove: true
+	};
 
-	var Behavior = __webpack_require__(112);
-	var _ = __webpack_require__(6);
-	var POS = __webpack_require__(5);
+	var TooltipBehavior = Behavior.extend({
 
-	var Select2 = Behavior.extend({
-
-	  initialize: function(options){
-	    options = options || {};
-	    var defaults = {};
-	    var methods = [
-	      'query',
-	      'initSelection',
-	      'formatResult',
-	      'formatSelection'
-	    ];
-
-	    _.each(methods, function(method){
-	      if( this.view[method] ){
-	        options[method] = _.bind(this.view[method], this.view);
-	      }
-	      defaults[method] = this[method];
-	    }, this);
-
-	    this.options = _.defaults(options, defaults);
-	  },
-
-	  ui: {
-	    select: '.select2'
-	  },
-
-	  onRender: function() {
-	    if(this.ui.select.hasClass('no-search')) {
-	      this.options.dropdownCssClass = 'no-search';
-	    }
-	    this.ui.select.select2( this.options );
-	  },
-
-	  onBeforeDestroy: function() {
-	    this.ui.select.select2( 'destroy' );
-	  },
-
-	  //query: function(){},
-	  //initSelection: function(){},
-	  //formatResult: function(){},
-	  //formatSelection: function(){}
-
-	  onSelectDisable: function(toggle){
-	    this.ui.select.attr('disabled', toggle);
-	  }
-
-	});
-
-	module.exports = Select2;
-	POS.attach('Behaviors.Select2', Select2);
-
-/***/ },
-/* 128 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Behavior = __webpack_require__(112);
-	var POS = __webpack_require__(5);
-	__webpack_require__(129);
-
-	var Tooltip = Behavior.extend({
+	  _initialized: [],
 
 	  initialize: function(options){
-	    this.options = options;
-	  },
-
-	  ui: {
-	    tooltip: '*[data-toggle="tooltip"]'
-	  },
-
-	  onRender: function() {
-	    this.ui.tooltip.tooltip( this.options );
-	  }
-
-	});
-
-	module.exports = Tooltip;
-	POS.attach('Behaviors.Tooltip', Tooltip);
-
-/***/ },
-/* 129 */
-/***/ function(module, exports) {
-
-	/* ========================================================================
-	 * Bootstrap: tooltip.js v3.3.4
-	 * http://getbootstrap.com/javascript/#tooltip
-	 * Inspired by the original jQuery.tipsy by Jason Frame
-	 * ========================================================================
-	 * Copyright 2011-2015 Twitter, Inc.
-	 * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-	 * ======================================================================== */
-
-
-	+function ($) {
-	  'use strict';
-
-	  // TOOLTIP PUBLIC CLASS DEFINITION
-	  // ===============================
-
-	  var Tooltip = function (element, options) {
-	    this.type       = null
-	    this.options    = null
-	    this.enabled    = null
-	    this.timeout    = null
-	    this.hoverState = null
-	    this.$element   = null
-
-	    this.init('tooltip', element, options)
-	  }
-
-	  Tooltip.VERSION  = '3.3.4'
-
-	  Tooltip.TRANSITION_DURATION = 150
-
-	  Tooltip.DEFAULTS = {
-	    animation: true,
-	    placement: 'top',
-	    selector: false,
-	    template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
-	    trigger: 'hover focus',
-	    title: '',
-	    delay: 0,
-	    html: false,
-	    container: false,
-	    viewport: {
-	      selector: 'body',
-	      padding: 0
-	    }
-	  }
-
-	  Tooltip.prototype.init = function (type, element, options) {
-	    this.enabled   = true
-	    this.type      = type
-	    this.$element  = $(element)
-	    this.options   = this.getOptions(options)
-	    this.$viewport = this.options.viewport && $(this.options.viewport.selector || this.options.viewport)
-
-	    if (this.$element[0] instanceof document.constructor && !this.options.selector) {
-	      throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
-	    }
-
-	    var triggers = this.options.trigger.split(' ')
-
-	    for (var i = triggers.length; i--;) {
-	      var trigger = triggers[i]
-
-	      if (trigger == 'click') {
-	        this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
-	      } else if (trigger != 'manual') {
-	        var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focusin'
-	        var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
-
-	        this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
-	        this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
-	      }
-	    }
-
-	    this.options.selector ?
-	      (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
-	      this.fixTitle()
-	  }
-
-	  Tooltip.prototype.getDefaults = function () {
-	    return Tooltip.DEFAULTS
-	  }
-
-	  Tooltip.prototype.getOptions = function (options) {
-	    options = $.extend({}, this.getDefaults(), this.$element.data(), options)
-
-	    if (options.delay && typeof options.delay == 'number') {
-	      options.delay = {
-	        show: options.delay,
-	        hide: options.delay
-	      }
-	    }
-
-	    return options
-	  }
-
-	  Tooltip.prototype.getDelegateOptions = function () {
-	    var options  = {}
-	    var defaults = this.getDefaults()
-
-	    this._options && $.each(this._options, function (key, value) {
-	      if (defaults[key] != value) options[key] = value
-	    })
-
-	    return options
-	  }
-
-	  Tooltip.prototype.enter = function (obj) {
-	    var self = obj instanceof this.constructor ?
-	      obj : $(obj.currentTarget).data('bs.' + this.type)
-
-	    if (self && self.$tip && self.$tip.is(':visible')) {
-	      self.hoverState = 'in'
-	      return
-	    }
-
-	    if (!self) {
-	      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-	      $(obj.currentTarget).data('bs.' + this.type, self)
-	    }
-
-	    clearTimeout(self.timeout)
-
-	    self.hoverState = 'in'
-
-	    if (!self.options.delay || !self.options.delay.show) return self.show()
-
-	    self.timeout = setTimeout(function () {
-	      if (self.hoverState == 'in') self.show()
-	    }, self.options.delay.show)
-	  }
-
-	  Tooltip.prototype.leave = function (obj) {
-	    var self = obj instanceof this.constructor ?
-	      obj : $(obj.currentTarget).data('bs.' + this.type)
-
-	    if (!self) {
-	      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-	      $(obj.currentTarget).data('bs.' + this.type, self)
-	    }
-
-	    clearTimeout(self.timeout)
-
-	    self.hoverState = 'out'
-
-	    if (!self.options.delay || !self.options.delay.hide) return self.hide()
-
-	    self.timeout = setTimeout(function () {
-	      if (self.hoverState == 'out') self.hide()
-	    }, self.options.delay.hide)
-	  }
-
-	  Tooltip.prototype.show = function () {
-	    var e = $.Event('show.bs.' + this.type)
-
-	    if (this.hasContent() && this.enabled) {
-	      this.$element.trigger(e)
-
-	      var inDom = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0])
-	      if (e.isDefaultPrevented() || !inDom) return
-	      var that = this
-
-	      var $tip = this.tip()
-
-	      var tipId = this.getUID(this.type)
-
-	      this.setContent()
-	      $tip.attr('id', tipId)
-	      this.$element.attr('aria-describedby', tipId)
-
-	      if (this.options.animation) $tip.addClass('fade')
-
-	      var placement = typeof this.options.placement == 'function' ?
-	        this.options.placement.call(this, $tip[0], this.$element[0]) :
-	        this.options.placement
-
-	      var autoToken = /\s?auto?\s?/i
-	      var autoPlace = autoToken.test(placement)
-	      if (autoPlace) placement = placement.replace(autoToken, '') || 'top'
-
-	      $tip
-	        .detach()
-	        .css({ top: 0, left: 0, display: 'block' })
-	        .addClass(placement)
-	        .data('bs.' + this.type, this)
-
-	      this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
-
-	      var pos          = this.getPosition()
-	      var actualWidth  = $tip[0].offsetWidth
-	      var actualHeight = $tip[0].offsetHeight
-
-	      if (autoPlace) {
-	        var orgPlacement = placement
-	        var $container   = this.options.container ? $(this.options.container) : this.$element.parent()
-	        var containerDim = this.getPosition($container)
-
-	        placement = placement == 'bottom' && pos.bottom + actualHeight > containerDim.bottom ? 'top'    :
-	                    placement == 'top'    && pos.top    - actualHeight < containerDim.top    ? 'bottom' :
-	                    placement == 'right'  && pos.right  + actualWidth  > containerDim.width  ? 'left'   :
-	                    placement == 'left'   && pos.left   - actualWidth  < containerDim.left   ? 'right'  :
-	                    placement
-
-	        $tip
-	          .removeClass(orgPlacement)
-	          .addClass(placement)
-	      }
-
-	      var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight)
-
-	      this.applyPlacement(calculatedOffset, placement)
-
-	      var complete = function () {
-	        var prevHoverState = that.hoverState
-	        that.$element.trigger('shown.bs.' + that.type)
-	        that.hoverState = null
-
-	        if (prevHoverState == 'out') that.leave(that)
-	      }
-
-	      $.support.transition && this.$tip.hasClass('fade') ?
-	        $tip
-	          .one('bsTransitionEnd', complete)
-	          .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
-	        complete()
-	    }
-	  }
-
-	  Tooltip.prototype.applyPlacement = function (offset, placement) {
-	    var $tip   = this.tip()
-	    var width  = $tip[0].offsetWidth
-	    var height = $tip[0].offsetHeight
-
-	    // manually read margins because getBoundingClientRect includes difference
-	    var marginTop = parseInt($tip.css('margin-top'), 10)
-	    var marginLeft = parseInt($tip.css('margin-left'), 10)
-
-	    // we must check for NaN for ie 8/9
-	    if (isNaN(marginTop))  marginTop  = 0
-	    if (isNaN(marginLeft)) marginLeft = 0
-
-	    offset.top  = offset.top  + marginTop
-	    offset.left = offset.left + marginLeft
-
-	    // $.fn.offset doesn't round pixel values
-	    // so we use setOffset directly with our own function B-0
-	    $.offset.setOffset($tip[0], $.extend({
-	      using: function (props) {
-	        $tip.css({
-	          top: Math.round(props.top),
-	          left: Math.round(props.left)
-	        })
-	      }
-	    }, offset), 0)
-
-	    $tip.addClass('in')
-
-	    // check to see if placing tip in new offset caused the tip to resize itself
-	    var actualWidth  = $tip[0].offsetWidth
-	    var actualHeight = $tip[0].offsetHeight
-
-	    if (placement == 'top' && actualHeight != height) {
-	      offset.top = offset.top + height - actualHeight
-	    }
-
-	    var delta = this.getViewportAdjustedDelta(placement, offset, actualWidth, actualHeight)
-
-	    if (delta.left) offset.left += delta.left
-	    else offset.top += delta.top
-
-	    var isVertical          = /top|bottom/.test(placement)
-	    var arrowDelta          = isVertical ? delta.left * 2 - width + actualWidth : delta.top * 2 - height + actualHeight
-	    var arrowOffsetPosition = isVertical ? 'offsetWidth' : 'offsetHeight'
-
-	    $tip.offset(offset)
-	    this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
-	  }
-
-	  Tooltip.prototype.replaceArrow = function (delta, dimension, isVertical) {
-	    this.arrow()
-	      .css(isVertical ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
-	      .css(isVertical ? 'top' : 'left', '')
-	  }
-
-	  Tooltip.prototype.setContent = function () {
-	    var $tip  = this.tip()
-	    var title = this.getTitle()
-
-	    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
-	    $tip.removeClass('fade in top bottom left right')
-	  }
-
-	  Tooltip.prototype.hide = function (callback) {
-	    var that = this
-	    var $tip = $(this.$tip)
-	    var e    = $.Event('hide.bs.' + this.type)
-
-	    function complete() {
-	      if (that.hoverState != 'in') $tip.detach()
-	      that.$element
-	        .removeAttr('aria-describedby')
-	        .trigger('hidden.bs.' + that.type)
-	      callback && callback()
-	    }
-
-	    this.$element.trigger(e)
-
-	    if (e.isDefaultPrevented()) return
-
-	    $tip.removeClass('in')
-
-	    $.support.transition && $tip.hasClass('fade') ?
-	      $tip
-	        .one('bsTransitionEnd', complete)
-	        .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
-	      complete()
-
-	    this.hoverState = null
-
-	    return this
-	  }
-
-	  Tooltip.prototype.fixTitle = function () {
-	    var $e = this.$element
-	    if ($e.attr('title') || typeof ($e.attr('data-original-title')) != 'string') {
-	      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
-	    }
-	  }
-
-	  Tooltip.prototype.hasContent = function () {
-	    return this.getTitle()
-	  }
-
-	  Tooltip.prototype.getPosition = function ($element) {
-	    $element   = $element || this.$element
-
-	    var el     = $element[0]
-	    var isBody = el.tagName == 'BODY'
-
-	    var elRect    = el.getBoundingClientRect()
-	    if (elRect.width == null) {
-	      // width and height are missing in IE8, so compute them manually; see https://github.com/twbs/bootstrap/issues/14093
-	      elRect = $.extend({}, elRect, { width: elRect.right - elRect.left, height: elRect.bottom - elRect.top })
-	    }
-	    var elOffset  = isBody ? { top: 0, left: 0 } : $element.offset()
-	    var scroll    = { scroll: isBody ? document.documentElement.scrollTop || document.body.scrollTop : $element.scrollTop() }
-	    var outerDims = isBody ? { width: $(window).width(), height: $(window).height() } : null
-
-	    return $.extend({}, elRect, scroll, outerDims, elOffset)
-	  }
-
-	  Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
-	    return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2 } :
-	           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2 } :
-	           placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
-	        /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width }
-
-	  }
-
-	  Tooltip.prototype.getViewportAdjustedDelta = function (placement, pos, actualWidth, actualHeight) {
-	    var delta = { top: 0, left: 0 }
-	    if (!this.$viewport) return delta
-
-	    var viewportPadding = this.options.viewport && this.options.viewport.padding || 0
-	    var viewportDimensions = this.getPosition(this.$viewport)
-
-	    if (/right|left/.test(placement)) {
-	      var topEdgeOffset    = pos.top - viewportPadding - viewportDimensions.scroll
-	      var bottomEdgeOffset = pos.top + viewportPadding - viewportDimensions.scroll + actualHeight
-	      if (topEdgeOffset < viewportDimensions.top) { // top overflow
-	        delta.top = viewportDimensions.top - topEdgeOffset
-	      } else if (bottomEdgeOffset > viewportDimensions.top + viewportDimensions.height) { // bottom overflow
-	        delta.top = viewportDimensions.top + viewportDimensions.height - bottomEdgeOffset
-	      }
-	    } else {
-	      var leftEdgeOffset  = pos.left - viewportPadding
-	      var rightEdgeOffset = pos.left + viewportPadding + actualWidth
-	      if (leftEdgeOffset < viewportDimensions.left) { // left overflow
-	        delta.left = viewportDimensions.left - leftEdgeOffset
-	      } else if (rightEdgeOffset > viewportDimensions.width) { // right overflow
-	        delta.left = viewportDimensions.left + viewportDimensions.width - rightEdgeOffset
-	      }
-	    }
-
-	    return delta
-	  }
-
-	  Tooltip.prototype.getTitle = function () {
-	    var title
-	    var $e = this.$element
-	    var o  = this.options
-
-	    title = $e.attr('data-original-title')
-	      || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
-
-	    return title
-	  }
-
-	  Tooltip.prototype.getUID = function (prefix) {
-	    do prefix += ~~(Math.random() * 1000000)
-	    while (document.getElementById(prefix))
-	    return prefix
-	  }
-
-	  Tooltip.prototype.tip = function () {
-	    return (this.$tip = this.$tip || $(this.options.template))
-	  }
-
-	  Tooltip.prototype.arrow = function () {
-	    return (this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow'))
-	  }
-
-	  Tooltip.prototype.enable = function () {
-	    this.enabled = true
-	  }
-
-	  Tooltip.prototype.disable = function () {
-	    this.enabled = false
-	  }
-
-	  Tooltip.prototype.toggleEnabled = function () {
-	    this.enabled = !this.enabled
-	  }
-
-	  Tooltip.prototype.toggle = function (e) {
-	    var self = this
-	    if (e) {
-	      self = $(e.currentTarget).data('bs.' + this.type)
-	      if (!self) {
-	        self = new this.constructor(e.currentTarget, this.getDelegateOptions())
-	        $(e.currentTarget).data('bs.' + this.type, self)
-	      }
-	    }
-
-	    self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
-	  }
-
-	  Tooltip.prototype.destroy = function () {
-	    var that = this
-	    clearTimeout(this.timeout)
-	    this.hide(function () {
-	      that.$element.off('.' + that.type).removeData('bs.' + that.type)
-	    })
-	  }
-
-
-	  // TOOLTIP PLUGIN DEFINITION
-	  // =========================
-
-	  function Plugin(option) {
-	    return this.each(function () {
-	      var $this   = $(this)
-	      var data    = $this.data('bs.tooltip')
-	      var options = typeof option == 'object' && option
-
-	      if (!data && /destroy|hide/.test(option)) return
-	      if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
-	      if (typeof option == 'string') data[option]()
-	    })
-	  }
-
-	  var old = $.fn.tooltip
-
-	  $.fn.tooltip             = Plugin
-	  $.fn.tooltip.Constructor = Tooltip
-
-
-	  // TOOLTIP NO CONFLICT
-	  // ===================
-
-	  $.fn.tooltip.noConflict = function () {
-	    $.fn.tooltip = old
-	    return this
-	  }
-
-	}(jQuery);
-
-
-/***/ },
-/* 130 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var Select2 = __webpack_require__(127);
-	var _ = __webpack_require__(6);
-	var Radio = __webpack_require__(4);
-	var hbs = __webpack_require__(16);
-	var POS = __webpack_require__(5);
-	//var debug = require('debug')('customerSelect');
-
-	// Select view
-	var View = ItemView.extend({
-
-	  template: function(){
-	    return '<input name="customer" type="hidden" class="select2">';
-	  },
-
-	  initialize: function(options){
-	    options = options || {};
-	    this.model = options.model;
-	    this.customers = Radio.request('entities', 'get', {
-	      type: 'collection',
-	      name: 'customers'
-	    });
-	  },
-
-	  behaviors: {
-	    Select2: {
-	      behaviorClass: Select2,
-	      minimumInputLength: 3
-	    }
-	  },
-
-	  ui: {
-	    select: 'input[name="customer"]'
+	    this.options = _.extend({}, defaults, options);
+
+	    // define ui
+	    this.ui = {
+	      tooltip: '*[data-toggle="' + namespace + '"]'
+	    };
 	  },
 
 	  events: {
-	    'change @ui.select' : 'onSelect',
-	    'select2-opening @ui.select' : 'onSelectOpen'
+	    'mouseenter @ui.tooltip': 'onHover'
 	  },
 
-	  /**
-	   * using collection and Select2 query
-	   * todo: when updating to v4 use Select2 ajax api, eg:
-	   * ajax: {
-	        url: "wc_api_url/customers",
-	        dataType: 'json',
-	        quietMillis: 250,
-	        data: function (term, page) {
-	            return {filter[q]: term};
-	        },
-	        results: function (data, page) {
-	            return { results: data.customers };
-	        },
-	        cache: true
-	    },
-	   */
-	  query: _.debounce(function(query){
-	    var onSuccess = function(customers){
-	      var results = customers.toJSON();
-	      results.unshift(customers._guest);
-	      query.callback({ results: results });
-	    };
-	    this.customers
-	      .fetch({
-	        // wp-admin requires auth
-	        beforeSend: function(xhr){
-	          xhr.setRequestHeader('X-WC-POS', 1);
-	        },
-	        data: 'filter[q]=' + query.term,
-	        success: onSuccess
-	      });
-	  }, 250),
-
-	  /**
-	   *
-	   */
-	  initSelection: function( element, callback ) {
-	    var customer;
-	    if(this.model){ customer = this.model.get('customer'); }
-	    if(!customer){ customer = this.customers._default; }
-	    callback( customer );
-	  },
-
-	  /**
-	   * select2 parse results
-	   */
-	  formatResult: function( customer ) {
-	    var format = '{{first_name}} {{last_name}} ' +
-	      '{{#if email}}({{email}}){{/if}}';
-
-	    if( this.hasNoNames(customer) ){
-	      format = '{{username}} ({{email}})';
+	  onHover: function(e){
+	    if(this._initialized.indexOf(e.target) !== -1) {
+	      return;
 	    }
 
-	    var template = hbs.compile(format);
-	    return template(customer);
-	  },
+	    // drop instance
+	    var options = _.extend({}, this.options, {
+	      target  : e.target,
+	      content : $(e.target).attr('title')
+	    });
+	    var drop = new _Drop(options);
+	    this._initialized.push(e.target);
 
-	  /**
-	   * select2 parse selection
-	   */
-	  formatSelection: function( customer ) {
-	    var format = '{{first_name}} {{last_name}}';
+	    // remove the title attribute to prevent browser hover
+	    $(e.target).removeAttr('title');
 
-	    if( this.hasNoNames(customer) ){
-	      format = '{{username}}';
-	    }
-
-	    var template = hbs.compile(format);
-	    return template(customer);
-	  },
-
-	  /**
-	   *
-	   */
-	  hasNoNames: function(customer){
-	    return _.chain(customer)
-	      .pick('first_name', 'last_name')
-	      .values()
-	      .compact()
-	      .isEmpty()
-	      .value();
-	  },
-
-	  /**
-	   *
-	   */
-	  onSelect: function(e) {
-	    this.trigger( 'customer:select', e.added );
-	  },
-
-	  /**
-	   *
-	   */
-	  onSelectOpen: function() {}
+	    drop.open();
+	  }
 
 	});
 
-	module.exports = View;
-	POS.attach('Components.CustomerSelect.View', View);
+	module.exports = TooltipBehavior;
+	App.prototype.set('Behaviors.Tooltip', TooltipBehavior);
 
 /***/ },
-/* 131 */,
-/* 132 */,
-/* 133 */,
-/* 134 */,
-/* 135 */,
-/* 136 */,
-/* 137 */,
-/* 138 */,
-/* 139 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Behavior = __webpack_require__(112);
-	var POS = __webpack_require__(5);
-	var $ = __webpack_require__(10);
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! tether-drop 1.3.1 */
+
+	(function(root, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(95)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports === 'object') {
+	    module.exports = factory(require('tether'));
+	  } else {
+	    root.Drop = factory(root.Tether);
+	  }
+	}(this, function(Tether) {
+
+	/* global Tether */
+
+	'use strict';
+
+	var _bind = Function.prototype.bind;
+
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _Tether$Utils = Tether.Utils;
+	var extend = _Tether$Utils.extend;
+	var addClass = _Tether$Utils.addClass;
+	var removeClass = _Tether$Utils.removeClass;
+	var hasClass = _Tether$Utils.hasClass;
+	var Evented = _Tether$Utils.Evented;
+
+	function sortAttach(str) {
+	  var _str$split = str.split(' ');
+
+	  var _str$split2 = _slicedToArray(_str$split, 2);
+
+	  var first = _str$split2[0];
+	  var second = _str$split2[1];
+
+	  if (['left', 'right'].indexOf(first) >= 0) {
+	    var _ref = [second, first];
+	    first = _ref[0];
+	    second = _ref[1];
+	  }
+	  return [first, second].join(' ');
+	}
+
+	function removeFromArray(arr, item) {
+	  var index = undefined;
+	  var results = [];
+	  while ((index = arr.indexOf(item)) !== -1) {
+	    results.push(arr.splice(index, 1));
+	  }
+	  return results;
+	}
+
+	var clickEvents = ['click'];
+	if ('ontouchstart' in document.documentElement) {
+	  clickEvents.push('touchstart');
+	}
+
+	var transitionEndEvents = {
+	  'WebkitTransition': 'webkitTransitionEnd',
+	  'MozTransition': 'transitionend',
+	  'OTransition': 'otransitionend',
+	  'transition': 'transitionend'
+	};
+
+	var transitionEndEvent = '';
+	for (var _name in transitionEndEvents) {
+	  if (({}).hasOwnProperty.call(transitionEndEvents, _name)) {
+	    var tempEl = document.createElement('p');
+	    if (typeof tempEl.style[_name] !== 'undefined') {
+	      transitionEndEvent = transitionEndEvents[_name];
+	    }
+	  }
+	}
+
+	var MIRROR_ATTACH = {
+	  left: 'right',
+	  right: 'left',
+	  top: 'bottom',
+	  bottom: 'top',
+	  middle: 'middle',
+	  center: 'center'
+	};
+
+	var allDrops = {};
+
+	// Drop can be included in external libraries.  Calling createContext gives you a fresh
+	// copy of drop which won't interact with other copies on the page (beyond calling the document events).
+
+	function createContext() {
+	  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	  var drop = function drop() {
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return new (_bind.apply(DropInstance, [null].concat(args)))();
+	  };
+
+	  extend(drop, {
+	    createContext: createContext,
+	    drops: [],
+	    defaults: {}
+	  });
+
+	  var defaultOptions = {
+	    classPrefix: 'drop',
+	    defaults: {
+	      position: 'bottom left',
+	      openOn: 'click',
+	      beforeClose: null,
+	      constrainToScrollParent: true,
+	      constrainToWindow: true,
+	      classes: '',
+	      remove: false,
+	      tetherOptions: {}
+	    }
+	  };
+
+	  extend(drop, defaultOptions, options);
+	  extend(drop.defaults, defaultOptions.defaults, options.defaults);
+
+	  if (typeof allDrops[drop.classPrefix] === 'undefined') {
+	    allDrops[drop.classPrefix] = [];
+	  }
+
+	  drop.updateBodyClasses = function () {
+	    // There is only one body, so despite the context concept, we still iterate through all
+	    // drops which share our classPrefix.
+
+	    var anyOpen = false;
+	    var drops = allDrops[drop.classPrefix];
+	    var len = drops.length;
+	    for (var i = 0; i < len; ++i) {
+	      if (drops[i].isOpened()) {
+	        anyOpen = true;
+	        break;
+	      }
+	    }
+
+	    if (anyOpen) {
+	      addClass(document.body, drop.classPrefix + '-open');
+	    } else {
+	      removeClass(document.body, drop.classPrefix + '-open');
+	    }
+	  };
+
+	  var DropInstance = (function (_Evented) {
+	    _inherits(DropInstance, _Evented);
+
+	    function DropInstance(opts) {
+	      _classCallCheck(this, DropInstance);
+
+	      _get(Object.getPrototypeOf(DropInstance.prototype), 'constructor', this).call(this);
+	      this.options = extend({}, drop.defaults, opts);
+	      this.target = this.options.target;
+
+	      if (typeof this.target === 'undefined') {
+	        throw new Error('Drop Error: You must provide a target.');
+	      }
+
+	      var dataPrefix = 'data-' + drop.classPrefix;
+
+	      var contentAttr = this.target.getAttribute(dataPrefix);
+	      if (contentAttr) {
+	        this.options.content = contentAttr;
+	      }
+
+	      var attrsOverride = ['position', 'openOn'];
+	      for (var i = 0; i < attrsOverride.length; ++i) {
+
+	        var override = this.target.getAttribute(dataPrefix + '-' + attrsOverride[i]);
+	        if (override) {
+	          this.options[attrsOverride[i]] = override;
+	        }
+	      }
+
+	      if (this.options.classes && this.options.addTargetClasses !== false) {
+	        addClass(this.target, this.options.classes);
+	      }
+
+	      drop.drops.push(this);
+	      allDrops[drop.classPrefix].push(this);
+
+	      this._boundEvents = [];
+	      this.bindMethods();
+	      this.setupElements();
+	      this.setupEvents();
+	      this.setupTether();
+	    }
+
+	    _createClass(DropInstance, [{
+	      key: '_on',
+	      value: function _on(element, event, handler) {
+	        this._boundEvents.push({ element: element, event: event, handler: handler });
+	        element.addEventListener(event, handler);
+	      }
+	    }, {
+	      key: 'bindMethods',
+	      value: function bindMethods() {
+	        this.transitionEndHandler = this._transitionEndHandler.bind(this);
+	      }
+	    }, {
+	      key: 'setupElements',
+	      value: function setupElements() {
+	        var _this = this;
+
+	        this.drop = document.createElement('div');
+	        addClass(this.drop, drop.classPrefix);
+
+	        if (this.options.classes) {
+	          addClass(this.drop, this.options.classes);
+	        }
+
+	        this.content = document.createElement('div');
+	        addClass(this.content, drop.classPrefix + '-content');
+
+	        if (typeof this.options.content === 'function') {
+	          var generateAndSetContent = function generateAndSetContent() {
+	            // content function might return a string or an element
+	            var contentElementOrHTML = _this.options.content.call(_this, _this);
+
+	            if (typeof contentElementOrHTML === 'string') {
+	              _this.content.innerHTML = contentElementOrHTML;
+	            } else if (typeof contentElementOrHTML === 'object') {
+	              _this.content.innerHTML = "";
+	              _this.content.appendChild(contentElementOrHTML);
+	            } else {
+	              throw new Error('Drop Error: Content function should return a string or HTMLElement.');
+	            }
+	          };
+
+	          generateAndSetContent();
+	          this.on('open', generateAndSetContent.bind(this));
+	        } else if (typeof this.options.content === 'object') {
+	          this.content.appendChild(this.options.content);
+	        } else {
+	          this.content.innerHTML = this.options.content;
+	        }
+
+	        this.drop.appendChild(this.content);
+	      }
+	    }, {
+	      key: 'setupTether',
+	      value: function setupTether() {
+	        // Tether expects two attachment points, one in the target element, one in the
+	        // drop.  We use a single one, and use the order as well, to allow us to put
+	        // the drop on either side of any of the four corners.  This magic converts between
+	        // the two:
+	        var dropAttach = this.options.position.split(' ');
+	        dropAttach[0] = MIRROR_ATTACH[dropAttach[0]];
+	        dropAttach = dropAttach.join(' ');
+
+	        var constraints = [];
+	        if (this.options.constrainToScrollParent) {
+	          constraints.push({
+	            to: 'scrollParent',
+	            pin: 'top, bottom',
+	            attachment: 'together none'
+	          });
+	        } else {
+	          // To get 'out of bounds' classes
+	          constraints.push({
+	            to: 'scrollParent'
+	          });
+	        }
+
+	        if (this.options.constrainToWindow !== false) {
+	          constraints.push({
+	            to: 'window',
+	            attachment: 'together'
+	          });
+	        } else {
+	          // To get 'out of bounds' classes
+	          constraints.push({
+	            to: 'window'
+	          });
+	        }
+
+	        var opts = {
+	          element: this.drop,
+	          target: this.target,
+	          attachment: sortAttach(dropAttach),
+	          targetAttachment: sortAttach(this.options.position),
+	          classPrefix: drop.classPrefix,
+	          offset: '0 0',
+	          targetOffset: '0 0',
+	          enabled: false,
+	          constraints: constraints,
+	          addTargetClasses: this.options.addTargetClasses
+	        };
+
+	        if (this.options.tetherOptions !== false) {
+	          this.tether = new Tether(extend({}, opts, this.options.tetherOptions));
+	        }
+	      }
+	    }, {
+	      key: 'setupEvents',
+	      value: function setupEvents() {
+	        var _this2 = this;
+
+	        if (!this.options.openOn) {
+	          return;
+	        }
+
+	        if (this.options.openOn === 'always') {
+	          setTimeout(this.open.bind(this));
+	          return;
+	        }
+
+	        var events = this.options.openOn.split(' ');
+
+	        if (events.indexOf('click') >= 0) {
+	          var openHandler = function openHandler(event) {
+	            _this2.toggle(event);
+	            event.preventDefault();
+	          };
+
+	          var closeHandler = function closeHandler(event) {
+	            if (!_this2.isOpened()) {
+	              return;
+	            }
+
+	            // Clicking inside dropdown
+	            if (event.target === _this2.drop || _this2.drop.contains(event.target)) {
+	              return;
+	            }
+
+	            // Clicking target
+	            if (event.target === _this2.target || _this2.target.contains(event.target)) {
+	              return;
+	            }
+
+	            _this2.close(event);
+	          };
+
+	          for (var i = 0; i < clickEvents.length; ++i) {
+	            var clickEvent = clickEvents[i];
+	            this._on(this.target, clickEvent, openHandler);
+	            this._on(document, clickEvent, closeHandler);
+	          }
+	        }
+
+	        var onUs = false;
+	        var outTimeout = null;
+
+	        var focusInHandler = function focusInHandler(event) {
+	          onUs = true;
+	          _this2.open(event);
+	        };
+
+	        var focusOutHandler = function focusOutHandler(event) {
+	          onUs = false;
+
+	          if (typeof outTimeout !== 'undefined') {
+	            clearTimeout(outTimeout);
+	          }
+
+	          outTimeout = setTimeout(function () {
+	            if (!onUs) {
+	              _this2.close(event);
+	            }
+	            outTimeout = null;
+	          }, 50);
+	        };
+
+	        if (events.indexOf('hover') >= 0) {
+	          this._on(this.target, 'mouseover', focusInHandler);
+	          this._on(this.drop, 'mouseover', focusInHandler);
+	          this._on(this.target, 'mouseout', focusOutHandler);
+	          this._on(this.drop, 'mouseout', focusOutHandler);
+	        }
+
+	        if (events.indexOf('focus') >= 0) {
+	          this._on(this.target, 'focus', focusInHandler);
+	          this._on(this.drop, 'focus', focusInHandler);
+	          this._on(this.target, 'blur', focusOutHandler);
+	          this._on(this.drop, 'blur', focusOutHandler);
+	        }
+	      }
+	    }, {
+	      key: 'isOpened',
+	      value: function isOpened() {
+	        if (this.drop) {
+	          return hasClass(this.drop, drop.classPrefix + '-open');
+	        }
+	      }
+	    }, {
+	      key: 'toggle',
+	      value: function toggle(event) {
+	        if (this.isOpened()) {
+	          this.close(event);
+	        } else {
+	          this.open(event);
+	        }
+	      }
+	    }, {
+	      key: 'open',
+	      value: function open(event) {
+	        var _this3 = this;
+
+	        if (this.isOpened()) {
+	          return;
+	        }
+
+	        if (!this.drop.parentNode) {
+	          document.body.appendChild(this.drop);
+	        }
+
+	        if (typeof this.tether !== 'undefined') {
+	          this.tether.enable();
+	        }
+
+	        addClass(this.drop, drop.classPrefix + '-open');
+	        addClass(this.drop, drop.classPrefix + '-open-transitionend');
+
+	        setTimeout(function () {
+	          if (_this3.drop) {
+	            addClass(_this3.drop, drop.classPrefix + '-after-open');
+	          }
+	        });
+
+	        if (typeof this.tether !== 'undefined') {
+	          this.tether.position();
+	        }
+
+	        this.trigger('open');
+
+	        drop.updateBodyClasses();
+	      }
+	    }, {
+	      key: '_transitionEndHandler',
+	      value: function _transitionEndHandler(e) {
+	        if (e.target !== e.currentTarget) {
+	          return;
+	        }
+
+	        if (!hasClass(this.drop, drop.classPrefix + '-open')) {
+	          removeClass(this.drop, drop.classPrefix + '-open-transitionend');
+	        }
+	        this.drop.removeEventListener(transitionEndEvent, this.transitionEndHandler);
+	      }
+	    }, {
+	      key: 'beforeCloseHandler',
+	      value: function beforeCloseHandler(event) {
+	        var shouldClose = true;
+
+	        if (!this.isClosing && typeof this.options.beforeClose === 'function') {
+	          this.isClosing = true;
+	          shouldClose = this.options.beforeClose(event, this) !== false;
+	        }
+
+	        this.isClosing = false;
+
+	        return shouldClose;
+	      }
+	    }, {
+	      key: 'close',
+	      value: function close(event) {
+	        if (!this.isOpened()) {
+	          return;
+	        }
+
+	        if (!this.beforeCloseHandler(event)) {
+	          return;
+	        }
+
+	        removeClass(this.drop, drop.classPrefix + '-open');
+	        removeClass(this.drop, drop.classPrefix + '-after-open');
+
+	        this.drop.addEventListener(transitionEndEvent, this.transitionEndHandler);
+
+	        this.trigger('close');
+
+	        if (typeof this.tether !== 'undefined') {
+	          this.tether.disable();
+	        }
+
+	        drop.updateBodyClasses();
+
+	        if (this.options.remove) {
+	          this.remove(event);
+	        }
+	      }
+	    }, {
+	      key: 'remove',
+	      value: function remove(event) {
+	        this.close(event);
+	        if (this.drop.parentNode) {
+	          this.drop.parentNode.removeChild(this.drop);
+	        }
+	      }
+	    }, {
+	      key: 'position',
+	      value: function position() {
+	        if (this.isOpened() && typeof this.tether !== 'undefined') {
+	          this.tether.position();
+	        }
+	      }
+	    }, {
+	      key: 'destroy',
+	      value: function destroy() {
+	        this.remove();
+
+	        if (typeof this.tether !== 'undefined') {
+	          this.tether.destroy();
+	        }
+
+	        for (var i = 0; i < this._boundEvents.length; ++i) {
+	          var _boundEvents$i = this._boundEvents[i];
+	          var element = _boundEvents$i.element;
+	          var _event = _boundEvents$i.event;
+	          var handler = _boundEvents$i.handler;
+
+	          element.removeEventListener(_event, handler);
+	        }
+
+	        this._boundEvents = [];
+
+	        this.tether = null;
+	        this.drop = null;
+	        this.content = null;
+	        this.target = null;
+
+	        removeFromArray(allDrops[drop.classPrefix], this);
+	        removeFromArray(drop.drops, this);
+	      }
+	    }]);
+
+	    return DropInstance;
+	  })(Evented);
+
+	  return drop;
+	}
+
+	var Drop = createContext();
+
+	document.addEventListener('DOMContentLoaded', function () {
+	  Drop.updateBodyClasses();
+	});
+	return Drop;
+
+	}));
+
+
+/***/ },
+/* 95 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! tether 1.1.0 */
+
+	(function(root, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports === 'object') {
+	    module.exports = factory(require, exports, module);
+	  } else {
+	    root.Tether = factory();
+	  }
+	}(this, function(require, exports, module) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var TetherBase = undefined;
+	if (typeof TetherBase === 'undefined') {
+	  TetherBase = { modules: [] };
+	}
+
+	function getScrollParent(el) {
+	  var _getComputedStyle = getComputedStyle(el);
+
+	  var position = _getComputedStyle.position;
+
+	  if (position === 'fixed') {
+	    return el;
+	  }
+
+	  var parent = el;
+	  while (parent = parent.parentNode) {
+	    var style = undefined;
+	    try {
+	      style = getComputedStyle(parent);
+	    } catch (err) {}
+
+	    if (typeof style === 'undefined' || style === null) {
+	      return parent;
+	    }
+
+	    var _style = style;
+	    var overflow = _style.overflow;
+	    var overflowX = _style.overflowX;
+	    var overflowY = _style.overflowY;
+
+	    if (/(auto|scroll)/.test(overflow + overflowY + overflowX)) {
+	      if (position !== 'absolute' || ['relative', 'absolute', 'fixed'].indexOf(style.position) >= 0) {
+	        return parent;
+	      }
+	    }
+	  }
+
+	  return document.body;
+	}
+
+	var uniqueId = (function () {
+	  var id = 0;
+	  return function () {
+	    return ++id;
+	  };
+	})();
+
+	var zeroPosCache = {};
+	var getOrigin = function getOrigin(doc) {
+	  // getBoundingClientRect is unfortunately too accurate.  It introduces a pixel or two of
+	  // jitter as the user scrolls that messes with our ability to detect if two positions
+	  // are equivilant or not.  We place an element at the top left of the page that will
+	  // get the same jitter, so we can cancel the two out.
+	  var node = doc._tetherZeroElement;
+	  if (typeof node === 'undefined') {
+	    node = doc.createElement('div');
+	    node.setAttribute('data-tether-id', uniqueId());
+	    extend(node.style, {
+	      top: 0,
+	      left: 0,
+	      position: 'absolute'
+	    });
+
+	    doc.body.appendChild(node);
+
+	    doc._tetherZeroElement = node;
+	  }
+
+	  var id = node.getAttribute('data-tether-id');
+	  if (typeof zeroPosCache[id] === 'undefined') {
+	    zeroPosCache[id] = {};
+
+	    var rect = node.getBoundingClientRect();
+	    for (var k in rect) {
+	      // Can't use extend, as on IE9, elements don't resolve to be hasOwnProperty
+	      zeroPosCache[id][k] = rect[k];
+	    }
+
+	    // Clear the cache when this position call is done
+	    defer(function () {
+	      delete zeroPosCache[id];
+	    });
+	  }
+
+	  return zeroPosCache[id];
+	};
+
+	function getBounds(el) {
+	  var doc = undefined;
+	  if (el === document) {
+	    doc = document;
+	    el = document.documentElement;
+	  } else {
+	    doc = el.ownerDocument;
+	  }
+
+	  var docEl = doc.documentElement;
+
+	  var box = {};
+	  // The original object returned by getBoundingClientRect is immutable, so we clone it
+	  // We can't use extend because the properties are not considered part of the object by hasOwnProperty in IE9
+	  var rect = el.getBoundingClientRect();
+	  for (var k in rect) {
+	    box[k] = rect[k];
+	  }
+
+	  var origin = getOrigin(doc);
+
+	  box.top -= origin.top;
+	  box.left -= origin.left;
+
+	  if (typeof box.width === 'undefined') {
+	    box.width = document.body.scrollWidth - box.left - box.right;
+	  }
+	  if (typeof box.height === 'undefined') {
+	    box.height = document.body.scrollHeight - box.top - box.bottom;
+	  }
+
+	  box.top = box.top - docEl.clientTop;
+	  box.left = box.left - docEl.clientLeft;
+	  box.right = doc.body.clientWidth - box.width - box.left;
+	  box.bottom = doc.body.clientHeight - box.height - box.top;
+
+	  return box;
+	}
+
+	function getOffsetParent(el) {
+	  return el.offsetParent || document.documentElement;
+	}
+
+	function getScrollBarSize() {
+	  var inner = document.createElement('div');
+	  inner.style.width = '100%';
+	  inner.style.height = '200px';
+
+	  var outer = document.createElement('div');
+	  extend(outer.style, {
+	    position: 'absolute',
+	    top: 0,
+	    left: 0,
+	    pointerEvents: 'none',
+	    visibility: 'hidden',
+	    width: '200px',
+	    height: '150px',
+	    overflow: 'hidden'
+	  });
+
+	  outer.appendChild(inner);
+
+	  document.body.appendChild(outer);
+
+	  var widthContained = inner.offsetWidth;
+	  outer.style.overflow = 'scroll';
+	  var widthScroll = inner.offsetWidth;
+
+	  if (widthContained === widthScroll) {
+	    widthScroll = outer.clientWidth;
+	  }
+
+	  document.body.removeChild(outer);
+
+	  var width = widthContained - widthScroll;
+
+	  return { width: width, height: width };
+	}
+
+	function extend() {
+	  var out = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	  var args = [];
+
+	  Array.prototype.push.apply(args, arguments);
+
+	  args.slice(1).forEach(function (obj) {
+	    if (obj) {
+	      for (var key in obj) {
+	        if (({}).hasOwnProperty.call(obj, key)) {
+	          out[key] = obj[key];
+	        }
+	      }
+	    }
+	  });
+
+	  return out;
+	}
+
+	function removeClass(el, name) {
+	  if (typeof el.classList !== 'undefined') {
+	    name.split(' ').forEach(function (cls) {
+	      if (cls.trim()) {
+	        el.classList.remove(cls);
+	      }
+	    });
+	  } else {
+	    var regex = new RegExp('(^| )' + name.split(' ').join('|') + '( |$)', 'gi');
+	    var className = getClassName(el).replace(regex, ' ');
+	    setClassName(el, className);
+	  }
+	}
+
+	function addClass(el, name) {
+	  if (typeof el.classList !== 'undefined') {
+	    name.split(' ').forEach(function (cls) {
+	      if (cls.trim()) {
+	        el.classList.add(cls);
+	      }
+	    });
+	  } else {
+	    removeClass(el, name);
+	    var cls = getClassName(el) + (' ' + name);
+	    setClassName(el, cls);
+	  }
+	}
+
+	function hasClass(el, name) {
+	  if (typeof el.classList !== 'undefined') {
+	    return el.classList.contains(name);
+	  }
+	  var className = getClassName(el);
+	  return new RegExp('(^| )' + name + '( |$)', 'gi').test(className);
+	}
+
+	function getClassName(el) {
+	  if (el.className instanceof SVGAnimatedString) {
+	    return el.className.baseVal;
+	  }
+	  return el.className;
+	}
+
+	function setClassName(el, className) {
+	  el.setAttribute('class', className);
+	}
+
+	function updateClasses(el, add, all) {
+	  // Of the set of 'all' classes, we need the 'add' classes, and only the
+	  // 'add' classes to be set.
+	  all.forEach(function (cls) {
+	    if (add.indexOf(cls) === -1 && hasClass(el, cls)) {
+	      removeClass(el, cls);
+	    }
+	  });
+
+	  add.forEach(function (cls) {
+	    if (!hasClass(el, cls)) {
+	      addClass(el, cls);
+	    }
+	  });
+	}
+
+	var deferred = [];
+
+	var defer = function defer(fn) {
+	  deferred.push(fn);
+	};
+
+	var flush = function flush() {
+	  var fn = undefined;
+	  while (fn = deferred.pop()) {
+	    fn();
+	  }
+	};
+
+	var Evented = (function () {
+	  function Evented() {
+	    _classCallCheck(this, Evented);
+	  }
+
+	  _createClass(Evented, [{
+	    key: 'on',
+	    value: function on(event, handler, ctx) {
+	      var once = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
+	      if (typeof this.bindings === 'undefined') {
+	        this.bindings = {};
+	      }
+	      if (typeof this.bindings[event] === 'undefined') {
+	        this.bindings[event] = [];
+	      }
+	      this.bindings[event].push({ handler: handler, ctx: ctx, once: once });
+	    }
+	  }, {
+	    key: 'once',
+	    value: function once(event, handler, ctx) {
+	      this.on(event, handler, ctx, true);
+	    }
+	  }, {
+	    key: 'off',
+	    value: function off(event, handler) {
+	      if (typeof this.bindings !== 'undefined' && typeof this.bindings[event] !== 'undefined') {
+	        return;
+	      }
+
+	      if (typeof handler === 'undefined') {
+	        delete this.bindings[event];
+	      } else {
+	        var i = 0;
+	        while (i < this.bindings[event].length) {
+	          if (this.bindings[event][i].handler === handler) {
+	            this.bindings[event].splice(i, 1);
+	          } else {
+	            ++i;
+	          }
+	        }
+	      }
+	    }
+	  }, {
+	    key: 'trigger',
+	    value: function trigger(event) {
+	      if (typeof this.bindings !== 'undefined' && this.bindings[event]) {
+	        var i = 0;
+
+	        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	          args[_key - 1] = arguments[_key];
+	        }
+
+	        while (i < this.bindings[event].length) {
+	          var _bindings$event$i = this.bindings[event][i];
+	          var handler = _bindings$event$i.handler;
+	          var ctx = _bindings$event$i.ctx;
+	          var once = _bindings$event$i.once;
+
+	          var context = ctx;
+	          if (typeof context === 'undefined') {
+	            context = this;
+	          }
+
+	          handler.apply(context, args);
+
+	          if (once) {
+	            this.bindings[event].splice(i, 1);
+	          } else {
+	            ++i;
+	          }
+	        }
+	      }
+	    }
+	  }]);
+
+	  return Evented;
+	})();
+
+	TetherBase.Utils = {
+	  getScrollParent: getScrollParent,
+	  getBounds: getBounds,
+	  getOffsetParent: getOffsetParent,
+	  extend: extend,
+	  addClass: addClass,
+	  removeClass: removeClass,
+	  hasClass: hasClass,
+	  updateClasses: updateClasses,
+	  defer: defer,
+	  flush: flush,
+	  uniqueId: uniqueId,
+	  Evented: Evented,
+	  getScrollBarSize: getScrollBarSize
+	};
+	/* globals TetherBase, performance */
+
+	'use strict';
+
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	if (typeof TetherBase === 'undefined') {
+	  throw new Error('You must include the utils.js file before tether.js');
+	}
+
+	var _TetherBase$Utils = TetherBase.Utils;
+	var getScrollParent = _TetherBase$Utils.getScrollParent;
+	var getBounds = _TetherBase$Utils.getBounds;
+	var getOffsetParent = _TetherBase$Utils.getOffsetParent;
+	var extend = _TetherBase$Utils.extend;
+	var addClass = _TetherBase$Utils.addClass;
+	var removeClass = _TetherBase$Utils.removeClass;
+	var updateClasses = _TetherBase$Utils.updateClasses;
+	var defer = _TetherBase$Utils.defer;
+	var flush = _TetherBase$Utils.flush;
+	var getScrollBarSize = _TetherBase$Utils.getScrollBarSize;
+
+	function within(a, b) {
+	  var diff = arguments.length <= 2 || arguments[2] === undefined ? 1 : arguments[2];
+
+	  return a + diff >= b && b >= a - diff;
+	}
+
+	var transformKey = (function () {
+	  if (typeof document === 'undefined') {
+	    return '';
+	  }
+	  var el = document.createElement('div');
+
+	  var transforms = ['transform', 'webkitTransform', 'OTransform', 'MozTransform', 'msTransform'];
+	  for (var i = 0; i < transforms.length; ++i) {
+	    var key = transforms[i];
+	    if (el.style[key] !== undefined) {
+	      return key;
+	    }
+	  }
+	})();
+
+	var tethers = [];
+
+	var position = function position() {
+	  tethers.forEach(function (tether) {
+	    tether.position(false);
+	  });
+	  flush();
+	};
+
+	function now() {
+	  if (typeof performance !== 'undefined' && typeof performance.now !== 'undefined') {
+	    return performance.now();
+	  }
+	  return +new Date();
+	}
+
+	(function () {
+	  var lastCall = null;
+	  var lastDuration = null;
+	  var pendingTimeout = null;
+
+	  var tick = function tick() {
+	    if (typeof lastDuration !== 'undefined' && lastDuration > 16) {
+	      // We voluntarily throttle ourselves if we can't manage 60fps
+	      lastDuration = Math.min(lastDuration - 16, 250);
+
+	      // Just in case this is the last event, remember to position just once more
+	      pendingTimeout = setTimeout(tick, 250);
+	      return;
+	    }
+
+	    if (typeof lastCall !== 'undefined' && now() - lastCall < 10) {
+	      // Some browsers call events a little too frequently, refuse to run more than is reasonable
+	      return;
+	    }
+
+	    if (typeof pendingTimeout !== 'undefined') {
+	      clearTimeout(pendingTimeout);
+	      pendingTimeout = null;
+	    }
+
+	    lastCall = now();
+	    position();
+	    lastDuration = now() - lastCall;
+	  };
+
+	  if (typeof window !== 'undefined') {
+	    ['resize', 'scroll', 'touchmove'].forEach(function (event) {
+	      window.addEventListener(event, tick);
+	    });
+	  }
+	})();
+
+	var MIRROR_LR = {
+	  center: 'center',
+	  left: 'right',
+	  right: 'left'
+	};
+
+	var MIRROR_TB = {
+	  middle: 'middle',
+	  top: 'bottom',
+	  bottom: 'top'
+	};
+
+	var OFFSET_MAP = {
+	  top: 0,
+	  left: 0,
+	  middle: '50%',
+	  center: '50%',
+	  bottom: '100%',
+	  right: '100%'
+	};
+
+	var autoToFixedAttachment = function autoToFixedAttachment(attachment, relativeToAttachment) {
+	  var left = attachment.left;
+	  var top = attachment.top;
+
+	  if (left === 'auto') {
+	    left = MIRROR_LR[relativeToAttachment.left];
+	  }
+
+	  if (top === 'auto') {
+	    top = MIRROR_TB[relativeToAttachment.top];
+	  }
+
+	  return { left: left, top: top };
+	};
+
+	var attachmentToOffset = function attachmentToOffset(attachment) {
+	  var left = attachment.left;
+	  var top = attachment.top;
+
+	  if (typeof OFFSET_MAP[attachment.left] !== 'undefined') {
+	    left = OFFSET_MAP[attachment.left];
+	  }
+
+	  if (typeof OFFSET_MAP[attachment.top] !== 'undefined') {
+	    top = OFFSET_MAP[attachment.top];
+	  }
+
+	  return { left: left, top: top };
+	};
+
+	function addOffset() {
+	  var out = { top: 0, left: 0 };
+
+	  for (var _len = arguments.length, offsets = Array(_len), _key = 0; _key < _len; _key++) {
+	    offsets[_key] = arguments[_key];
+	  }
+
+	  offsets.forEach(function (_ref) {
+	    var top = _ref.top;
+	    var left = _ref.left;
+
+	    if (typeof top === 'string') {
+	      top = parseFloat(top, 10);
+	    }
+	    if (typeof left === 'string') {
+	      left = parseFloat(left, 10);
+	    }
+
+	    out.top += top;
+	    out.left += left;
+	  });
+
+	  return out;
+	}
+
+	function offsetToPx(offset, size) {
+	  if (typeof offset.left === 'string' && offset.left.indexOf('%') !== -1) {
+	    offset.left = parseFloat(offset.left, 10) / 100 * size.width;
+	  }
+	  if (typeof offset.top === 'string' && offset.top.indexOf('%') !== -1) {
+	    offset.top = parseFloat(offset.top, 10) / 100 * size.height;
+	  }
+
+	  return offset;
+	}
+
+	var parseOffset = function parseOffset(value) {
+	  var _value$split = value.split(' ');
+
+	  var _value$split2 = _slicedToArray(_value$split, 2);
+
+	  var top = _value$split2[0];
+	  var left = _value$split2[1];
+
+	  return { top: top, left: left };
+	};
+	var parseAttachment = parseOffset;
+
+	var TetherClass = (function () {
+	  function TetherClass(options) {
+	    var _this = this;
+
+	    _classCallCheck(this, TetherClass);
+
+	    this.position = this.position.bind(this);
+
+	    tethers.push(this);
+
+	    this.history = [];
+
+	    this.setOptions(options, false);
+
+	    TetherBase.modules.forEach(function (module) {
+	      if (typeof module.initialize !== 'undefined') {
+	        module.initialize.call(_this);
+	      }
+	    });
+
+	    this.position();
+	  }
+
+	  _createClass(TetherClass, [{
+	    key: 'getClass',
+	    value: function getClass() {
+	      var key = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
+	      var classes = this.options.classes;
+
+	      if (typeof classes !== 'undefined' && classes[key]) {
+	        return this.options.classes[key];
+	      } else if (this.options.classPrefix) {
+	        return this.options.classPrefix + '-' + key;
+	      } else {
+	        return key;
+	      }
+	    }
+	  }, {
+	    key: 'setOptions',
+	    value: function setOptions(options) {
+	      var _this2 = this;
+
+	      var pos = arguments.length <= 1 || arguments[1] === undefined ? true : arguments[1];
+
+	      var defaults = {
+	        offset: '0 0',
+	        targetOffset: '0 0',
+	        targetAttachment: 'auto auto',
+	        classPrefix: 'tether'
+	      };
+
+	      this.options = extend(defaults, options);
+
+	      var _options = this.options;
+	      var element = _options.element;
+	      var target = _options.target;
+	      var targetModifier = _options.targetModifier;
+
+	      this.element = element;
+	      this.target = target;
+	      this.targetModifier = targetModifier;
+
+	      if (this.target === 'viewport') {
+	        this.target = document.body;
+	        this.targetModifier = 'visible';
+	      } else if (this.target === 'scroll-handle') {
+	        this.target = document.body;
+	        this.targetModifier = 'scroll-handle';
+	      }
+
+	      ['element', 'target'].forEach(function (key) {
+	        if (typeof _this2[key] === 'undefined') {
+	          throw new Error('Tether Error: Both element and target must be defined');
+	        }
+
+	        if (typeof _this2[key].jquery !== 'undefined') {
+	          _this2[key] = _this2[key][0];
+	        } else if (typeof _this2[key] === 'string') {
+	          _this2[key] = document.querySelector(_this2[key]);
+	        }
+	      });
+
+	      addClass(this.element, this.getClass('element'));
+	      if (!(this.options.addTargetClasses === false)) {
+	        addClass(this.target, this.getClass('target'));
+	      }
+
+	      if (!this.options.attachment) {
+	        throw new Error('Tether Error: You must provide an attachment');
+	      }
+
+	      this.targetAttachment = parseAttachment(this.options.targetAttachment);
+	      this.attachment = parseAttachment(this.options.attachment);
+	      this.offset = parseOffset(this.options.offset);
+	      this.targetOffset = parseOffset(this.options.targetOffset);
+
+	      if (typeof this.scrollParent !== 'undefined') {
+	        this.disable();
+	      }
+
+	      if (this.targetModifier === 'scroll-handle') {
+	        this.scrollParent = this.target;
+	      } else {
+	        this.scrollParent = getScrollParent(this.target);
+	      }
+
+	      if (!(this.options.enabled === false)) {
+	        this.enable(pos);
+	      }
+	    }
+	  }, {
+	    key: 'getTargetBounds',
+	    value: function getTargetBounds() {
+	      if (typeof this.targetModifier !== 'undefined') {
+	        if (this.targetModifier === 'visible') {
+	          if (this.target === document.body) {
+	            return { top: pageYOffset, left: pageXOffset, height: innerHeight, width: innerWidth };
+	          } else {
+	            var bounds = getBounds(this.target);
+
+	            var out = {
+	              height: bounds.height,
+	              width: bounds.width,
+	              top: bounds.top,
+	              left: bounds.left
+	            };
+
+	            out.height = Math.min(out.height, bounds.height - (pageYOffset - bounds.top));
+	            out.height = Math.min(out.height, bounds.height - (bounds.top + bounds.height - (pageYOffset + innerHeight)));
+	            out.height = Math.min(innerHeight, out.height);
+	            out.height -= 2;
+
+	            out.width = Math.min(out.width, bounds.width - (pageXOffset - bounds.left));
+	            out.width = Math.min(out.width, bounds.width - (bounds.left + bounds.width - (pageXOffset + innerWidth)));
+	            out.width = Math.min(innerWidth, out.width);
+	            out.width -= 2;
+
+	            if (out.top < pageYOffset) {
+	              out.top = pageYOffset;
+	            }
+	            if (out.left < pageXOffset) {
+	              out.left = pageXOffset;
+	            }
+
+	            return out;
+	          }
+	        } else if (this.targetModifier === 'scroll-handle') {
+	          var bounds = undefined;
+	          var target = this.target;
+	          if (target === document.body) {
+	            target = document.documentElement;
+
+	            bounds = {
+	              left: pageXOffset,
+	              top: pageYOffset,
+	              height: innerHeight,
+	              width: innerWidth
+	            };
+	          } else {
+	            bounds = getBounds(target);
+	          }
+
+	          var style = getComputedStyle(target);
+
+	          var hasBottomScroll = target.scrollWidth > target.clientWidth || [style.overflow, style.overflowX].indexOf('scroll') >= 0 || this.target !== document.body;
+
+	          var scrollBottom = 0;
+	          if (hasBottomScroll) {
+	            scrollBottom = 15;
+	          }
+
+	          var height = bounds.height - parseFloat(style.borderTopWidth) - parseFloat(style.borderBottomWidth) - scrollBottom;
+
+	          var out = {
+	            width: 15,
+	            height: height * 0.975 * (height / target.scrollHeight),
+	            left: bounds.left + bounds.width - parseFloat(style.borderLeftWidth) - 15
+	          };
+
+	          var fitAdj = 0;
+	          if (height < 408 && this.target === document.body) {
+	            fitAdj = -0.00011 * Math.pow(height, 2) - 0.00727 * height + 22.58;
+	          }
+
+	          if (this.target !== document.body) {
+	            out.height = Math.max(out.height, 24);
+	          }
+
+	          var scrollPercentage = this.target.scrollTop / (target.scrollHeight - height);
+	          out.top = scrollPercentage * (height - out.height - fitAdj) + bounds.top + parseFloat(style.borderTopWidth);
+
+	          if (this.target === document.body) {
+	            out.height = Math.max(out.height, 24);
+	          }
+
+	          return out;
+	        }
+	      } else {
+	        return getBounds(this.target);
+	      }
+	    }
+	  }, {
+	    key: 'clearCache',
+	    value: function clearCache() {
+	      this._cache = {};
+	    }
+	  }, {
+	    key: 'cache',
+	    value: function cache(k, getter) {
+	      // More than one module will often need the same DOM info, so
+	      // we keep a cache which is cleared on each position call
+	      if (typeof this._cache === 'undefined') {
+	        this._cache = {};
+	      }
+
+	      if (typeof this._cache[k] === 'undefined') {
+	        this._cache[k] = getter.call(this);
+	      }
+
+	      return this._cache[k];
+	    }
+	  }, {
+	    key: 'enable',
+	    value: function enable() {
+	      var pos = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+	      if (!(this.options.addTargetClasses === false)) {
+	        addClass(this.target, this.getClass('enabled'));
+	      }
+	      addClass(this.element, this.getClass('enabled'));
+	      this.enabled = true;
+
+	      if (this.scrollParent !== document) {
+	        this.scrollParent.addEventListener('scroll', this.position);
+	      }
+
+	      if (pos) {
+	        this.position();
+	      }
+	    }
+	  }, {
+	    key: 'disable',
+	    value: function disable() {
+	      removeClass(this.target, this.getClass('enabled'));
+	      removeClass(this.element, this.getClass('enabled'));
+	      this.enabled = false;
+
+	      if (typeof this.scrollParent !== 'undefined') {
+	        this.scrollParent.removeEventListener('scroll', this.position);
+	      }
+	    }
+	  }, {
+	    key: 'destroy',
+	    value: function destroy() {
+	      var _this3 = this;
+
+	      this.disable();
+
+	      tethers.forEach(function (tether, i) {
+	        if (tether === _this3) {
+	          tethers.splice(i, 1);
+	          return;
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'updateAttachClasses',
+	    value: function updateAttachClasses(elementAttach, targetAttach) {
+	      var _this4 = this;
+
+	      elementAttach = elementAttach || this.attachment;
+	      targetAttach = targetAttach || this.targetAttachment;
+	      var sides = ['left', 'top', 'bottom', 'right', 'middle', 'center'];
+
+	      if (typeof this._addAttachClasses !== 'undefined' && this._addAttachClasses.length) {
+	        // updateAttachClasses can be called more than once in a position call, so
+	        // we need to clean up after ourselves such that when the last defer gets
+	        // ran it doesn't add any extra classes from previous calls.
+	        this._addAttachClasses.splice(0, this._addAttachClasses.length);
+	      }
+
+	      if (typeof this._addAttachClasses === 'undefined') {
+	        this._addAttachClasses = [];
+	      }
+	      var add = this._addAttachClasses;
+
+	      if (elementAttach.top) {
+	        add.push(this.getClass('element-attached') + '-' + elementAttach.top);
+	      }
+	      if (elementAttach.left) {
+	        add.push(this.getClass('element-attached') + '-' + elementAttach.left);
+	      }
+	      if (targetAttach.top) {
+	        add.push(this.getClass('target-attached') + '-' + targetAttach.top);
+	      }
+	      if (targetAttach.left) {
+	        add.push(this.getClass('target-attached') + '-' + targetAttach.left);
+	      }
+
+	      var all = [];
+	      sides.forEach(function (side) {
+	        all.push(_this4.getClass('element-attached') + '-' + side);
+	        all.push(_this4.getClass('target-attached') + '-' + side);
+	      });
+
+	      defer(function () {
+	        if (!(typeof _this4._addAttachClasses !== 'undefined')) {
+	          return;
+	        }
+
+	        updateClasses(_this4.element, _this4._addAttachClasses, all);
+	        if (!(_this4.options.addTargetClasses === false)) {
+	          updateClasses(_this4.target, _this4._addAttachClasses, all);
+	        }
+
+	        delete _this4._addAttachClasses;
+	      });
+	    }
+	  }, {
+	    key: 'position',
+	    value: function position() {
+	      var _this5 = this;
+
+	      var flushChanges = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+	      // flushChanges commits the changes immediately, leave true unless you are positioning multiple
+	      // tethers (in which case call Tether.Utils.flush yourself when you're done)
+
+	      if (!this.enabled) {
+	        return;
+	      }
+
+	      this.clearCache();
+
+	      // Turn 'auto' attachments into the appropriate corner or edge
+	      var targetAttachment = autoToFixedAttachment(this.targetAttachment, this.attachment);
+
+	      this.updateAttachClasses(this.attachment, targetAttachment);
+
+	      var elementPos = this.cache('element-bounds', function () {
+	        return getBounds(_this5.element);
+	      });
+
+	      var width = elementPos.width;
+	      var height = elementPos.height;
+
+	      if (width === 0 && height === 0 && typeof this.lastSize !== 'undefined') {
+	        var _lastSize = this.lastSize;
+
+	        // We cache the height and width to make it possible to position elements that are
+	        // getting hidden.
+	        width = _lastSize.width;
+	        height = _lastSize.height;
+	      } else {
+	        this.lastSize = { width: width, height: height };
+	      }
+
+	      var targetPos = this.cache('target-bounds', function () {
+	        return _this5.getTargetBounds();
+	      });
+	      var targetSize = targetPos;
+
+	      // Get an actual px offset from the attachment
+	      var offset = offsetToPx(attachmentToOffset(this.attachment), { width: width, height: height });
+	      var targetOffset = offsetToPx(attachmentToOffset(targetAttachment), targetSize);
+
+	      var manualOffset = offsetToPx(this.offset, { width: width, height: height });
+	      var manualTargetOffset = offsetToPx(this.targetOffset, targetSize);
+
+	      // Add the manually provided offset
+	      offset = addOffset(offset, manualOffset);
+	      targetOffset = addOffset(targetOffset, manualTargetOffset);
+
+	      // It's now our goal to make (element position + offset) == (target position + target offset)
+	      var left = targetPos.left + targetOffset.left - offset.left;
+	      var top = targetPos.top + targetOffset.top - offset.top;
+
+	      for (var i = 0; i < TetherBase.modules.length; ++i) {
+	        var _module2 = TetherBase.modules[i];
+	        var ret = _module2.position.call(this, {
+	          left: left,
+	          top: top,
+	          targetAttachment: targetAttachment,
+	          targetPos: targetPos,
+	          elementPos: elementPos,
+	          offset: offset,
+	          targetOffset: targetOffset,
+	          manualOffset: manualOffset,
+	          manualTargetOffset: manualTargetOffset,
+	          scrollbarSize: scrollbarSize,
+	          attachment: this.attachment
+	        });
+
+	        if (ret === false) {
+	          return false;
+	        } else if (typeof ret === 'undefined' || typeof ret !== 'object') {
+	          continue;
+	        } else {
+	          top = ret.top;
+	          left = ret.left;
+	        }
+	      }
+
+	      // We describe the position three different ways to give the optimizer
+	      // a chance to decide the best possible way to position the element
+	      // with the fewest repaints.
+	      var next = {
+	        // It's position relative to the page (absolute positioning when
+	        // the element is a child of the body)
+	        page: {
+	          top: top,
+	          left: left
+	        },
+
+	        // It's position relative to the viewport (fixed positioning)
+	        viewport: {
+	          top: top - pageYOffset,
+	          bottom: pageYOffset - top - height + innerHeight,
+	          left: left - pageXOffset,
+	          right: pageXOffset - left - width + innerWidth
+	        }
+	      };
+
+	      var scrollbarSize = undefined;
+	      if (document.body.scrollWidth > window.innerWidth) {
+	        scrollbarSize = this.cache('scrollbar-size', getScrollBarSize);
+	        next.viewport.bottom -= scrollbarSize.height;
+	      }
+
+	      if (document.body.scrollHeight > window.innerHeight) {
+	        scrollbarSize = this.cache('scrollbar-size', getScrollBarSize);
+	        next.viewport.right -= scrollbarSize.width;
+	      }
+
+	      if (['', 'static'].indexOf(document.body.style.position) === -1 || ['', 'static'].indexOf(document.body.parentElement.style.position) === -1) {
+	        // Absolute positioning in the body will be relative to the page, not the 'initial containing block'
+	        next.page.bottom = document.body.scrollHeight - top - height;
+	        next.page.right = document.body.scrollWidth - left - width;
+	      }
+
+	      if (typeof this.options.optimizations !== 'undefined' && this.options.optimizations.moveElement !== false && !(typeof this.targetModifier !== 'undefined')) {
+	        (function () {
+	          var offsetParent = _this5.cache('target-offsetparent', function () {
+	            return getOffsetParent(_this5.target);
+	          });
+	          var offsetPosition = _this5.cache('target-offsetparent-bounds', function () {
+	            return getBounds(offsetParent);
+	          });
+	          var offsetParentStyle = getComputedStyle(offsetParent);
+	          var offsetParentSize = offsetPosition;
+
+	          var offsetBorder = {};
+	          ['Top', 'Left', 'Bottom', 'Right'].forEach(function (side) {
+	            offsetBorder[side.toLowerCase()] = parseFloat(offsetParentStyle['border' + side + 'Width']);
+	          });
+
+	          offsetPosition.right = document.body.scrollWidth - offsetPosition.left - offsetParentSize.width + offsetBorder.right;
+	          offsetPosition.bottom = document.body.scrollHeight - offsetPosition.top - offsetParentSize.height + offsetBorder.bottom;
+
+	          if (next.page.top >= offsetPosition.top + offsetBorder.top && next.page.bottom >= offsetPosition.bottom) {
+	            if (next.page.left >= offsetPosition.left + offsetBorder.left && next.page.right >= offsetPosition.right) {
+	              // We're within the visible part of the target's scroll parent
+	              var scrollTop = offsetParent.scrollTop;
+	              var scrollLeft = offsetParent.scrollLeft;
+
+	              // It's position relative to the target's offset parent (absolute positioning when
+	              // the element is moved to be a child of the target's offset parent).
+	              next.offset = {
+	                top: next.page.top - offsetPosition.top + scrollTop - offsetBorder.top,
+	                left: next.page.left - offsetPosition.left + scrollLeft - offsetBorder.left
+	              };
+	            }
+	          }
+	        })();
+	      }
+
+	      // We could also travel up the DOM and try each containing context, rather than only
+	      // looking at the body, but we're gonna get diminishing returns.
+
+	      this.move(next);
+
+	      this.history.unshift(next);
+
+	      if (this.history.length > 3) {
+	        this.history.pop();
+	      }
+
+	      if (flushChanges) {
+	        flush();
+	      }
+
+	      return true;
+	    }
+
+	    // THE ISSUE
+	  }, {
+	    key: 'move',
+	    value: function move(pos) {
+	      var _this6 = this;
+
+	      if (!(typeof this.element.parentNode !== 'undefined')) {
+	        return;
+	      }
+
+	      var same = {};
+
+	      for (var type in pos) {
+	        same[type] = {};
+
+	        for (var key in pos[type]) {
+	          var found = false;
+
+	          for (var i = 0; i < this.history.length; ++i) {
+	            var point = this.history[i];
+	            if (typeof point[type] !== 'undefined' && !within(point[type][key], pos[type][key])) {
+	              found = true;
+	              break;
+	            }
+	          }
+
+	          if (!found) {
+	            same[type][key] = true;
+	          }
+	        }
+	      }
+
+	      var css = { top: '', left: '', right: '', bottom: '' };
+
+	      var transcribe = function transcribe(_same, _pos) {
+	        var hasOptimizations = typeof _this6.options.optimizations !== 'undefined';
+	        var gpu = hasOptimizations ? _this6.options.optimizations.gpu : null;
+	        if (gpu !== false) {
+	          var yPos = undefined,
+	              xPos = undefined;
+	          if (_same.top) {
+	            css.top = 0;
+	            yPos = _pos.top;
+	          } else {
+	            css.bottom = 0;
+	            yPos = -_pos.bottom;
+	          }
+
+	          if (_same.left) {
+	            css.left = 0;
+	            xPos = _pos.left;
+	          } else {
+	            css.right = 0;
+	            xPos = -_pos.right;
+	          }
+
+	          css[transformKey] = 'translateX(' + Math.round(xPos) + 'px) translateY(' + Math.round(yPos) + 'px)';
+
+	          if (transformKey !== 'msTransform') {
+	            // The Z transform will keep this in the GPU (faster, and prevents artifacts),
+	            // but IE9 doesn't support 3d transforms and will choke.
+	            css[transformKey] += " translateZ(0)";
+	          }
+	        } else {
+	          if (_same.top) {
+	            css.top = _pos.top + 'px';
+	          } else {
+	            css.bottom = _pos.bottom + 'px';
+	          }
+
+	          if (_same.left) {
+	            css.left = _pos.left + 'px';
+	          } else {
+	            css.right = _pos.right + 'px';
+	          }
+	        }
+	      };
+
+	      var moved = false;
+	      if ((same.page.top || same.page.bottom) && (same.page.left || same.page.right)) {
+	        css.position = 'absolute';
+	        transcribe(same.page, pos.page);
+	      } else if ((same.viewport.top || same.viewport.bottom) && (same.viewport.left || same.viewport.right)) {
+	        css.position = 'fixed';
+	        transcribe(same.viewport, pos.viewport);
+	      } else if (typeof same.offset !== 'undefined' && same.offset.top && same.offset.left) {
+	        (function () {
+	          css.position = 'absolute';
+	          var offsetParent = _this6.cache('target-offsetparent', function () {
+	            return getOffsetParent(_this6.target);
+	          });
+
+	          if (getOffsetParent(_this6.element) !== offsetParent) {
+	            defer(function () {
+	              _this6.element.parentNode.removeChild(_this6.element);
+	              offsetParent.appendChild(_this6.element);
+	            });
+	          }
+
+	          transcribe(same.offset, pos.offset);
+	          moved = true;
+	        })();
+	      } else {
+	        css.position = 'absolute';
+	        transcribe({ top: true, left: true }, pos.page);
+	      }
+
+	      if (!moved) {
+	        var offsetParentIsBody = true;
+	        var currentNode = this.element.parentNode;
+	        while (currentNode && currentNode.tagName !== 'BODY') {
+	          if (getComputedStyle(currentNode).position !== 'static') {
+	            offsetParentIsBody = false;
+	            break;
+	          }
+
+	          currentNode = currentNode.parentNode;
+	        }
+
+	        if (!offsetParentIsBody) {
+	          this.element.parentNode.removeChild(this.element);
+	          document.body.appendChild(this.element);
+	        }
+	      }
+
+	      // Any css change will trigger a repaint, so let's avoid one if nothing changed
+	      var writeCSS = {};
+	      var write = false;
+	      for (var key in css) {
+	        var val = css[key];
+	        var elVal = this.element.style[key];
+
+	        if (elVal !== '' && val !== '' && ['top', 'left', 'bottom', 'right'].indexOf(key) >= 0) {
+	          elVal = parseFloat(elVal);
+	          val = parseFloat(val);
+	        }
+
+	        if (elVal !== val) {
+	          write = true;
+	          writeCSS[key] = val;
+	        }
+	      }
+
+	      if (write) {
+	        defer(function () {
+	          extend(_this6.element.style, writeCSS);
+	        });
+	      }
+	    }
+	  }]);
+
+	  return TetherClass;
+	})();
+
+	TetherClass.modules = [];
+
+	TetherBase.position = position;
+
+	var Tether = extend(TetherClass, TetherBase);
+	/* globals TetherBase */
+
+	'use strict';
+
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+
+	var _TetherBase$Utils = TetherBase.Utils;
+	var getBounds = _TetherBase$Utils.getBounds;
+	var extend = _TetherBase$Utils.extend;
+	var updateClasses = _TetherBase$Utils.updateClasses;
+	var defer = _TetherBase$Utils.defer;
+
+	var BOUNDS_FORMAT = ['left', 'top', 'right', 'bottom'];
+
+	function getBoundingRect(tether, to) {
+	  if (to === 'scrollParent') {
+	    to = tether.scrollParent;
+	  } else if (to === 'window') {
+	    to = [pageXOffset, pageYOffset, innerWidth + pageXOffset, innerHeight + pageYOffset];
+	  }
+
+	  if (to === document) {
+	    to = to.documentElement;
+	  }
+
+	  if (typeof to.nodeType !== 'undefined') {
+	    (function () {
+	      var size = getBounds(to);
+	      var pos = size;
+	      var style = getComputedStyle(to);
+
+	      to = [pos.left, pos.top, size.width + pos.left, size.height + pos.top];
+
+	      BOUNDS_FORMAT.forEach(function (side, i) {
+	        side = side[0].toUpperCase() + side.substr(1);
+	        if (side === 'Top' || side === 'Left') {
+	          to[i] += parseFloat(style['border' + side + 'Width']);
+	        } else {
+	          to[i] -= parseFloat(style['border' + side + 'Width']);
+	        }
+	      });
+	    })();
+	  }
+
+	  return to;
+	}
+
+	TetherBase.modules.push({
+	  position: function position(_ref) {
+	    var _this = this;
+
+	    var top = _ref.top;
+	    var left = _ref.left;
+	    var targetAttachment = _ref.targetAttachment;
+
+	    if (!this.options.constraints) {
+	      return true;
+	    }
+
+	    var _cache = this.cache('element-bounds', function () {
+	      return getBounds(_this.element);
+	    });
+
+	    var height = _cache.height;
+	    var width = _cache.width;
+
+	    if (width === 0 && height === 0 && typeof this.lastSize !== 'undefined') {
+	      var _lastSize = this.lastSize;
+
+	      // Handle the item getting hidden as a result of our positioning without glitching
+	      // the classes in and out
+	      width = _lastSize.width;
+	      height = _lastSize.height;
+	    }
+
+	    var targetSize = this.cache('target-bounds', function () {
+	      return _this.getTargetBounds();
+	    });
+
+	    var targetHeight = targetSize.height;
+	    var targetWidth = targetSize.width;
+
+	    var allClasses = [this.getClass('pinned'), this.getClass('out-of-bounds')];
+
+	    this.options.constraints.forEach(function (constraint) {
+	      var outOfBoundsClass = constraint.outOfBoundsClass;
+	      var pinnedClass = constraint.pinnedClass;
+
+	      if (outOfBoundsClass) {
+	        allClasses.push(outOfBoundsClass);
+	      }
+	      if (pinnedClass) {
+	        allClasses.push(pinnedClass);
+	      }
+	    });
+
+	    allClasses.forEach(function (cls) {
+	      ['left', 'top', 'right', 'bottom'].forEach(function (side) {
+	        allClasses.push(cls + '-' + side);
+	      });
+	    });
+
+	    var addClasses = [];
+
+	    var tAttachment = extend({}, targetAttachment);
+	    var eAttachment = extend({}, this.attachment);
+
+	    this.options.constraints.forEach(function (constraint) {
+	      var to = constraint.to;
+	      var attachment = constraint.attachment;
+	      var pin = constraint.pin;
+
+	      if (typeof attachment === 'undefined') {
+	        attachment = '';
+	      }
+
+	      var changeAttachX = undefined,
+	          changeAttachY = undefined;
+	      if (attachment.indexOf(' ') >= 0) {
+	        var _attachment$split = attachment.split(' ');
+
+	        var _attachment$split2 = _slicedToArray(_attachment$split, 2);
+
+	        changeAttachY = _attachment$split2[0];
+	        changeAttachX = _attachment$split2[1];
+	      } else {
+	        changeAttachX = changeAttachY = attachment;
+	      }
+
+	      var bounds = getBoundingRect(_this, to);
+
+	      if (changeAttachY === 'target' || changeAttachY === 'both') {
+	        if (top < bounds[1] && tAttachment.top === 'top') {
+	          top += targetHeight;
+	          tAttachment.top = 'bottom';
+	        }
+
+	        if (top + height > bounds[3] && tAttachment.top === 'bottom') {
+	          top -= targetHeight;
+	          tAttachment.top = 'top';
+	        }
+	      }
+
+	      if (changeAttachY === 'together') {
+	        if (top < bounds[1] && tAttachment.top === 'top') {
+	          if (eAttachment.top === 'bottom') {
+	            top += targetHeight;
+	            tAttachment.top = 'bottom';
+
+	            top += height;
+	            eAttachment.top = 'top';
+	          } else if (eAttachment.top === 'top') {
+	            top += targetHeight;
+	            tAttachment.top = 'bottom';
+
+	            top -= height;
+	            eAttachment.top = 'bottom';
+	          }
+	        }
+
+	        if (top + height > bounds[3] && tAttachment.top === 'bottom') {
+	          if (eAttachment.top === 'top') {
+	            top -= targetHeight;
+	            tAttachment.top = 'top';
+
+	            top -= height;
+	            eAttachment.top = 'bottom';
+	          } else if (eAttachment.top === 'bottom') {
+	            top -= targetHeight;
+	            tAttachment.top = 'top';
+
+	            top += height;
+	            eAttachment.top = 'top';
+	          }
+	        }
+
+	        if (tAttachment.top === 'middle') {
+	          if (top + height > bounds[3] && eAttachment.top === 'top') {
+	            top -= height;
+	            eAttachment.top = 'bottom';
+	          } else if (top < bounds[1] && eAttachment.top === 'bottom') {
+	            top += height;
+	            eAttachment.top = 'top';
+	          }
+	        }
+	      }
+
+	      if (changeAttachX === 'target' || changeAttachX === 'both') {
+	        if (left < bounds[0] && tAttachment.left === 'left') {
+	          left += targetWidth;
+	          tAttachment.left = 'right';
+	        }
+
+	        if (left + width > bounds[2] && tAttachment.left === 'right') {
+	          left -= targetWidth;
+	          tAttachment.left = 'left';
+	        }
+	      }
+
+	      if (changeAttachX === 'together') {
+	        if (left < bounds[0] && tAttachment.left === 'left') {
+	          if (eAttachment.left === 'right') {
+	            left += targetWidth;
+	            tAttachment.left = 'right';
+
+	            left += width;
+	            eAttachment.left = 'left';
+	          } else if (eAttachment.left === 'left') {
+	            left += targetWidth;
+	            tAttachment.left = 'right';
+
+	            left -= width;
+	            eAttachment.left = 'right';
+	          }
+	        } else if (left + width > bounds[2] && tAttachment.left === 'right') {
+	          if (eAttachment.left === 'left') {
+	            left -= targetWidth;
+	            tAttachment.left = 'left';
+
+	            left -= width;
+	            eAttachment.left = 'right';
+	          } else if (eAttachment.left === 'right') {
+	            left -= targetWidth;
+	            tAttachment.left = 'left';
+
+	            left += width;
+	            eAttachment.left = 'left';
+	          }
+	        } else if (tAttachment.left === 'center') {
+	          if (left + width > bounds[2] && eAttachment.left === 'left') {
+	            left -= width;
+	            eAttachment.left = 'right';
+	          } else if (left < bounds[0] && eAttachment.left === 'right') {
+	            left += width;
+	            eAttachment.left = 'left';
+	          }
+	        }
+	      }
+
+	      if (changeAttachY === 'element' || changeAttachY === 'both') {
+	        if (top < bounds[1] && eAttachment.top === 'bottom') {
+	          top += height;
+	          eAttachment.top = 'top';
+	        }
+
+	        if (top + height > bounds[3] && eAttachment.top === 'top') {
+	          top -= height;
+	          eAttachment.top = 'bottom';
+	        }
+	      }
+
+	      if (changeAttachX === 'element' || changeAttachX === 'both') {
+	        if (left < bounds[0] && eAttachment.left === 'right') {
+	          left += width;
+	          eAttachment.left = 'left';
+	        }
+
+	        if (left + width > bounds[2] && eAttachment.left === 'left') {
+	          left -= width;
+	          eAttachment.left = 'right';
+	        }
+	      }
+
+	      if (typeof pin === 'string') {
+	        pin = pin.split(',').map(function (p) {
+	          return p.trim();
+	        });
+	      } else if (pin === true) {
+	        pin = ['top', 'left', 'right', 'bottom'];
+	      }
+
+	      pin = pin || [];
+
+	      var pinned = [];
+	      var oob = [];
+
+	      if (top < bounds[1]) {
+	        if (pin.indexOf('top') >= 0) {
+	          top = bounds[1];
+	          pinned.push('top');
+	        } else {
+	          oob.push('top');
+	        }
+	      }
+
+	      if (top + height > bounds[3]) {
+	        if (pin.indexOf('bottom') >= 0) {
+	          top = bounds[3] - height;
+	          pinned.push('bottom');
+	        } else {
+	          oob.push('bottom');
+	        }
+	      }
+
+	      if (left < bounds[0]) {
+	        if (pin.indexOf('left') >= 0) {
+	          left = bounds[0];
+	          pinned.push('left');
+	        } else {
+	          oob.push('left');
+	        }
+	      }
+
+	      if (left + width > bounds[2]) {
+	        if (pin.indexOf('right') >= 0) {
+	          left = bounds[2] - width;
+	          pinned.push('right');
+	        } else {
+	          oob.push('right');
+	        }
+	      }
+
+	      if (pinned.length) {
+	        (function () {
+	          var pinnedClass = undefined;
+	          if (typeof _this.options.pinnedClass !== 'undefined') {
+	            pinnedClass = _this.options.pinnedClass;
+	          } else {
+	            pinnedClass = _this.getClass('pinned');
+	          }
+
+	          addClasses.push(pinnedClass);
+	          pinned.forEach(function (side) {
+	            addClasses.push(pinnedClass + '-' + side);
+	          });
+	        })();
+	      }
+
+	      if (oob.length) {
+	        (function () {
+	          var oobClass = undefined;
+	          if (typeof _this.options.outOfBoundsClass !== 'undefined') {
+	            oobClass = _this.options.outOfBoundsClass;
+	          } else {
+	            oobClass = _this.getClass('out-of-bounds');
+	          }
+
+	          addClasses.push(oobClass);
+	          oob.forEach(function (side) {
+	            addClasses.push(oobClass + '-' + side);
+	          });
+	        })();
+	      }
+
+	      if (pinned.indexOf('left') >= 0 || pinned.indexOf('right') >= 0) {
+	        eAttachment.left = tAttachment.left = false;
+	      }
+	      if (pinned.indexOf('top') >= 0 || pinned.indexOf('bottom') >= 0) {
+	        eAttachment.top = tAttachment.top = false;
+	      }
+
+	      if (tAttachment.top !== targetAttachment.top || tAttachment.left !== targetAttachment.left || eAttachment.top !== _this.attachment.top || eAttachment.left !== _this.attachment.left) {
+	        _this.updateAttachClasses(eAttachment, tAttachment);
+	      }
+	    });
+
+	    defer(function () {
+	      if (!(_this.options.addTargetClasses === false)) {
+	        updateClasses(_this.target, addClasses, allClasses);
+	      }
+	      updateClasses(_this.element, addClasses, allClasses);
+	    });
+
+	    return { top: top, left: left };
+	  }
+	});
+	/* globals TetherBase */
+
+	'use strict';
+
+	var _TetherBase$Utils = TetherBase.Utils;
+	var getBounds = _TetherBase$Utils.getBounds;
+	var updateClasses = _TetherBase$Utils.updateClasses;
+	var defer = _TetherBase$Utils.defer;
+
+	TetherBase.modules.push({
+	  position: function position(_ref) {
+	    var _this = this;
+
+	    var top = _ref.top;
+	    var left = _ref.left;
+
+	    var _cache = this.cache('element-bounds', function () {
+	      return getBounds(_this.element);
+	    });
+
+	    var height = _cache.height;
+	    var width = _cache.width;
+
+	    var targetPos = this.getTargetBounds();
+
+	    var bottom = top + height;
+	    var right = left + width;
+
+	    var abutted = [];
+	    if (top <= targetPos.bottom && bottom >= targetPos.top) {
+	      ['left', 'right'].forEach(function (side) {
+	        var targetPosSide = targetPos[side];
+	        if (targetPosSide === left || targetPosSide === right) {
+	          abutted.push(side);
+	        }
+	      });
+	    }
+
+	    if (left <= targetPos.right && right >= targetPos.left) {
+	      ['top', 'bottom'].forEach(function (side) {
+	        var targetPosSide = targetPos[side];
+	        if (targetPosSide === top || targetPosSide === bottom) {
+	          abutted.push(side);
+	        }
+	      });
+	    }
+
+	    var allClasses = [];
+	    var addClasses = [];
+
+	    var sides = ['left', 'top', 'right', 'bottom'];
+	    allClasses.push(this.getClass('abutted'));
+	    sides.forEach(function (side) {
+	      allClasses.push(_this.getClass('abutted') + '-' + side);
+	    });
+
+	    if (abutted.length) {
+	      addClasses.push(this.getClass('abutted'));
+	    }
+
+	    abutted.forEach(function (side) {
+	      addClasses.push(_this.getClass('abutted') + '-' + side);
+	    });
+
+	    defer(function () {
+	      if (!(_this.options.addTargetClasses === false)) {
+	        updateClasses(_this.target, addClasses, allClasses);
+	      }
+	      updateClasses(_this.element, addClasses, allClasses);
+	    });
+
+	    return true;
+	  }
+	});
+	/* globals TetherBase */
+
+	'use strict';
+
+	var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+
+	TetherBase.modules.push({
+	  position: function position(_ref) {
+	    var top = _ref.top;
+	    var left = _ref.left;
+
+	    if (!this.options.shift) {
+	      return;
+	    }
+
+	    var shift = this.options.shift;
+	    if (typeof this.options.shift === 'function') {
+	      shift = this.options.shift.call(this, { top: top, left: left });
+	    }
+
+	    var shiftTop = undefined,
+	        shiftLeft = undefined;
+	    if (typeof shift === 'string') {
+	      shift = shift.split(' ');
+	      shift[1] = shift[1] || shift[0];
+
+	      var _shift = shift;
+
+	      var _shift2 = _slicedToArray(_shift, 2);
+
+	      shiftTop = _shift2[0];
+	      shiftLeft = _shift2[1];
+
+	      shiftTop = parseFloat(shiftTop, 10);
+	      shiftLeft = parseFloat(shiftLeft, 10);
+	    } else {
+	      shiftTop = shift.top;
+	      shiftLeft = shift.left;
+	    }
+
+	    top += shiftTop;
+	    left += shiftLeft;
+
+	    return { top: top, left: left };
+	  }
+	});
+	return Tether;
+
+	}));
+
+
+/***/ },
+/* 96 */,
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */,
+/* 101 */,
+/* 102 */,
+/* 103 */,
+/* 104 */,
+/* 105 */,
+/* 106 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Behavior = __webpack_require__(79);
+	var App = __webpack_require__(2);
+	var $ = __webpack_require__(6);
 	var Radio = __webpack_require__(4);
 
 	/**
@@ -9172,6401 +11384,22 @@
 	});
 
 	module.exports = EmulateHTTP;
-	POS.attach('Behaviors.EmulateHTTP', EmulateHTTP);
+	App.prototype.set('Behaviors.EmulateHTTP', EmulateHTTP);
 
 /***/ },
-/* 140 */,
-/* 141 */,
-/* 142 */,
-/* 143 */
+/* 107 */,
+/* 108 */,
+/* 109 */,
+/* 110 */,
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Application = __webpack_require__(59);
-	var bb = __webpack_require__(11);
-	var LayoutView = __webpack_require__(144);
-	var debug = __webpack_require__(7)('app');
-	var accounting = __webpack_require__(61);
-	var polyglot = __webpack_require__(17);
-
-	module.exports = Application.extend({
-
-	  initialize: function() {
-
-	    // init Root LayoutView
-	    this.layout = new LayoutView();
-	    this.layout.render();
-	  },
-
-	  /**
-	   * Set up application with start params
-	   */
-	  onBeforeStart: function(){
-	    debug( 'starting WooCommerce POS app' );
-
-	    // emulateHTTP
-	    bb.emulateHTTP = this.options.emulateHTTP === true;
-
-	    // i18n
-	    polyglot.extend(this.options.i18n);
-
-	    // bootstrap accounting settings
-	    accounting.settings = this.options.accounting;
-
-	    // start header service
-	    this.headerService.start();
-	  },
-
-	  onStart: function(){
-	    bb.history.start();
-	  }
-	});
-
-/***/ },
-/* 144 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-	var $ = __webpack_require__(10);
-	var Radio = __webpack_require__(4);
-	var globalChannel = Radio.channel('global');
-
-	module.exports = LayoutView.extend({
-	  el: '#page',
-
-	  template: function(){
-	    return '' +
-	      '<header id="header"></header>' +
-	      '<div id="menu"></div>' +
-	      '<div id="tabs" class="tabs"></div>' +
-	      '<main id="main"></main>' +
-	      '<div id="modal"></div>';
-	  },
-
-	  regions: {
-	    header: '#header',
-	    menu  : '#menu',
-	    tabs  : '#tabs',
-	    main  : '#main',
-	    modal : '#modal'
-	  },
-
-	  initialize: function(){
-	    this.getRegion('main').on('show', this.setup, this);
-	    globalChannel.on('tab:label', this.updateTabLabel, this);
-	  },
-
-	  setup: function(layout){
-	    if(layout.columns && layout.columns === 2){
-	      this.$el.addClass('two-column');
-	      this.showTabs();
-	    } else {
-	      this.$el.removeClass('two-column');
-	      this.getRegion('tabs').empty();
-	    }
-	  },
-
-	  showTabs: function(){
-	    var tabs = this.getRegion('main').tabs = Radio.request('tabs', 'view', {
-	      tabs: [
-	        {id: 'left'},
-	        {id: 'right'}
-	      ]
-	    });
-	    this.listenTo(tabs.collection, 'active:tab', this.toggleLayout);
-	    this.getRegion('tabs').show(tabs);
-	  },
-
-	  toggleLayout: function(model){
-	    $('#main').removeClass('left-active right-active');
-	    $('#main').addClass(model.id + '-active');
-	  },
-
-	  updateTabLabel: function(options){
-	    this.getRegion('main').tabs.setLabel(options);
-	  }
-
-	});
-
-/***/ },
-/* 145 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// some nice features may be:
-	// - queue which prioritises tasks
-	// - retry for server timeouts
-
-	// DO NOT include this file in wp-admin
-	// changes are made to the global $.ajax & bb.sync
-
-	var bb = __webpack_require__(11);
-	var Radio = __webpack_require__(4);
-	bb.idbSync = __webpack_require__(146);
-	bb.ajaxSync = bb.sync;
-
-	// set jquery ajax globals
-	bb.$.ajaxSetup({
-	  data: {
-	    security: function(){
-	      return Radio.request('entities', 'get', {
-	        type: 'option',
-	        name: 'nonce'
-	      });
-	    }
-	  },
-	  // for straight jquery ajax calls
-	  beforeSend: function(xhr){
-	    xhr.setRequestHeader('X-WC-POS', 1);
-	  },
-	  timeout: 50000 // 50 seconds
-	});
-
-	// global ajax error handler
-	bb.$( document ).ajaxError(function( event, jqXHR, ajaxSettings, thrownError ) {
-	  Radio.trigger('global', 'error', {
-	    jqXHR       : jqXHR,
-	    thrownError : thrownError
-	  });
-	});
-
-	// override Backbone.sync
-	bb.sync = function(method, entity, options) {
-	  // idb
-	  if(!options.remote &&
-	    (entity.db || (entity.collection && entity.collection.db))){
-	    return bb.idbSync.apply(this, [method, entity, options]);
-	  }
-	  // server
-	  options.beforeSend = function(xhr){
-	    xhr.setRequestHeader('X-WC-POS', 1);
-	  };
-	  return bb.ajaxSync.apply(this, [method, entity, options]);
-	};
-
-/***/ },
-/* 146 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $ = __webpack_require__(10);
-	var noop = function(){};
-
-	var methods = {
-	  'read': function(model, options, db){
-	    if(model.id){
-	      return db.read(model, options);
-	    }
-	    return db.getAll(options);
-	  },
-	  'create': function(model, options, db){
-	    if (model.id) {
-	      return db.update(model, options);
-	    }
-	    return db.create(model, options);
-	  },
-	  'update': function(model, options, db){
-	    if (model.id) {
-	      return db.update(model, options);
-	    }
-	    return db.create(model, options);
-	  },
-	  'delete': function(model, options, db){
-	    if (model.id) {
-	      return db.destroy(model, options);
-	    }
-	  }
-	};
-
-	var sync = function(method, entity, options) {
-	  var deferred = new $.Deferred(),
-	      db = entity.db || entity.collection.db,
-	      success = options.success || noop,
-	      error = options.success || noop;
-
-	  options.success = function (result) {
-	    success.apply(this, arguments);
-	    deferred.resolve(result);
-	  };
-
-	  options.error = function (result) {
-	    error.apply(this, arguments);
-	    deferred.reject(result);
-	  };
-
-	  db.open()
-	    .then(function(){
-	      if(methods[method]){
-	        return methods[method](entity, options, db);
-	      }
-	    });
-
-	  return deferred.promise();
-	};
-
-	module.exports = sync;
-
-/***/ },
-/* 147 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var Service = __webpack_require__(2);
-	var TitleBar = __webpack_require__(148);
-	var Menu = __webpack_require__(187);
-	var POS = __webpack_require__(5);
-	var Radio = __webpack_require__(4);
-	var routerChannel = Radio.channel('router');
-	var BrowserModal = __webpack_require__(188);
-	var _ = __webpack_require__(6);
-	var Modernizr = global['Modernizr'];
-
-	var Service = Service.extend({
-	  channelName: 'header',
-
-	  initialize: function(options) {
-	    options = options || {};
-	    this.header = options.headerContainer;
-	    this.menu = options.menuContainer;
-
-	    this.listenToOnce(routerChannel, {
-	      'route': this.browserCheck
-	    });
-
-	    this.channel.reply({
-	      'update:title': this.updateTitle
-	    }, this);
-	  },
-
-	  onStart: function(){
-	    this.showTitleBar();
-	    this.showMenu();
-	  },
-
-	  showTitleBar: function(){
-	    var view = new TitleBar();
-	    this.header.show(view);
-	  },
-
-	  updateTitle: function(title){
-	    this.header.currentView.update(title);
-	  },
-
-	  showMenu: function(){
-	    var view = new Menu();
-
-	    this.channel.reply({
-	      'open:menu'   : view.open,
-	      'close:menu'  : view.close
-	    }, view);
-
-	    this.menu.show(view);
-	  },
-
-	  browserCheck: function(){
-	    // smil targets all IE: http://caniuse.com/#feat=svg-smil
-	    var props = ['flexbox', 'indexeddb', 'smil'],
-	        pass = _.every(props, function(prop){ return Modernizr[prop]; });
-
-	    if(!pass){
-	      var view = new BrowserModal();
-	      Radio.request('modal', 'open', view);
-	    }
-	  },
-
-	  onStop: function(){
-	    this.channel.reset();
-	  }
-	});
-
-	module.exports = Service;
-	POS.attach('HeaderApp.Service', Service);
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 148 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var POS = __webpack_require__(5);
-	var HotKeys = __webpack_require__(151);
-	var Dropdown = __webpack_require__(149);
-	var Radio = __webpack_require__(4);
-	var HelpModal = __webpack_require__(185);
-
-	var View = ItemView.extend({
-	  template: '#tmpl-header',
-
-	  onRender: function(){
-	    this.title = this.$('h1').text();
-	  },
-
-	  ui: {
-	    'menu': '#menu-btn'
-	  },
-
-	  events: {
-	    'click @ui.menu': 'openMenu'
-	  },
-
-	  keyEvents: {
-	    'help': 'showHelpModal'
-	  },
-
-	  behaviors: {
-	    HotKeys: {
-	      behaviorClass: HotKeys
-	    },
-	    Dropdown: {
-	      behaviorClass: Dropdown
-	    }
-	  },
-
-	  update: function(str){
-	    var title = str ? str : this.title;
-	    this.$('h1').text(title);
-	  },
-
-	  openMenu: function(e){
-	    e.preventDefault();
-	    Radio.request('header', 'open:menu');
-	  },
-
-	  showHelpModal: function() {
-	    var view = new HelpModal();
-	    Radio.request('modal', 'open', view);
-	  }
-
-	});
-
-	module.exports = View;
-	POS.attach('HeaderApp.Views.TitleBar', View);
-
-/***/ },
-/* 149 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Behavior = __webpack_require__(112);
-	var POS = __webpack_require__(5);
-	__webpack_require__(150);
-
-	var Dropdown = Behavior.extend({
-
-	  ui: {
-	    dropdown: '*[data-toggle="dropdown"]'
-	  }
-
-	});
-
-	module.exports = Dropdown;
-	POS.attach('Behaviors.Dropdown', Dropdown);
-
-/***/ },
-/* 150 */
-/***/ function(module, exports) {
-
-	/* ========================================================================
-	 * Bootstrap: dropdown.js v3.3.4
-	 * http://getbootstrap.com/javascript/#dropdowns
-	 * ========================================================================
-	 * Copyright 2011-2015 Twitter, Inc.
-	 * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-	 * ======================================================================== */
-
-
-	+function ($) {
-	  'use strict';
-
-	  // DROPDOWN CLASS DEFINITION
-	  // =========================
-
-	  var backdrop = '.dropdown-backdrop'
-	  var toggle   = '[data-toggle="dropdown"]'
-	  var Dropdown = function (element) {
-	    $(element).on('click.bs.dropdown', this.toggle)
-	  }
-
-	  Dropdown.VERSION = '3.3.4'
-
-	  Dropdown.prototype.toggle = function (e) {
-	    var $this = $(this)
-
-	    if ($this.is('.disabled, :disabled')) return
-
-	    var $parent  = getParent($this)
-	    var isActive = $parent.hasClass('open')
-
-	    clearMenus()
-
-	    if (!isActive) {
-	      if ('ontouchstart' in document.documentElement && !$parent.closest('.navbar-nav').length) {
-	        // if mobile we use a backdrop because click events don't delegate
-	        $('<div class="dropdown-backdrop"/>').insertAfter($(this)).on('click', clearMenus)
-	      }
-
-	      var relatedTarget = { relatedTarget: this }
-	      $parent.trigger(e = $.Event('show.bs.dropdown', relatedTarget))
-
-	      if (e.isDefaultPrevented()) return
-
-	      $this
-	        .trigger('focus')
-	        .attr('aria-expanded', 'true')
-
-	      $parent
-	        .toggleClass('open')
-	        .trigger('shown.bs.dropdown', relatedTarget)
-	    }
-
-	    return false
-	  }
-
-	  Dropdown.prototype.keydown = function (e) {
-	    if (!/(38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return
-
-	    var $this = $(this)
-
-	    e.preventDefault()
-	    e.stopPropagation()
-
-	    if ($this.is('.disabled, :disabled')) return
-
-	    var $parent  = getParent($this)
-	    var isActive = $parent.hasClass('open')
-
-	    if ((!isActive && e.which != 27) || (isActive && e.which == 27)) {
-	      if (e.which == 27) $parent.find(toggle).trigger('focus')
-	      return $this.trigger('click')
-	    }
-
-	    var desc = ' li:not(.disabled):visible a'
-	    var $items = $parent.find('[role="menu"]' + desc + ', [role="listbox"]' + desc)
-
-	    if (!$items.length) return
-
-	    var index = $items.index(e.target)
-
-	    if (e.which == 38 && index > 0)                 index--                        // up
-	    if (e.which == 40 && index < $items.length - 1) index++                        // down
-	    if (!~index)                                      index = 0
-
-	    $items.eq(index).trigger('focus')
-	  }
-
-	  function clearMenus(e) {
-	    if (e && e.which === 3) return
-	    $(backdrop).remove()
-	    $(toggle).each(function () {
-	      var $this         = $(this)
-	      var $parent       = getParent($this)
-	      var relatedTarget = { relatedTarget: this }
-
-	      if (!$parent.hasClass('open')) return
-
-	      $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
-
-	      if (e.isDefaultPrevented()) return
-
-	      $this.attr('aria-expanded', 'false')
-	      $parent.removeClass('open').trigger('hidden.bs.dropdown', relatedTarget)
-	    })
-	  }
-
-	  function getParent($this) {
-	    var selector = $this.attr('data-target')
-
-	    if (!selector) {
-	      selector = $this.attr('href')
-	      selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
-	    }
-
-	    var $parent = selector && $(selector)
-
-	    return $parent && $parent.length ? $parent : $this.parent()
-	  }
-
-
-	  // DROPDOWN PLUGIN DEFINITION
-	  // ==========================
-
-	  function Plugin(option) {
-	    return this.each(function () {
-	      var $this = $(this)
-	      var data  = $this.data('bs.dropdown')
-
-	      if (!data) $this.data('bs.dropdown', (data = new Dropdown(this)))
-	      if (typeof option == 'string') data[option].call($this)
-	    })
-	  }
-
-	  var old = $.fn.dropdown
-
-	  $.fn.dropdown             = Plugin
-	  $.fn.dropdown.Constructor = Dropdown
-
-
-	  // DROPDOWN NO CONFLICT
-	  // ====================
-
-	  $.fn.dropdown.noConflict = function () {
-	    $.fn.dropdown = old
-	    return this
-	  }
-
-
-	  // APPLY TO STANDARD DROPDOWN ELEMENTS
-	  // ===================================
-
-	  $(document)
-	    .on('click.bs.dropdown.data-api', clearMenus)
-	    .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
-	    .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
-	    .on('keydown.bs.dropdown.data-api', toggle, Dropdown.prototype.keydown)
-	    .on('keydown.bs.dropdown.data-api', '[role="menu"]', Dropdown.prototype.keydown)
-	    .on('keydown.bs.dropdown.data-api', '[role="listbox"]', Dropdown.prototype.keydown)
-
-	}(jQuery);
-
-
-/***/ },
-/* 151 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Behavior = __webpack_require__(112);
-	var Radio = __webpack_require__(4);
-	var _ = __webpack_require__(6);
-	var debug = __webpack_require__(7)('hotkey');
-	var POS = __webpack_require__(5);
-	var Combokeys = __webpack_require__(152);
-
-	var HotKeys = Behavior.extend({
-	  keys: [],
-
-	  initialize: function(options) {
-	    options = options || {};
-	    this.element = options.el;
-	    this.hotkeys = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'hotkeys'
-	    }) || {};
-	  },
-
-	  // todo: this.element => this.view.el
-	  // todo: refactor!
-	  onRender: function(){
-	    var element = this.element || document.documentElement,
-	        _view = this.view;
-
-	    this.combokeys = new Combokeys(element);
-
-	    _.each( _view.keyEvents, function(callback, id) {
-	      var trigger = this.hotkeys[id];
-
-	      if (!_.isFunction(callback)) { callback = _view[callback]; }
-
-	      if(!trigger || !callback){
-	        return debug('hotkey not found: ' + id, this.view.keyEvents);
-	      }
-
-	      this.combokeys.bind(trigger.key, function(e, combo){
-	        callback.call(_view, e, combo);
-	      });
-
-	      this.keys.push(trigger.key);
-
-	    }, this);
-	  },
-
-	  onDestroy: function(){
-	    _.each( this.keys, function( key ) {
-	      this.combokeys.unbind(key);
-	    }, this);
-	  }
-
-	});
-
-	module.exports = HotKeys;
-	POS.attach('Behaviors.HotKeys', HotKeys);
-
-/***/ },
-/* 152 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	module.exports = function (element) {
-	  var self = this
-	  var Combokeys = self.constructor
-
-	  /**
-	   * a list of all the callbacks setup via Combokeys.bind()
-	   *
-	   * @type {Object}
-	   */
-	  self.callbacks = {}
-
-	  /**
-	   * direct map of string combinations to callbacks used for trigger()
-	   *
-	   * @type {Object}
-	   */
-	  self.directMap = {}
-
-	  /**
-	   * keeps track of what level each sequence is at since multiple
-	   * sequences can start out with the same sequence
-	   *
-	   * @type {Object}
-	   */
-	  self.sequenceLevels = {}
-
-	  /**
-	   * variable to store the setTimeout call
-	   *
-	   * @type {null|number}
-	   */
-	  self.resetTimer
-
-	  /**
-	   * temporary state where we will ignore the next keyup
-	   *
-	   * @type {boolean|string}
-	   */
-	  self.ignoreNextKeyup = false
-
-	  /**
-	   * temporary state where we will ignore the next keypress
-	   *
-	   * @type {boolean}
-	   */
-	  self.ignoreNextKeypress = false
-
-	  /**
-	   * are we currently inside of a sequence?
-	   * type of action ("keyup" or "keydown" or "keypress") or false
-	   *
-	   * @type {boolean|string}
-	   */
-	  self.nextExpectedAction = false
-
-	  self.element = element
-
-	  self.addEvents()
-
-	  Combokeys.instances.push(self)
-	  return self
-	}
-
-	module.exports.prototype.bind = __webpack_require__(153)
-	module.exports.prototype.bindMultiple = __webpack_require__(154)
-	module.exports.prototype.unbind = __webpack_require__(155)
-	module.exports.prototype.trigger = __webpack_require__(156)
-	module.exports.prototype.reset = __webpack_require__(157)
-	module.exports.prototype.stopCallback = __webpack_require__(158)
-	module.exports.prototype.handleKey = __webpack_require__(159)
-	module.exports.prototype.addEvents = __webpack_require__(161)
-	module.exports.prototype.bindSingle = __webpack_require__(168)
-	module.exports.prototype.getKeyInfo = __webpack_require__(169)
-	module.exports.prototype.pickBestAction = __webpack_require__(173)
-	module.exports.prototype.getReverseMap = __webpack_require__(174)
-	module.exports.prototype.getMatches = __webpack_require__(175)
-	module.exports.prototype.resetSequences = __webpack_require__(177)
-	module.exports.prototype.fireCallback = __webpack_require__(178)
-	module.exports.prototype.bindSequence = __webpack_require__(181)
-	module.exports.prototype.resetSequenceTimer = __webpack_require__(182)
-	module.exports.prototype.detach = __webpack_require__(183)
-
-	module.exports.instances = []
-	module.exports.reset = __webpack_require__(184)
-
-	/**
-	 * variable to store the flipped version of MAP from above
-	 * needed to check if we should use keypress or not when no action
-	 * is specified
-	 *
-	 * @type {Object|undefined}
-	 */
-	module.exports.REVERSE_MAP = null
-
-
-/***/ },
-/* 153 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-	/**
-	 * binds an event to Combokeys
-	 *
-	 * can be a single key, a combination of keys separated with +,
-	 * an array of keys, or a sequence of keys separated by spaces
-	 *
-	 * be sure to list the modifier keys first to make sure that the
-	 * correct key ends up getting bound (the last key in the pattern)
-	 *
-	 * @param {string|Array} keys
-	 * @param {Function} callback
-	 * @param {string=} action - "keypress", "keydown", or "keyup"
-	 * @returns void
-	 */
-	module.exports = function (keys, callback, action) {
-	  var self = this
-
-	  keys = keys instanceof Array ? keys : [keys]
-	  self.bindMultiple(keys, callback, action)
-	  return self
-	}
-
-
-/***/ },
-/* 154 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * binds multiple combinations to the same callback
-	 *
-	 * @param {Array} combinations
-	 * @param {Function} callback
-	 * @param {string|undefined} action
-	 * @returns void
-	 */
-	module.exports = function (combinations, callback, action) {
-	  var self = this
-
-	  for (var j = 0; j < combinations.length; ++j) {
-	    self.bindSingle(combinations[j], callback, action)
-	  }
-	}
-
-
-/***/ },
-/* 155 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-	/**
-	 * unbinds an event to Combokeys
-	 *
-	 * the unbinding sets the callback function of the specified key combo
-	 * to an empty function and deletes the corresponding key in the
-	 * directMap dict.
-	 *
-	 * TODO: actually remove this from the callbacks dictionary instead
-	 * of binding an empty function
-	 *
-	 * the keycombo+action has to be exactly the same as
-	 * it was defined in the bind method
-	 *
-	 * @param {string|Array} keys
-	 * @param {string} action
-	 * @returns void
-	 */
-	module.exports = function (keys, action) {
-	  var self = this
-
-	  return self.bind(keys, function () {}, action)
-	}
-
-
-/***/ },
-/* 156 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-	/**
-	 * triggers an event that has already been bound
-	 *
-	 * @param {string} keys
-	 * @param {string=} action
-	 * @returns void
-	 */
-	module.exports = function (keys, action) {
-	  var self = this
-	  if (self.directMap[keys + ':' + action]) {
-	    self.directMap[keys + ':' + action]({}, keys)
-	  }
-	  return this
-	}
-
-
-/***/ },
-/* 157 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * resets the library back to its initial state. This is useful
-	 * if you want to clear out the current keyboard shortcuts and bind
-	 * new ones - for example if you switch to another page
-	 *
-	 * @returns void
-	 */
-	module.exports = function () {
-	  var self = this
-	  self.callbacks = {}
-	  self.directMap = {}
-	  return this
-	}
-
-
-/***/ },
-/* 158 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	* should we stop this event before firing off callbacks
-	*
-	* @param {Event} e
-	* @param {Element} element
-	* @return {boolean}
-	*/
-	module.exports = function (e, element) {
-	  // if the element has the class "combokeys" then no need to stop
-	  if ((' ' + element.className + ' ').indexOf(' combokeys ') > -1) {
-	    return false
-	  }
-
-	  var tagName = element.tagName.toLowerCase()
-
-	  // stop for input, select, and textarea
-	  return tagName === 'input' || tagName === 'select' || tagName === 'textarea' || element.isContentEditable
-	}
-
-
-/***/ },
-/* 159 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * handles a character key event
-	 *
-	 * @param {string} character
-	 * @param {Array} modifiers
-	 * @param {Event} e
-	 * @returns void
-	 */
-	module.exports = function (character, modifiers, e) {
-	  var self = this
-	  var callbacks
-	  var j
-	  var doNotReset = {}
-	  var maxLevel = 0
-	  var processedSequenceCallback = false
-	  var isModifier
-	  var ignoreThisKeypress
-
-	  callbacks = self.getMatches(character, modifiers, e)
-	  // Calculate the maxLevel for sequences so we can only execute the longest callback sequence
-	  for (j = 0; j < callbacks.length; ++j) {
-	    if (callbacks[j].seq) {
-	      maxLevel = Math.max(maxLevel, callbacks[j].level)
-	    }
-	  }
-
-	  // loop through matching callbacks for this key event
-	  for (j = 0; j < callbacks.length; ++j) {
-	    // fire for all sequence callbacks
-	    // this is because if for example you have multiple sequences
-	    // bound such as "g i" and "g t" they both need to fire the
-	    // callback for matching g cause otherwise you can only ever
-	    // match the first one
-	    if (callbacks[j].seq) {
-	      // only fire callbacks for the maxLevel to prevent
-	      // subsequences from also firing
-	      //
-	      // for example 'a option b' should not cause 'option b' to fire
-	      // even though 'option b' is part of the other sequence
-	      //
-	      // any sequences that do not match here will be discarded
-	      // below by the resetSequences call
-	      if (callbacks[j].level !== maxLevel) {
-	        continue
-	      }
-
-	      processedSequenceCallback = true
-
-	      // keep a list of which sequences were matches for later
-	      doNotReset[callbacks[j].seq] = 1
-	      self.fireCallback(callbacks[j].callback, e, callbacks[j].combo, callbacks[j].seq)
-	      continue
-	    }
-
-	    // if there were no sequence matches but we are still here
-	    // that means this is a regular match so we should fire that
-	    if (!processedSequenceCallback) {
-	      self.fireCallback(callbacks[j].callback, e, callbacks[j].combo)
-	    }
-	  }
-
-	  // if the key you pressed matches the type of sequence without
-	  // being a modifier (ie "keyup" or "keypress") then we should
-	  // reset all sequences that were not matched by this event
-	  //
-	  // this is so, for example, if you have the sequence "h a t" and you
-	  // type "h e a r t" it does not match.  in this case the "e" will
-	  // cause the sequence to reset
-	  //
-	  // modifier keys are ignored because you can have a sequence
-	  // that contains modifiers such as "enter ctrl+space" and in most
-	  // cases the modifier key will be pressed before the next key
-	  //
-	  // also if you have a sequence such as "ctrl+b a" then pressing the
-	  // "b" key will trigger a "keypress" and a "keydown"
-	  //
-	  // the "keydown" is expected when there is a modifier, but the
-	  // "keypress" ends up matching the nextExpectedAction since it occurs
-	  // after and that causes the sequence to reset
-	  //
-	  // we ignore keypresses in a sequence that directly follow a keydown
-	  // for the same character
-	  ignoreThisKeypress = e.type === 'keypress' && self.ignoreNextKeypress
-	  isModifier = __webpack_require__(160)
-	  if (e.type === self.nextExpectedAction && !isModifier(character) && !ignoreThisKeypress) {
-	    self.resetSequences(doNotReset)
-	  }
-
-	  self.ignoreNextKeypress = processedSequenceCallback && e.type === 'keydown'
-	}
-
-
-/***/ },
-/* 160 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * determines if the keycode specified is a modifier key or not
-	 *
-	 * @param {string} key
-	 * @returns {boolean}
-	 */
-	module.exports = function (key) {
-	  return key === 'shift' || key === 'ctrl' || key === 'alt' || key === 'meta'
-	}
-
-
-/***/ },
-/* 161 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* eslint-env node, browser */
-	'use strict'
-	module.exports = function () {
-	  var self = this
-	  var on = __webpack_require__(162)
-	  var element = self.element
-
-	  self.eventHandler = __webpack_require__(163).bind(self)
-
-	  on(element, 'keypress', self.eventHandler)
-	  on(element, 'keydown', self.eventHandler)
-	  on(element, 'keyup', self.eventHandler)
-	}
-
-
-/***/ },
-/* 162 */
-/***/ function(module, exports) {
-
-	module.exports = on;
-	module.exports.on = on;
-	module.exports.off = off;
-
-	function on (element, event, callback, capture) {
-	  !element.addEventListener && (event = 'on' + event);
-	  (element.addEventListener || element.attachEvent).call(element, event, callback, capture);
-	  return callback;
-	}
-
-	function off (element, event, callback, capture) {
-	  !element.removeEventListener && (event = 'on' + event);
-	  (element.removeEventListener || element.detachEvent).call(element, event, callback, capture);
-	  return callback;
-	}
-
-
-/***/ },
-/* 163 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * handles a keydown event
-	 *
-	 * @param {Event} e
-	 * @returns void
-	 */
-	module.exports = function (e) {
-	  var self = this
-	  var characterFromEvent
-	  var eventModifiers
-
-	  // normalize e.which for key events
-	  // @see http://stackoverflow.com/questions/4285627/javascript-keycode-vs-charcode-utter-confusion
-	  if (typeof e.which !== 'number') {
-	    e.which = e.keyCode
-	  }
-	  characterFromEvent = __webpack_require__(164)
-	  var character = characterFromEvent(e)
-
-	  // no character found then stop
-	  if (!character) {
-	    return
-	  }
-
-	  // need to use === for the character check because the character can be 0
-	  if (e.type === 'keyup' && self.ignoreNextKeyup === character) {
-	    self.ignoreNextKeyup = false
-	    return
-	  }
-
-	  eventModifiers = __webpack_require__(167)
-	  self.handleKey(character, eventModifiers(e), e)
-	}
-
-
-/***/ },
-/* 164 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * takes the event and returns the key character
-	 *
-	 * @param {Event} e
-	 * @return {string}
-	 */
-	module.exports = function (e) {
-	  var SPECIAL_KEYS_MAP,
-	  SPECIAL_CHARACTERS_MAP
-	  SPECIAL_KEYS_MAP = __webpack_require__(165)
-	  SPECIAL_CHARACTERS_MAP = __webpack_require__(166)
-
-	  // for keypress events we should return the character as is
-	  if (e.type === 'keypress') {
-	    var character = String.fromCharCode(e.which)
-
-	    // if the shift key is not pressed then it is safe to assume
-	    // that we want the character to be lowercase.  this means if
-	    // you accidentally have caps lock on then your key bindings
-	    // will continue to work
-	    //
-	    // the only side effect that might not be desired is if you
-	    // bind something like 'A' cause you want to trigger an
-	    // event when capital A is pressed caps lock will no longer
-	    // trigger the event.  shift+a will though.
-	    if (!e.shiftKey) {
-	      character = character.toLowerCase()
-	    }
-
-	    return character
-	  }
-
-	  // for non keypress events the special maps are needed
-	  if (SPECIAL_KEYS_MAP[e.which]) {
-	    return SPECIAL_KEYS_MAP[e.which]
-	  }
-
-	  if (SPECIAL_CHARACTERS_MAP[e.which]) {
-	    return SPECIAL_CHARACTERS_MAP[e.which]
-	  }
-
-	  // if it is not in the special map
-
-	  // with keydown and keyup events the character seems to always
-	  // come in as an uppercase character whether you are pressing shift
-	  // or not.  we should make sure it is always lowercase for comparisons
-	  return String.fromCharCode(e.which).toLowerCase()
-	}
-
-
-/***/ },
-/* 165 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-	/**
-	 * mapping of special keycodes to their corresponding keys
-	 *
-	 * everything in this dictionary cannot use keypress events
-	 * so it has to be here to map to the correct keycodes for
-	 * keyup/keydown events
-	 *
-	 * @type {Object}
-	 */
-	module.exports = {
-	  8: 'backspace',
-	  9: 'tab',
-	  13: 'enter',
-	  16: 'shift',
-	  17: 'ctrl',
-	  18: 'alt',
-	  20: 'capslock',
-	  27: 'esc',
-	  32: 'space',
-	  33: 'pageup',
-	  34: 'pagedown',
-	  35: 'end',
-	  36: 'home',
-	  37: 'left',
-	  38: 'up',
-	  39: 'right',
-	  40: 'down',
-	  45: 'ins',
-	  46: 'del',
-	  91: 'meta',
-	  93: 'meta',
-	  187: 'plus',
-	  189: 'minus',
-	  224: 'meta'
-	}
-
-	/**
-	 * loop through the f keys, f1 to f19 and add them to the map
-	 * programatically
-	 */
-	for (var i = 1; i < 20; ++i) {
-	  module.exports[111 + i] = 'f' + i
-	}
-
-	/**
-	 * loop through to map numbers on the numeric keypad
-	 */
-	for (i = 0; i <= 9; ++i) {
-	  module.exports[i + 96] = i
-	}
-
-
-/***/ },
-/* 166 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-	/**
-	 * mapping for special characters so they can support
-	 *
-	 * this dictionary is only used incase you want to bind a
-	 * keyup or keydown event to one of these keys
-	 *
-	 * @type {Object}
-	 */
-	module.exports = {
-	  106: '*',
-	  107: '+',
-	  109: '-',
-	  110: '.',
-	  111: '/',
-	  186: ';',
-	  187: '=',
-	  188: ',',
-	  189: '-',
-	  190: '.',
-	  191: '/',
-	  192: '`',
-	  219: '[',
-	  220: '\\',
-	  221: ']',
-	  222: "'"
-	}
-
-
-/***/ },
-/* 167 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * takes a key event and figures out what the modifiers are
-	 *
-	 * @param {Event} e
-	 * @returns {Array}
-	 */
-	module.exports = function (e) {
-	  var modifiers = []
-
-	  if (e.shiftKey) {
-	    modifiers.push('shift')
-	  }
-
-	  if (e.altKey) {
-	    modifiers.push('alt')
-	  }
-
-	  if (e.ctrlKey) {
-	    modifiers.push('ctrl')
-	  }
-
-	  if (e.metaKey) {
-	    modifiers.push('meta')
-	  }
-
-	  return modifiers
-	}
-
-
-/***/ },
-/* 168 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * binds a single keyboard combination
-	 *
-	 * @param {string} combination
-	 * @param {Function} callback
-	 * @param {string=} action
-	 * @param {string=} sequenceName - name of sequence if part of sequence
-	 * @param {number=} level - what part of the sequence the command is
-	 * @returns void
-	 */
-	module.exports = function (combination, callback, action, sequenceName, level) {
-	  var self = this
-
-	  // store a direct mapped reference for use with Combokeys.trigger
-	  self.directMap[combination + ':' + action] = callback
-
-	  // make sure multiple spaces in a row become a single space
-	  combination = combination.replace(/\s+/g, ' ')
-
-	  var sequence = combination.split(' ')
-	  var info
-
-	  // if this pattern is a sequence of keys then run through this method
-	  // to reprocess each pattern one key at a time
-	  if (sequence.length > 1) {
-	    self.bindSequence(combination, sequence, callback, action)
-	    return
-	  }
-
-	  info = self.getKeyInfo(combination, action)
-
-	  // make sure to initialize array if this is the first time
-	  // a callback is added for this key
-	  self.callbacks[info.key] = self.callbacks[info.key] || []
-
-	  // remove an existing match if there is one
-	  self.getMatches(info.key, info.modifiers, {type: info.action}, sequenceName, combination, level)
-
-	  // add this call back to the array
-	  // if it is a sequence put it at the beginning
-	  // if not put it at the end
-	  //
-	  // this is important because the way these are processed expects
-	  // the sequence ones to come first
-	  self.callbacks[info.key][sequenceName ? 'unshift' : 'push']({
-	    callback: callback,
-	    modifiers: info.modifiers,
-	    action: info.action,
-	    seq: sequenceName,
-	    level: level,
-	    combo: combination
-	  })
-	}
-
-
-/***/ },
-/* 169 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * Gets info for a specific key combination
-	 *
-	 * @param  {string} combination key combination ("command+s" or "a" or "*")
-	 * @param  {string=} action
-	 * @returns {Object}
-	 */
-	module.exports = function (combination, action) {
-	  var self = this
-	  var keysFromString
-	  var keys
-	  var key
-	  var j
-	  var modifiers = []
-	  var SPECIAL_ALIASES
-	  var SHIFT_MAP
-	  var isModifier
-
-	  keysFromString = __webpack_require__(170)
-	  // take the keys from this pattern and figure out what the actual
-	  // pattern is all about
-	  keys = keysFromString(combination)
-
-	  SPECIAL_ALIASES = __webpack_require__(171)
-	  SHIFT_MAP = __webpack_require__(172)
-	  isModifier = __webpack_require__(160)
-	  for (j = 0; j < keys.length; ++j) {
-	    key = keys[j]
-
-	    // normalize key names
-	    if (SPECIAL_ALIASES[key]) {
-	      key = SPECIAL_ALIASES[key]
-	    }
-
-	    // if this is not a keypress event then we should
-	    // be smart about using shift keys
-	    // this will only work for US keyboards however
-	    if (action && action !== 'keypress' && SHIFT_MAP[key]) {
-	      key = SHIFT_MAP[key]
-	      modifiers.push('shift')
-	    }
-
-	    // if this key is a modifier then add it to the list of modifiers
-	    if (isModifier(key)) {
-	      modifiers.push(key)
-	    }
-	  }
-
-	  // depending on what the key combination is
-	  // we will try to pick the best event for it
-	  action = self.pickBestAction(key, modifiers, action)
-
-	  return {
-	    key: key,
-	    modifiers: modifiers,
-	    action: action
-	  }
-	}
-
-
-/***/ },
-/* 170 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * Converts from a string key combination to an array
-	 *
-	 * @param  {string} combination like "command+shift+l"
-	 * @return {Array}
-	 */
-	module.exports = function (combination) {
-	  if (combination === '+') {
-	    return ['+']
-	  }
-
-	  return combination.split('+')
-	}
-
-
-/***/ },
-/* 171 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-	/**
-	 * this is a list of special strings you can use to map
-	 * to modifier keys when you specify your keyboard shortcuts
-	 *
-	 * @type {Object}
-	 */
-	module.exports = {
-	  'option': 'alt',
-	  'command': 'meta',
-	  'return': 'enter',
-	  'escape': 'esc',
-	  'mod': /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'meta' : 'ctrl'
-	}
-
-
-/***/ },
-/* 172 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-	/**
-	 * this is a mapping of keys that require shift on a US keypad
-	 * back to the non shift equivelents
-	 *
-	 * this is so you can use keyup events with these keys
-	 *
-	 * note that this will only work reliably on US keyboards
-	 *
-	 * @type {Object}
-	 */
-	module.exports = {
-	  '~': '`',
-	  '!': '1',
-	  '@': '2',
-	  '#': '3',
-	  '$': '4',
-	  '%': '5',
-	  '^': '6',
-	  '&': '7',
-	  '*': '8',
-	  '(': '9',
-	  ')': '0',
-	  '_': '-',
-	  '+': '=',
-	  ':': ';',
-	  '"': "'",
-	  '<': ',',
-	  '>': '.',
-	  '?': '/',
-	  '|': '\\'
-	}
-
-
-/***/ },
-/* 173 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * picks the best action based on the key combination
-	 *
-	 * @param {string} key - character for key
-	 * @param {Array} modifiers
-	 * @param {string=} action passed in
-	 */
-	module.exports = function (key, modifiers, action) {
-	  var self = this
-
-	  // if no action was picked in we should try to pick the one
-	  // that we think would work best for this key
-	  if (!action) {
-	    action = self.getReverseMap()[key] ? 'keydown' : 'keypress'
-	  }
-
-	  // modifier keys don't work as expected with keypress,
-	  // switch to keydown
-	  if (action === 'keypress' && modifiers.length) {
-	    action = 'keydown'
-	  }
-
-	  return action
-	}
-
-
-/***/ },
-/* 174 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * reverses the map lookup so that we can look for specific keys
-	 * to see what can and can't use keypress
-	 *
-	 * @return {Object}
-	 */
-	module.exports = function () {
-	  var self = this
-	  var constructor = self.constructor
-	  var SPECIAL_KEYS_MAP
-
-	  if (!constructor.REVERSE_MAP) {
-	    constructor.REVERSE_MAP = {}
-	    SPECIAL_KEYS_MAP = __webpack_require__(165)
-	    for (var key in SPECIAL_KEYS_MAP) {
-	      // pull out the numeric keypad from here cause keypress should
-	      // be able to detect the keys from the character
-	      if (key > 95 && key < 112) {
-	        continue
-	      }
-
-	      if (SPECIAL_KEYS_MAP.hasOwnProperty(key)) {
-	        constructor.REVERSE_MAP[SPECIAL_KEYS_MAP[key]] = key
-	      }
-	    }
-	  }
-	  return constructor.REVERSE_MAP
-	}
-
-
-/***/ },
-/* 175 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * finds all callbacks that match based on the keycode, modifiers,
-	 * and action
-	 *
-	 * @param {string} character
-	 * @param {Array} modifiers
-	 * @param {Event|Object} e
-	 * @param {string=} sequenceName - name of the sequence we are looking for
-	 * @param {string=} combination
-	 * @param {number=} level
-	 * @returns {Array}
-	 */
-	module.exports = function (character, modifiers, e, sequenceName, combination, level) {
-	  var self = this
-	  var j
-	  var callback
-	  var matches = []
-	  var action = e.type
-	  var isModifier
-	  var modifiersMatch
-
-	  if (action === 'keypress') {
-	    // 'any-character' callbacks are only on `keypress`
-	    var anyCharCallbacks = self.callbacks['any-character'] || []
-	    anyCharCallbacks.forEach(function (callback) {
-	      matches.push(callback)
-	    })
-	  }
-
-	  if (!self.callbacks[character]) {return matches}
-
-	  isModifier = __webpack_require__(160)
-	  // if a modifier key is coming up on its own we should allow it
-	  if (action === 'keyup' && isModifier(character)) {
-	    modifiers = [character]
-	  }
-
-	  // loop through all callbacks for the key that was pressed
-	  // and see if any of them match
-	  for (j = 0; j < self.callbacks[character].length; ++j) {
-	    callback = self.callbacks[character][j]
-
-	    // if a sequence name is not specified, but this is a sequence at
-	    // the wrong level then move onto the next match
-	    if (!sequenceName && callback.seq && self.sequenceLevels[callback.seq] !== callback.level) {
-	      continue
-	    }
-
-	    // if the action we are looking for doesn't match the action we got
-	    // then we should keep going
-	    if (action !== callback.action) {
-	      continue
-	    }
-
-	    // if this is a keypress event and the meta key and control key
-	    // are not pressed that means that we need to only look at the
-	    // character, otherwise check the modifiers as well
-	    //
-	    // chrome will not fire a keypress if meta or control is down
-	    // safari will fire a keypress if meta or meta+shift is down
-	    // firefox will fire a keypress if meta or control is down
-	    modifiersMatch = __webpack_require__(176)
-	    if ((action === 'keypress' && !e.metaKey && !e.ctrlKey) || modifiersMatch(modifiers, callback.modifiers)) {
-	      // when you bind a combination or sequence a second time it
-	      // should overwrite the first one.  if a sequenceName or
-	      // combination is specified in this call it does just that
-	      //
-	      // @todo make deleting its own method?
-	      var deleteCombo = !sequenceName && callback.combo === combination
-	      var deleteSequence = sequenceName && callback.seq === sequenceName && callback.level === level
-	      if (deleteCombo || deleteSequence) {
-	        self.callbacks[character].splice(j, 1)
-	      }
-
-	      matches.push(callback)
-	    }
-	  }
-
-	  return matches
-	}
-
-
-/***/ },
-/* 176 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * checks if two arrays are equal
-	 *
-	 * @param {Array} modifiers1
-	 * @param {Array} modifiers2
-	 * @returns {boolean}
-	 */
-	module.exports = function (modifiers1, modifiers2) {
-	  return modifiers1.sort().join(',') === modifiers2.sort().join(',')
-	}
-
-
-/***/ },
-/* 177 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * resets all sequence counters except for the ones passed in
-	 *
-	 * @param {Object} doNotReset
-	 * @returns void
-	 */
-	module.exports = function (doNotReset) {
-	  var self = this
-
-	  doNotReset = doNotReset || {}
-
-	  var activeSequences = false
-	  var key
-
-	  for (key in self.sequenceLevels) {
-	    if (doNotReset[key]) {
-	      activeSequences = true
-	      continue
-	    }
-	    self.sequenceLevels[key] = 0
-	  }
-
-	  if (!activeSequences) {
-	    self.nextExpectedAction = false
-	  }
-	}
-
-
-/***/ },
-/* 178 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * actually calls the callback function
-	 *
-	 * if your callback function returns false this will use the jquery
-	 * convention - prevent default and stop propogation on the event
-	 *
-	 * @param {Function} callback
-	 * @param {Event} e
-	 * @returns void
-	 */
-	module.exports = function (callback, e, combo, sequence) {
-	  var self = this
-	  var preventDefault
-	  var stopPropagation
-
-	  // if this event should not happen stop here
-	  if (self.stopCallback(e, e.target || e.srcElement, combo, sequence)) {
-	    return
-	  }
-
-	  if (callback(e, combo) === false) {
-	    preventDefault = __webpack_require__(179)
-	    preventDefault(e)
-	    stopPropagation = __webpack_require__(180)
-	    stopPropagation(e)
-	  }
-	}
-
-
-/***/ },
-/* 179 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * prevents default for this event
-	 *
-	 * @param {Event} e
-	 * @returns void
-	 */
-	module.exports = function (e) {
-	  if (e.preventDefault) {
-	    e.preventDefault()
-	    return
-	  }
-
-	  e.returnValue = false
-	}
-
-
-/***/ },
-/* 180 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * stops propogation for this event
-	 *
-	 * @param {Event} e
-	 * @returns void
-	 */
-	module.exports = function (e) {
-	  if (e.stopPropagation) {
-	    e.stopPropagation()
-	    return
-	  }
-
-	  e.cancelBubble = true
-	}
-
-
-/***/ },
-/* 181 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	/**
-	 * binds a key sequence to an event
-	 *
-	 * @param {string} combo - combo specified in bind call
-	 * @param {Array} keys
-	 * @param {Function} callback
-	 * @param {string=} action
-	 * @returns void
-	 */
-	module.exports = function (combo, keys, callback, action) {
-	  var self = this
-
-	  // start off by adding a sequence level record for this combination
-	  // and setting the level to 0
-	  self.sequenceLevels[combo] = 0
-
-	  /**
-	   * callback to increase the sequence level for this sequence and reset
-	   * all other sequences that were active
-	   *
-	   * @param {string} nextAction
-	   * @returns {Function}
-	   */
-	  function increaseSequence (nextAction) {
-	    return function () {
-	      self.nextExpectedAction = nextAction
-	      ++self.sequenceLevels[combo]
-	      self.resetSequenceTimer()
-	    }
-	  }
-
-	  /**
-	   * wraps the specified callback inside of another function in order
-	   * to reset all sequence counters as soon as this sequence is done
-	   *
-	   * @param {Event} e
-	   * @returns void
-	   */
-	  function callbackAndReset (e) {
-	    var characterFromEvent
-	    self.fireCallback(callback, e, combo)
-
-	    // we should ignore the next key up if the action is key down
-	    // or keypress.  this is so if you finish a sequence and
-	    // release the key the final key will not trigger a keyup
-	    if (action !== 'keyup') {
-	      characterFromEvent = __webpack_require__(164)
-	      self.ignoreNextKeyup = characterFromEvent(e)
-	    }
-
-	    // weird race condition if a sequence ends with the key
-	    // another sequence begins with
-	    setTimeout(
-	      function () {
-	        self.resetSequences()
-	      },
-	      10
-	    )
-	  }
-
-	  // loop through keys one at a time and bind the appropriate callback
-	  // function.  for any key leading up to the final one it should
-	  // increase the sequence. after the final, it should reset all sequences
-	  //
-	  // if an action is specified in the original bind call then that will
-	  // be used throughout.  otherwise we will pass the action that the
-	  // next key in the sequence should match.  this allows a sequence
-	  // to mix and match keypress and keydown events depending on which
-	  // ones are better suited to the key provided
-	  for (var j = 0; j < keys.length; ++j) {
-	    var isFinal = j + 1 === keys.length
-	    var wrappedCallback = isFinal ? callbackAndReset : increaseSequence(action || self.getKeyInfo(keys[j + 1]).action)
-	    self.bindSingle(keys[j], wrappedCallback, action, combo, j)
-	  }
-	}
-
-
-/***/ },
-/* 182 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-	/**
-	 * called to set a 1 second timeout on the specified sequence
-	 *
-	 * this is so after each key press in the sequence you have 1 second
-	 * to press the next key before you have to start over
-	 *
-	 * @returns void
-	 */
-	module.exports = function () {
-	  var self = this
-
-	  clearTimeout(self.resetTimer)
-	  self.resetTimer = setTimeout(
-	    function () {
-	      self.resetSequences()
-	    },
-	    1000
-	  )
-	}
-
-
-/***/ },
-/* 183 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var off = __webpack_require__(162).off
-	module.exports = function () {
-	  var self = this
-	  var element = self.element
-
-	  off(element, 'keypress', self.eventHandler)
-	  off(element, 'keydown', self.eventHandler)
-	  off(element, 'keyup', self.eventHandler)
-	}
-
-
-/***/ },
-/* 184 */
-/***/ function(module, exports) {
-
-	/* eslint-env node, browser */
-	'use strict'
-
-	module.exports = function () {
-	  var self = this
-
-	  self.instances.forEach(function (combokeys) {
-	    combokeys.reset()
-	  })
-	}
-
-
-/***/ },
-/* 185 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var Tooltip = __webpack_require__(128);
-	var Tmpl = __webpack_require__(186);
-	var hbs = __webpack_require__(16);
-	var Radio = __webpack_require__(4);
-	var POS = __webpack_require__(5);
-	var polyglot = __webpack_require__(17);
-
-	var View = ItemView.extend({
-	  template: hbs.compile(Tmpl),
-
-	  initialize: function () {
-	    this.hotkeys = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'hotkeys'
-	    });
-
-	    this.modal = {
-	      header: {
-	        title: polyglot.t('titles.hotkeys')
-	      },
-	      footer: {
-	        show: false
-	      }
-	    };
-	  },
-
-	  behaviors: {
-	    Tooltip: {
-	      behaviorClass: Tooltip
-	    }
-	  },
-
-	  templateHelpers: function(){
-	    return this.hotkeys;
-	  }
-
-	});
-
-	module.exports = View;
-	POS.attach('HeaderApp.Views.HelpModal', View);
-
-/***/ },
-/* 186 */
-/***/ function(module, exports) {
-
-	module.exports = "<ul class=\"hotkeys\">\n  {{#each []}}\n    <li>\n      <input type=\"text\" value=\"{{key}}\" disabled>\n      {{label}}\n    </li>\n  {{/each}}\n</ul>"
-
-/***/ },
-/* 187 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	var POS = __webpack_require__(5);
-
-	var View = ItemView.extend({
-	  template: '#tmpl-menu',
-	  tagName: 'ul',
-
-	  initialize: function(){
-	    _.bindAll(this, 'open', 'close');
-	  },
-
-	  ui: {
-	    menuItem: 'li a'
-	  },
-
-	  events: {
-	    'click @ui.menuItem': 'goTo'
-	  },
-
-	  goTo: function(){
-	    this.close();
-	  },
-
-	  open: function(){
-	    // open menu & append backdrop
-	    $('body').addClass('menu-open');
-	    this.backdrop = $('<div class="modal-backdrop in"></div>');
-	    this.backdrop.height('100%');
-	    $('body').append(this.backdrop);
-
-	    // listen for clicks on backdrop
-	    this.backdrop.on('click', this.close);
-	  },
-
-	  close: function(){
-	    // close menu
-	    $('body').removeClass('menu-open');
-
-	    // teardown backdrop
-	    if(this.backdrop) {
-	      this.backdrop.remove();
-	      delete this.backdrop;
-	    }
-	  }
-
-	});
-
-	module.exports = View;
-	POS.attach('HeaderApp.Views.Menu', View);
-
-/***/ },
-/* 188 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var Radio = __webpack_require__(4);
-	var POS = __webpack_require__(5);
-	var $ = __webpack_require__(10);
-	var polyglot = __webpack_require__(17);
-
-	var View = ItemView.extend({
-	  template: function(){
-	    return '<i class="icon icon-spinner"></i>';
-	  },
-
-	  modal: {
-	    footer: {
-	      buttons: [
-	        { action: 'close' }
-	      ]
-	    }
-	  },
-
-	  initialize: function(){
-	    var self = this,
-	      ajaxurl = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'ajaxurl'
-	    });
-
-	    $.get( ajaxurl, {
-	      'action'  : 'wc_pos_get_modal',
-	      'template': 'browser'
-	    }).always(function(template){
-	      self.update(template);
-	    });
-
-	    this.modal.header = {
-	      title: polyglot.t('messages.browser')
-	    };
-	  },
-
-	  update: function(template){
-	    this.$el.html(template);
-	  }
-	});
-
-	module.exports = View;
-	POS.attach('HeaderApp.Views.BrowserModal', View);
-
-/***/ },
-/* 189 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Service = __webpack_require__(2);
-	var Layout = __webpack_require__(190);
-	//var $ = require('jquery');
-
-	module.exports = Service.extend({
-	  channelName: 'popover',
-
-	  initialize: function(){
-	    this.channel.reply({
-	      'open' : this.open,
-	      'close': this.close
-	    }, this);
-	  },
-
-	  open: function(options){
-	    if( options.target.data('popoverOpen') ){
-	      return;
-	    }
-	    this.layout = new Layout(options);
-	    this.layout.open();
-	    return this.layout;
-	  },
-
-	  close: function(){
-	    this.layout.close();
-	  }
-
-	});
-
-/***/ },
-/* 190 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-	var _ = __webpack_require__(6);
-	var $ = __webpack_require__(10);
-	__webpack_require__(129);
-	__webpack_require__(191);
-
-	module.exports = LayoutView.extend({
-
-	  template: _.template('' +
-	    '<div class="arrow"></div>' +
-	    '<h1 class="popover-title"></h1>' +
-	    '<div class="popover-region"></div>'
-	  ),
-	  _className: 'popover',
-	  className: function() {
-	    console.log('called now');
-	    return this._className;
-	  },
-	  attributes: {
-	    'role' : 'tooltip'
-	  },
-
-	  regions: {
-	    content : '.popover-region'
-	  },
-
-	  initialize: function(options){
-	    options = options || {};
-	    this.target = options.target;
-	    this.view = options.view;
-	    this.parent = options.parent;
-	    this.render().setup(options);
-
-	    _.bindAll(this, 'open', 'close', 'show', 'shown', 'hide', 'hidden');
-
-	    this.target.on({
-	      'show.bs.popover'   : this.show,
-	      'shown.bs.popover'  : this.shown,
-	      'hide.bs.popover'   : this.hide,
-	      'hidden.bs.popover' : this.hidden
-	    });
-
-	    // if parent view is destroyed, then close
-	    this.listenTo(this.parent, 'before:destroy', this.close);
-	  },
-
-	  setup: function(options){
-	    _.defaults(options, {
-	      container : 'body',
-	      content   : ' ',
-	      delay     : 0,
-	      placement : 'right',
-	      template  : this.el,
-	      title     : '',
-	      trigger   : 'manual'
-	    });
-	    this.target.popover(options);
-	  },
-
-	  open: function(){
-	    this.target.popover('show');
-	  },
-
-	  close: function(e){
-	    if(e && $(e.target).is('.popover *, .popover')){ return; }
-	    this.target.popover('hide');
-	  },
-
-	  show: function(){
-	    this.content.show(this.view);
-	  },
-
-	  shown: function(){
-	    this.target.data('popoverOpen', true);
-	    $('body').on('click', this.close);
-	  },
-
-	  hide: function(){
-	    $('body').off('click');
-	  },
-
-	  hidden: function(){
-	    this.target.off({
-	      'show.bs.popover'   : this.show,
-	      'shown.bs.popover'  : this.shown,
-	      'hide.bs.popover'   : this.hide,
-	      'hidden.bs.popover' : this.hidden
-	    });
-	    this.destroy();
-	    this.target.popover('destroy');
-	    this.target.data('popoverOpen', false);
-	  }
-
-	});
-
-/***/ },
-/* 191 */
-/***/ function(module, exports) {
-
-	/* ========================================================================
-	 * Bootstrap: popover.js v3.3.4
-	 * http://getbootstrap.com/javascript/#popovers
-	 * ========================================================================
-	 * Copyright 2011-2015 Twitter, Inc.
-	 * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-	 * ======================================================================== */
-
-
-	+function ($) {
-	  'use strict';
-
-	  // POPOVER PUBLIC CLASS DEFINITION
-	  // ===============================
-
-	  var Popover = function (element, options) {
-	    this.init('popover', element, options)
-	  }
-
-	  if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
-
-	  Popover.VERSION  = '3.3.4'
-
-	  Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
-	    placement: 'right',
-	    trigger: 'click',
-	    content: '',
-	    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
-	  })
-
-
-	  // NOTE: POPOVER EXTENDS tooltip.js
-	  // ================================
-
-	  Popover.prototype = $.extend({}, $.fn.tooltip.Constructor.prototype)
-
-	  Popover.prototype.constructor = Popover
-
-	  Popover.prototype.getDefaults = function () {
-	    return Popover.DEFAULTS
-	  }
-
-	  Popover.prototype.setContent = function () {
-	    var $tip    = this.tip()
-	    var title   = this.getTitle()
-	    var content = this.getContent()
-
-	    $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
-	    $tip.find('.popover-content').children().detach().end()[ // we use append for html objects to maintain js events
-	      this.options.html ? (typeof content == 'string' ? 'html' : 'append') : 'text'
-	    ](content)
-
-	    $tip.removeClass('fade top bottom left right in')
-
-	    // IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do
-	    // this manually by checking the contents.
-	    if (!$tip.find('.popover-title').html()) $tip.find('.popover-title').hide()
-	  }
-
-	  Popover.prototype.hasContent = function () {
-	    return this.getTitle() || this.getContent()
-	  }
-
-	  Popover.prototype.getContent = function () {
-	    var $e = this.$element
-	    var o  = this.options
-
-	    return $e.attr('data-content')
-	      || (typeof o.content == 'function' ?
-	            o.content.call($e[0]) :
-	            o.content)
-	  }
-
-	  Popover.prototype.arrow = function () {
-	    return (this.$arrow = this.$arrow || this.tip().find('.arrow'))
-	  }
-
-
-	  // POPOVER PLUGIN DEFINITION
-	  // =========================
-
-	  function Plugin(option) {
-	    return this.each(function () {
-	      var $this   = $(this)
-	      var data    = $this.data('bs.popover')
-	      var options = typeof option == 'object' && option
-
-	      if (!data && /destroy|hide/.test(option)) return
-	      if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
-	      if (typeof option == 'string') data[option]()
-	    })
-	  }
-
-	  var old = $.fn.popover
-
-	  $.fn.popover             = Plugin
-	  $.fn.popover.Constructor = Popover
-
-
-	  // POPOVER NO CONFLICT
-	  // ===================
-
-	  $.fn.popover.noConflict = function () {
-	    $.fn.popover = old
-	    return this
-	  }
-
-	}(jQuery);
-
-
-/***/ },
-/* 192 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Service = __webpack_require__(2);
-	var hbs = __webpack_require__(16);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	var debug = __webpack_require__(7)('print');
-	var Radio = __webpack_require__(4);
-	var POS = __webpack_require__(5);
-
-	module.exports = Service.extend({
-	  channelName: 'print',
-
-	  initialize: function(){
-	    _.bindAll(this, 'mediaQueryListener', 'beforePrint', 'afterPrint');
-	    this.start();
-	  },
-
-	  onStart: function(){
-	    this.channel.reply({
-	      'print' : this.print
-	    }, this);
-	  },
-
-	  onStop: function(){
-	    this.channel.reset();
-	  },
-
-	  /* jshint -W071 */
-	  print: function(options){
-	    var template = this.template(options),
-	        iframe = this.init();
-
-	    this.deferred = $.Deferred();
-
-	    // insert template
-	    iframe.document.write(template);
-
-	    // print events for IE 5+ & Firefox 6+
-	    iframe.onbeforeprint = this.beforePrint;
-	    iframe.onafterprint = this.afterPrint;
-
-	    // print once loaded
-	    var loaded = function(){
-	      iframe.focus(); // required for IE
-	      iframe.print();
-	    };
-
-	    // get the first image, ie: logo
-	    var logo = iframe.document.getElementsByTagName('img')[0];
-
-	    if( logo ){
-	      logo.onload = loaded;
-	    } else {
-	      loaded();
-	    }
-
-	    return this.deferred;
-	  },
-	  /* jshint +W071 */
-
-	  /**
-	   * creates an iframe and stores reference
-	   * returns a reference to the iframe window
-	   */
-	  init: function(){
-	    if(this.iframe){
-	      this.iframe.remove();
-	    }
-
-	    this.iframe = $('<iframe>')
-	      .attr('name', 'iframe')
-	      .css({visibility:'hidden',position:'-fixed',right:'0',bottom:'0'})
-	      .appendTo('body');
-
-	    // print events for Chrome 9+ & Safari 5.1+
-	    if (frames['iframe'].matchMedia) {
-	      var mediaQueryList = frames['iframe'].matchMedia('print');
-	      mediaQueryList.addListener(this.mediaQueryListener);
-	    }
-
-	    return frames['iframe'];
-	  },
-
-	  mediaQueryListener: function(mql){
-	    if (mql.matches) {
-	      this.beforePrint();
-	    } else {
-	      // delay fixes weird behavior
-	      // mediaQueryList seems to trigger both events on init
-	      _.delay(this.afterPrint);
-	    }
-	  },
-
-	  beforePrint: function(){
-	    debug('printing ...');
-	  },
-
-	  afterPrint: function(){
-	    this.iframe.remove();
-	    this.iframe = undefined;
-	    debug('printing finished');
-	    this.deferred.resolve();
-	  },
-
-	  /* jshint -W074 */
-	  /* todo: refactor print service with view */
-	  template: function(options){
-	    options = options || {};
-
-	    if(!options.model){
-	      return;
-	    }
-
-	    var template = hbs.compile( $('#tmpl-print-receipt').html() );
-	    var tax = Radio.request('entities', 'get', {
-	        type: 'option',
-	        name: 'tax'
-	      }) || {};
-	    var data = POS.ReceiptView.prototype.prepare(options.model.toJSON(), tax);
-	    return template( data );
-	  }
-	  /* jshint +W074 */
-
-	});
-
-/***/ },
-/* 193 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Service = __webpack_require__(2);
-	var View = __webpack_require__(194);
-
-	module.exports = Service.extend({
-
-	  channelName: 'numpad',
-
-	  initialize: function(){
-	    this.channel.reply({
-	      'view' : this.view
-	    }, this);
-	  },
-
-	  view: function(options){
-	    var view = new View(options);
-	    return view;
-	  }
-
-	});
-
-/***/ },
-/* 194 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var FormView = __webpack_require__(119);
-	var POS = __webpack_require__(5);
-	var hbs = __webpack_require__(16);
-	var Tmpl = __webpack_require__(195);
-	var Model = __webpack_require__(196);
-	var _ = __webpack_require__(6);
-	var $ = __webpack_require__(10);
-	var accounting = __webpack_require__(61);
-	var Radio = __webpack_require__(4);
-	var AutoGrow = __webpack_require__(197);
-	var cashKeys = __webpack_require__(198);
-	var Utils = __webpack_require__(79);
-
-	// numpad header input btns
-	// - could be improved if _.result allowed custom bind?
-	var inputBtns = {
-	  amount: function(){
-	    return {
-	      left: { addOn: this.symbol }
-	    };
-	  },
-	  discount: function(){
-	    return {
-	      left: { btn: this.symbol },
-	      right: { btn: '%' },
-	      toggle: true
-	    };
-	  },
-	  cash: function(){
-	    return {
-	      left: { addOn: this.symbol }
-	    };
-	  },
-	  quantity: function(){
-	    return {
-	      left: { btn: '<i class="icon icon-minus"></i>' },
-	      right: { btn: '<i class="icon icon-plus"></i>' }
-	    };
-	  }
-	};
-
-	// numpad extra keys
-	// - could be improved if _.result allowed custom bind?
-	var extraKeys = {
-	  amount: function(){},
-	  discount: function(){
-	    var discountKeys = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'discount_keys'
-	    }) || {};
-	    return _.map(discountKeys, function(n){ return n + '%'; });
-	  },
-	  cash: function(value){
-	    var denominations = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'denominations'
-	    }) || {};
-	    return _.map(cashKeys(value, denominations), function(n){
-	      if(this.value === 0){ return n; }
-	      return Utils.formatNumber(n);
-	    }, this);
-	  },
-	  quantity: function(){}
-	};
-
-
-	var View = FormView.extend({
-	  template: hbs.compile(Tmpl),
-
-	  viewOptions: [
-	    'numpad', 'label', 'value', 'decimal', 'symbol'
-	  ],
-
-	  initialize: function(options){
-	    options = options || {};
-
-	    options = _.defaults(options, {
-	      label   : 'Numpad',
-	      numpad  : 'amount',
-	      value   : 0,
-	      decimal : accounting.settings.currency.decimal,
-	      symbol  : accounting.settings.currency.symbol
-	    });
-
-	    this.mergeOptions(options, this.viewOptions);
-
-	    this.model = new Model({}, options);
-	  },
-
-	  behaviors: {
-	    AutoGrow: {
-	      behaviorClass: AutoGrow
-	    }
-	  },
-
-	  bindings: {
-	    'input[name="value"]': {
-	      observe: ['value', 'percentage', 'active'],
-	      onGet: function(arr){
-	        var val = arr[2] === 'percentage' ? arr[1] : arr[0];
-	        var precision;
-	        if(arr[2] === 'percentage' || this.numpad === 'quantity'){
-	          precision = 'auto';
-	        }
-	        return Utils.formatNumber(val, precision);
-	      }
-	    },
-	    '.numpad-discount [data-btn="left"]': {
-	      updateMethod: 'html',
-	      observe: ['value', 'percentage', 'active'],
-	      onGet: function(arr){
-	        if(arr[2] === 'percentage'){
-	          return Utils.formatMoney(arr[0]);
-	        } else {
-	          return this.symbol;
-	        }
-	      }
-	    },
-	    '.numpad-discount [data-btn="right"]': {
-	      updateMethod: 'html',
-	      observe: ['percentage', 'value', 'active'],
-	      onGet: function(arr){
-	        if(arr[2] === 'percentage'){
-	          return '%';
-	        } else {
-	          return accounting.toFixed(arr[0], 0) + '%';
-	        }
-	      }
-	    }
-	  },
-
-	  templateHelpers: function(){
-	    var data = {
-	      numpad  : this.numpad,
-	      label   : this.label,
-	      input   : inputBtns[this.numpad].call(this),
-	      keys    : extraKeys[this.numpad].call(this, this.value),
-	      decimal : this.decimal,
-	      'return': 'return'
-	    };
-
-	    return data;
-	  },
-
-	  ui: {
-	    input   : '.numpad-header input[name="value"]',
-	    toggle  : '.numpad-header .input-group',
-	    common  : '.numpad-keys .common .btn',
-	    discount: '.numpad-keys .discount .btn',
-	    cash    : '.numpad-keys .cash .btn',
-	    keys    : '.numpad-keys .btn'
-	  },
-
-	  events: {
-	    'click @ui.toggle a': 'toggle',
-	    'click @ui.common'  : 'commonKeys',
-	    'click @ui.discount': 'discountKeys',
-	    'click @ui.cash'    : 'cashKeys',
-	    'mousedown @ui.keys': 'keyPress'
-	  },
-
-	  toggle: function(e){
-	    e.preventDefault();
-	    var modifier = $(e.currentTarget).data('btn');
-
-	    if(this.numpad === 'quantity'){
-	      this.model.quantity( modifier === 'right' ? 'increase' : 'decrease' );
-	    }
-
-	    if(this.numpad === 'discount'){
-	      this.ui.toggle.toggleClass('toggle');
-	      this.model.toggle('percentage');
-	    }
-	  },
-
-	  /* jshint -W074 */
-	  commonKeys: function(e){
-	    e.preventDefault();
-	    var key = $(e.currentTarget).data('key');
-
-	    switch(key) {
-	      case 'ret':
-	        this.trigger('input', this.model.getFloatValue(), this.model);
-	        return;
-	      case 'del':
-	        if(this._hasSelection) {
-	          this.model.clearInput();
-	        }
-	        this.model.backSpace();
-	        break;
-	      case '+/-':
-	        this.model.plusMinus();
-	        break;
-	      case '.':
-	        this.model.decimal();
-	        break;
-	      default:
-	        if(this._hasSelection) {
-	          this.model.clearInput();
-	        }
-	        this.model.key(key);
-	    }
-
-	  },
-	  /* jshint +W074 */
-
-	  discountKeys: function(e){
-	    e.preventDefault();
-	    var key = $(e.currentTarget).data('key');
-	    this.model.set('active', 'percentage');
-	    this.model._set('percentage', key.replace('%', ''));
-	    this.ui.toggle.addClass('toggle');
-	  },
-
-	  cashKeys: function(e){
-	    e.preventDefault();
-	    var key = $(e.currentTarget).data('key');
-	    key = Utils.unformat(key);
-	    this.model.clearInput().key(key);
-	  },
-
-	  // on keypress, check if input selected
-	  keyPress: function(){
-	    var sel = window.getSelection();
-	    this._hasSelection = sel.toString() === this.ui.input.val();
-	  }
-
-	});
-
-	module.exports = View;
-	POS.attach('Components.Numpad.View', View);
-
-/***/ },
-/* 195 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"numpad numpad-{{numpad}}\">\n  <div class=\"numpad-header\">\n    <strong class=\"title\">{{label}}</strong>\n\n    {{#if input}}\n      <div class=\"input-group {{#if input.toggle}}input-toggle{{/if}}\">\n        {{#if input.left}}\n          {{#if input.left.addOn}}<span class=\"input-group-addon\">{{{input.left.addOn}}}</span>{{/if}}\n          {{#if input.left.btn}}<span class=\"input-group-btn\"><a href=\"#\" data-btn=\"left\">{{{input.left.btn}}}</a></span>{{/if}}\n        {{/if}}\n        <input type=\"text\" name=\"value\" class=\"form-control autogrow\" readonly=\"readonly\">\n        {{#if input.right}}\n          {{#if input.right.btn}}<span class=\"input-group-btn\"><a href=\"#\" data-btn=\"right\">{{{input.right.btn}}}</a></span>{{/if}}\n          {{#if input.right.addOn}}<span class=\"input-group-addon\">{{{input.right.addOn}}}</span>{{/if}}\n        {{/if}}\n      </div>\n    {{/if}}\n\n  </div>\n\n  <div class=\"numpad-keys\">\n    <div class=\"keys common\">\n      <div class=\"row\">\n        <a href=\"#\" data-key=\"1\" class=\"btn\">1</a>\n        <a href=\"#\" data-key=\"2\" class=\"btn\">2</a>\n        <a href=\"#\" data-key=\"3\" class=\"btn\">3</a>\n      </div>\n      <div class=\"row\">\n        <a href=\"#\" data-key=\"4\" class=\"btn\">4</a>\n        <a href=\"#\" data-key=\"5\" class=\"btn\">5</a>\n        <a href=\"#\" data-key=\"6\" class=\"btn\">6</a>\n      </div>\n      <div class=\"row\">\n        <a href=\"#\" data-key=\"7\" class=\"btn\">7</a>\n        <a href=\"#\" data-key=\"8\" class=\"btn\">8</a>\n        <a href=\"#\" data-key=\"9\" class=\"btn\">9</a>\n      </div>\n      <div class=\"row\">\n        <a href=\"#\" data-key=\"0\" class=\"btn\">0</a>\n        <a href=\"#\" data-key=\"00\" class=\"btn\">00</a>\n        <a href=\"#\" data-key=\".\" class=\"btn decimal\">{{{decimal}}}</a>\n      </div>\n    </div>\n    <div class=\"keys common extra-keys\">\n      <a href=\"#\" data-key=\"del\" class=\"btn\"><i class=\"icon icon-delete\"><span>del</span></i></a>\n      <a href=\"#\" data-key=\"+/-\" class=\"btn\">+/-</a>\n      <a href=\"#\" data-key=\"ret\" class=\"btn return\">{{return}}</a>\n    </div>\n\n    {{#if keys}}\n      <div class=\"keys extra-keys {{numpad}}\">\n        {{#each keys}}\n          <a href=\"#\" data-key=\"{{this}}\" class=\"btn\">{{this}}</a>\n        {{/each}}\n      </div>\n    {{/if}}\n\n  </div>\n</div>"
-
-/***/ },
-/* 196 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var bb = __webpack_require__(11);
-	var _ = __webpack_require__(6);
-
-	module.exports = bb.Model.extend({
-
-	  dec: '',
-
-	  defaults: {
-	    active: 'value'
-	  },
-
-	  precision: 4,
-
-	  initialize: function(attributes, options){
-	    options = options || {};
-	    this.numpad = options.numpad;
-
-	    this.set({ value: options.value.toString() });
-
-	    if(options.precision){
-	      this.precision = options.precision;
-	    }
-
-	    if(options.original){
-	      this.initPercentage(options);
-	    }
-	  },
-
-	  initPercentage: function(options){
-	    if(options.percentage === 'off'){
-	      this.percentageOff = true;
-	    }
-
-	    this.set({ original: options.original.toString() });
-	    this.set({ percentage: this.calcPercentage() });
-
-	    this.on({
-	      'change:value': function(){
-	        this.set({ percentage: this.calcPercentage() }, { silent: true });
-	      },
-	      'change:percentage': function(){
-	        this.set({ value: this.calcValue() }, { silent: true });
-	      }
-	    });
-	  },
-
-	  getFloatValue: function(){
-	    return parseFloat( this.get('value') );
-	  },
-
-	  getActive: function(type){
-	    var active = this.get( this.get('active') );
-	    return type === 'float' ? parseFloat(active) : active.toString();
-	  },
-
-	  setActive: function(num){
-	    if(this.dec === '.'){
-	      this.dec = '';
-	    }
-	    if( _.isNaN(num) ){
-	      num = 0;
-	    }
-	    this.set( this.get('active'), this.round(num) );
-	  },
-
-	  backSpace: function(){
-	    var num = this.getActive().slice(0, -1);
-	    // remove trailing decimal
-	    if( num.slice(-1) === '.' ){
-	      num = num.slice(0, -1);
-	    }
-	    this.setActive( num );
-	    return this;
-	  },
-
-	  plusMinus: function(){
-	    var num = this.getActive('float') * -1;
-	    this.setActive( num );
-	    return this;
-	  },
-
-	  clearInput: function(){
-	    this.setActive( '' );
-	    return this;
-	  },
-
-	  key: function(key){
-	    var num = this.getActive();
-	    if(this.decimalPlaces(num) < this.precision){
-	      this.setActive( num + this.dec + key );
-	    }
-	    return this;
-	  },
-
-	  decimal: function(){
-	    this.dec = this.getActive().indexOf('.') === -1 ? '.' : '';
-	    return this;
-	  },
-
-	  quantity: function( type ) {
-	    var num = this.getActive('float');
-	    this.setActive( (type === 'increase' ? ++num : --num) );
-	    return this;
-	  },
-
-	  calcPercentage: function(){
-	    var value      = parseFloat( this.get('value') ),
-	      original   = parseFloat( this.get('original') ),
-	      percentage = ( value / original ) * 100;
-
-	    if(this.percentageOff){
-	      return this.round(100 - percentage);
-	    }
-
-	    return this.round(percentage);
-	  },
-
-	  calcValue: function(){
-	    var percentage = parseFloat( this.get('percentage') ),
-	      original   = parseFloat( this.get('original') ),
-	      multiplier = percentage / 100;
-
-	    if(this.percentageOff){
-	      return this.round(( 1 - multiplier ) * original);
-	    }
-
-	    return this.round(multiplier * original);
-	  },
-
-	  toggle: function(attr){
-	    this.set({ active: (attr === this.get('active') ? 'value' : attr) });
-	  },
-
-	  round: function(val){
-	    val = val.toString();
-	    if(this.decimalPlaces(val) > this.precision){
-	      val = parseFloat(val).toFixed(this.precision);
-	      val = parseFloat(val).toString();
-	    }
-	    return val;
-	  },
-
-	  decimalPlaces: function(val){
-	    return val.replace(/^-?\d*\.?|0+$/g, '').length;
-	  }
-
-	});
-
-/***/ },
-/* 197 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Behavior = __webpack_require__(112);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	var POS = __webpack_require__(5);
-
-	var AutoGrow = Behavior.extend({
-
-	  initialize: function(options){
-	    this.options = options || {};
-	    _.defaults(this.options, {
-	      padding: 20
-	    });
-
-	    this.tester = $('#autogrow-tester');
-	    if( this.tester.length === 0 ) {
-	      this.tester = $('<div id="autogrow-tester" />')
-	        .css({
-	          opacity     : 0,
-	          top         : -9999,
-	          left        : -9999,
-	          position    : 'absolute',
-	          whiteSpace  : 'nowrap'
-	        });
-	      $('body').append(this.tester);
-	    }
-
-	    this.listenTo( this.view, 'show render', this.autoGrowEach );
-	  },
-
-	  ui: {
-	    target: '.autogrow'
-	  },
-
-	  events: {
-	    'input @ui.target' : 'autoGrow'
-	  },
-
-	  autoGrowEach: function() {
-	    _.each( this.ui.target, function( target ) {
-	      this.autoGrow( $(target) );
-	    }, this);
-	  },
-
-	  autoGrow: function( e ) {
-	    var target  = e.target ? $(e.target) : e ;
-	    var value   = target.is('input') ? target.val() : target.text();
-
-	    value = value.replace(/&/g, '&amp;')
-	      .replace(/\s/g,'&nbsp;')
-	      .replace(/</g, '&lt;')
-	      .replace(/>/g, '&gt;');
-
-	    this.tester.html(value);
-	    var width = this.tester.width() + this.options.padding;
-	    target.css({ width: width });
-
-	  }
-
-	});
-
-	module.exports = AutoGrow;
-	POS.attach('Behaviors.AutoGrow', AutoGrow);
-
-/***/ },
-/* 198 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(6);
-	var accounting = __webpack_require__(61);
-
-	/* jshint -W071 */
-
-	function round(num){
-	  return parseFloat( accounting.toFixed(num, 2) );
-	}
-
-	function nearest(num, dem){
-	  var n = Math.ceil(num / dem) * dem;
-	  return round(n);
-	}
-
-	module.exports = function(amount, denominations){
-	  var keys = [amount];
-
-	  if(amount === 0) {
-	    return denominations.notes.slice(-4);
-	  }
-
-	  // remove 1 & 2 cents
-	  _.pull( denominations.coins, 0.01, 0.02 );
-
-	  // find nearest match for coins
-	  _.each( denominations.coins, function(coin) {
-	    keys.push( nearest(amount, coin) );
-	  });
-
-	  // unique, sorted
-	  keys = _.chain(keys).uniq().sortBy().value();
-
-	  // higher rep of coin for low amounts
-	  if(amount > denominations.notes[0]){
-	    keys.slice(0, 3);
-	  }
-
-	  // find nearest match for notes
-	  _.each( denominations.notes, function(note) {
-	    keys.push( nearest(amount, note) );
-	  });
-
-	  // return 4 results - unique, sorted
-	  return _.chain(keys).uniq().sortBy().value().slice(1, 5);
-	};
-	/* jshint +W071 */
-
-/***/ },
-/* 199 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var POS = __webpack_require__(5);
-	var Router = __webpack_require__(123);
-	var LayoutView = __webpack_require__(200);
-	var Products = __webpack_require__(201);
-	var CartRoute = __webpack_require__(214);
-	var CheckoutRoute = __webpack_require__(223);
-	var ReceiptRoute = __webpack_require__(231);
-	var Radio = __webpack_require__(4);
-	var bb = __webpack_require__(11);
-
-	var POSRouter = Router.extend({
-	  routes: {
-	    '(cart)(/:id)(/)'  : 'showCart',
-	    'checkout(/:id)(/)': 'showCheckout',
-	    'receipt(/:id)(/)' : 'showReceipt'
-	  },
-
-	  initialize: function(options) {
-	    this.container = options.container;
-	    this.channel.reply({
-	      'show:cart'     : this.showCart,
-	      'show:checkout' : this.showCheckout,
-	      'show:receipt'  : this.showReceipt,
-	      'add:to:cart'   : this.addToCart
-	    }, this);
-	  },
-
-	  onBeforeEnter: function() {
-	    this.layout = new LayoutView();
-	    this.container.show(this.layout);
-	    this.initOrders();
-	  },
-
-	  initOrders: function(){
-	    if(this.orders){ return; }
-
-	    // attach orders
-	    this.orders = Radio.request('entities', 'get', {
-	      type: 'collection',
-	      name: 'orders'
-	    });
-
-	    // listen to order collection
-	    this.listenTo(this.orders, {
-	      'add'    : this.addOrder,
-	      'remove' : this.removeOrder
-	    });
-	  },
-
-	  onBeforeRoute: function(){
-	    //this.setActiveTab();
-	    this.showProducts();
-	    Radio.request('header', 'update:title', '');
-	  },
-
-	  setActiveTab: function(){
-	    var tab = bb.history.getFragment() === '' ? 'left' : 'right';
-	    this.container.tabs.setActive(tab);
-	  },
-
-	  showProducts: function(){
-	    if( this.layout.getRegion('left').hasView() ){
-	      return;
-	    }
-	    var products = new Products({
-	      container : this.layout.getRegion('left')
-	    });
-	    products.enter();
-	  },
-
-	  showCart: function() {
-	    return new CartRoute({
-	      container : this.layout.getRegion('right'),
-	      collection: this.orders
-	    });
-	  },
-
-	  showCheckout: function() {
-	    return new CheckoutRoute({
-	      container : this.layout.getRegion('right'),
-	      collection: this.orders
-	    });
-	  },
-
-	  showReceipt: function() {
-	    return new ReceiptRoute({
-	      container : this.layout.getRegion('right'),
-	      collection: this.orders
-	    });
-	  },
-
-	  /**
-	   * Add to cart only when cart route is active
-	   */
-	  addToCart: function(options){
-	    if(this._currentRoute instanceof CartRoute){
-	      this.orders.addToCart(options);
-	    }
-	  },
-
-	  addOrder: function(order){
-	    if(this._currentRoute instanceof CartRoute){
-	      //bb.history.navigate('cart/' + order.id);
-	      if(order.isEditable()){
-	        this.execute(this.showCart, [order.id]);
-	      }
-	    }
-	  },
-
-	  removeOrder: function(){
-	    if(this._currentRoute instanceof CartRoute){
-	      bb.history.navigate('');
-	      this.execute(this.showCart);
-	    }
-	  }
-
-	});
-
-	module.exports = POSRouter;
-	POS.attach('POSApp.Router', POSRouter);
-
-/***/ },
-/* 200 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-
-	module.exports = LayoutView.extend({
-	  columns: 2,
-
-	  template: function(){
-	    return '' +
-	      '<div id="left"></div>' +
-	      '<div id="right"></div>';
-	  },
-
-	  regions: {
-	    left: '#left',
-	    right: '#right'
-	  }
-	});
-
-/***/ },
-/* 201 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Route = __webpack_require__(115);
-	var Layout = __webpack_require__(203);
-	var Actions = __webpack_require__(204);
-	var List = __webpack_require__(206);
-	var Pagination = __webpack_require__(202);
-	var Radio = __webpack_require__(4);
-	var _ = __webpack_require__(6);
-	var polyglot = __webpack_require__(17);
-
-	module.exports = Route.extend({
-
-	  initialize: function (options) {
-	    this.container  = options.container;
-	    this.filtered   = Radio.request('entities', 'get', {
-	      type    : 'filtered',
-	      name    : 'products',
-	      perPage : 10
-	    });
-	    this.setTabLabel({
-	      tab   : 'left',
-	      label : polyglot.t('titles.products')
-	    });
-	  },
-
-	  fetch: function() {
-	    var collection = this.filtered.superset();
-	    if( collection.isNew() ){
-	      return collection.fetch()
-	        .then(function(){
-	          collection.fullSync();
-	        });
-	    } else {
-	      this.filtered
-	        .resetFilters()
-	        .removeSort()
-	        .setPage(0);
-	    }
-	  },
-
-	  render: function() {
-	    this.layout = new Layout();
-
-	    this.listenTo(this.layout, 'show', function () {
-	      this.showActions();
-	      this.showTabs();
-	      this.showProducts();
-	      this.showPagination();
-	    });
-
-	    this.container.show( this.layout );
-	  },
-
-	  showActions: function() {
-	    var view = new Actions({
-	      collection: this.filtered
-	    });
-
-	    this.layout.getRegion('actions').show(view);
-	  },
-
-	  showTabs: function() {
-	    var view = Radio.request('tabs', 'view', {
-	      tabs: this.tabsArray()
-	    });
-
-	    this.listenTo(view.collection, 'active:tab', function(model) {
-	      this.filtered.query('tab', model.id);
-	    });
-
-	    // show tabs component
-	    this.layout.getRegion('tabs').show(view);
-	    this.tabs = view;
-	  },
-
-	  showProducts: function() {
-	    var view = new List({
-	      collection: this.filtered
-	    });
-	    this.layout.getRegion('list').show(view);
-	  },
-
-	  tabsArray: function(){
-	    var tabs = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'tabs'
-	    });
-	    return _.map(tabs);
-	  },
-
-	  showPagination: function(){
-	    var view = new Pagination({
-	      collection: this.filtered
-	    });
-	    this.layout.getRegion('footer').show(view);
-	  }
-
-	});
-
-/***/ },
-/* 202 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var POS = __webpack_require__(5);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	var hbs = __webpack_require__(16);
-
-	var View = ItemView.extend({
-	  template: hbs.compile($('#tmpl-pagination').html()),
-
-	  //ui: {
-	  //  prev    : '.prev',
-	  //  next    : '.next'
-	  //},
-	  //
-	  //events: {
-	  //  'click @ui.prev': 'onPrev',
-	  //  'click @ui.next': 'onNext'
-	  //},
-
-	  // todo: improve this
-	  collectionEvents: {
-	    'add remove paginated:change:page paginated:change:numPages reset':
-	      _.debounce(function(){
-	        if(!this.isDestroyed){
-	          this.render();
-	        }
-	      }, 10)
-	  },
-
-	  initialize: function(){
-	    this.listenTo(this.collection.superset(), {
-	      'end:fullSync': this.render
-	    });
-	  },
-
-	  templateHelpers: function(){
-	    var queue = this.collection.superset().queue.length;
-	    return {
-	      showing : this.collection.length,
-	      local   : this.collection.superset().length,
-	      queue   : queue,
-	      hasQueue: queue > 0
-	    };
-	  }
-
-	  //onRender: function() {
-	  //  this.$('.current').text(this.collection.getPage() + 1);
-	  //  this.$('.total').text(this.collection.getNumPages());
-	  //  this.$('.prev').prop('disabled', !this.collection.hasPrevPage());
-	  //  this.$('.next').prop('disabled', !this.collection.hasNextPage());
-	  //},
-
-	  //onPrev: function() {
-	  //  if (this.collection.hasPrevPage()) {
-	  //    this.collection.prevPage();
-	  //  }
-	  //},
-	  //
-	  //onNext: function() {
-	  //  if (this.collection.hasNextPage()) {
-	  //    this.collection.nextPage();
-	  //  }
-	  //}
-	});
-
-	module.exports = View;
-	POS.attach('Components.Pagination.View', View);
-
-/***/ },
-/* 203 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var hbs = __webpack_require__(16);
-	var LayoutView = __webpack_require__(13);
-	var POS = __webpack_require__(5);
-
-	var Layout = LayoutView.extend({
-
-	  template: hbs.compile('' +
-	    '<div class="list-actions"></div>' +
-	    '<div class="list-tabs tabs infinite-tabs"></div>' +
-	    '<div class="list"></div>' +
-	    '<div class="list-footer"></div>'
-	  ),
-
-	  tagName: 'section',
-
-	  regions: {
-	    actions   : '.list-actions',
-	    tabs      : '.list-tabs',
-	    list      : '.list',
-	    footer    : '.list-footer'
-	  },
-
-	  attributes: {
-	    'class'         : 'module products-module'
-	  }
-
-	});
-
-	module.exports = Layout;
-	POS.attach('POSApp.Products.Layout', Layout);
-
-/***/ },
-/* 204 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var View = __webpack_require__(15);
-	var POS = __webpack_require__(5);
-	var Filter = __webpack_require__(205);
-	var HotKeys = __webpack_require__(151);
-	var Radio = __webpack_require__(4);
-
-	var Actions = View.extend({
-	  template: '#tmpl-products-filter',
-
-	  initialize: function(){
-	    var products = this.collection.superset();
-	    this.listenTo(products, 'match:barcode', function(model){
-	      this.triggerMethod('clear');
-	      Radio.request('router', 'add:to:cart', model);
-	      this.ui.searchField.blur();
-	    });
-	  },
-
-	  behaviors: {
-	    Filter: {
-	      behaviorClass: Filter
-	    },
-	    HotKeys: {
-	      behaviorClass: HotKeys
-	    }
-	  },
-
-	  keyEvents: {
-	    'search'  : 'barcodeModeOff',
-	    'barcode' : 'barcodeModeOn'
-	  },
-
-	  ui: {
-	    modeIcon    : '*[data-toggle="dropdown"] i',
-	    searchBtn   : '*[data-action="search"]',
-	    barcodeBtn  : '*[data-action="barcode"]',
-	    searchField : 'input[type=search]'
-	  },
-
-	  events: {
-	    'click @ui.searchBtn' : 'barcodeModeOff',
-	    'click @ui.barcodeBtn': 'barcodeModeOn'
-	  },
-
-	  onRender: function(){
-	    this.barcodeModeOff();
-	  },
-
-	  toggleBarcodeMode: function(){
-	    if(this._mode === 'barcode'){
-	      return this.barcodeModeOff();
-	    }
-	    this.barcodeModeOn();
-	  },
-
-	  barcodeModeOn: function(e){
-	    if(e) { e.preventDefault(); }
-	    this._mode = 'barcode';
-	    this.ui.modeIcon
-	      .removeClass('icon-search')
-	      .addClass('icon-barcode');
-	    this.ui.searchField
-	      .attr('placeholder', this.ui.barcodeBtn.text())
-	      .focus()
-	      .trigger('keyup');
-	  },
-
-	  barcodeModeOff: function(e){
-	    if(e) { e.preventDefault(); }
-	    this._mode = undefined;
-	    this.ui.modeIcon
-	      .removeClass('icon-barcode')
-	      .addClass('icon-search');
-	    this.ui.searchField
-	      .attr('placeholder', this.ui.searchBtn.text())
-	      .focus()
-	      .trigger('keyup');
-	  }
-	});
-
-	module.exports = Actions;
-	POS.attach('POSApp.Products.Actions', Actions);
-
-/***/ },
-/* 205 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Behavior = __webpack_require__(112);
-	var _ = __webpack_require__(6);
-	var POS = __webpack_require__(5);
-	var Combokeys = __webpack_require__(152);
-	var Radio = __webpack_require__(4);
-
-	var Filter = Behavior.extend({
-
-	  initialize: function(){
-
-	    this.listenTo(this.view.options.collection.superset(), {
-	      'start:fullSync': this.syncStart,
-	      'end:fullSync': this.syncEnd
-	    });
-
-	    this.hotkeys = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'hotkeys'
-	    }) || {};
-
-	    this.combokeys = new Combokeys(document.documentElement);
-	    this.combokeys.bind(this.hotkeys.sync.key, _.bind( this.sync, this ));
-
-	  },
-
-	  ui: {
-	    searchField : 'input[type=search]',
-	    clearBtn    : 'a.clear',
-	    sync        : '*[data-action="sync"]'
-	  },
-
-	  events: {
-	    'keyup @ui.searchField' : 'query',
-	    'click @ui.clearBtn'    : 'clear',
-	    'click @ui.sync'        : 'sync'
-	  },
-
-	  /**
-	   *
-	   */
-	  query: function(){
-	    var value = this.ui.searchField.val();
-	    if( value === '' ){
-	      return this.clear();
-	    }
-
-	    // special case, filter mode, eg: barcode
-	    if(this.view._mode){
-	      value = [{
-	        type  : 'prefix',
-	        prefix: this.view._mode,
-	        query : value
-	      }];
-	    }
-
-	    this.ui.clearBtn.show();
-	    this._query(value);
-	  },
-
-	  /**
-	   *
-	   */
-	  _query: _.debounce( function(value){
-	    this.view.collection
-	      .query(value)
-	      .firstPage();
-	  }, 149),
-
-	  /**
-	   *
-	   */
-	  clear: function(e) {
-	    if(e) { e.preventDefault(); }
-	    this.view.collection.removeFilter('search');
-	    this.ui.searchField.val('');
-	    this.ui.clearBtn.hide();
-	  },
-
-	  /**
-	   *
-	   */
-	  onRender: function(){
-	    if(this.view.collection.hasFilter('search')){
-	      var queryStr = this.view.collection._filtered._query;
-	      if(queryStr){
-	        this.ui.searchField.val(queryStr).trigger('keyup');
-	      }
-	    }
-	  },
-
-	  sync: function(e){
-	    if(e) { e.preventDefault(); }
-	    this.view.collection.superset().fullSync();
-	  },
-
-	  syncStart: function(){
-	    this.ui.sync.children('i').addClass('icon-spin');
-	  },
-
-	  syncEnd: function(){
-	    this.ui.sync.children('i').removeClass('icon-spin');
-	  },
-
-	  onDestroy: function(){
-	    this.combokeys.unbind(this.hotkeys.sync.key);
-	  },
-
-	  onClear: function(){
-	    this.clear();
-	  }
-
-	});
-
-	module.exports = Filter;
-	POS.attach('Behaviors.Filter', Filter);
-
-/***/ },
-/* 206 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var InfiniteListView = __webpack_require__(207);
-	var Item = __webpack_require__(208);
-	var POS = __webpack_require__(5);
-
-	var Empty = ItemView.extend({
-	  tagName: 'li',
-	  className: 'empty',
-	  template: '#tmpl-products-empty'
-	});
-
-	var List = InfiniteListView.extend({
-	  childView: Item,
-	  emptyView: Empty,
-	  childViewContainer: 'ul'
-	});
-
-	module.exports = List;
-	POS.attach('POSApp.Products.List', List);
-
-/***/ },
-/* 207 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Mn = __webpack_require__(3);
-	var POS = __webpack_require__(5);
-	var _ = __webpack_require__(6);
-	//var $ = require('jquery');
-
-	module.exports = POS.InfiniteListView = Mn.CompositeView.extend({
-	  className: 'infinite-list',
-	  template: function(){
-	    return '<div></div>' +
-	      '<ul class="striped"></ul>' +
-	      '<div><i class="icon icon-spinner"></i>';
-	  },
-
-	  initialize: function(){
-	    this.listenTo(this.collection.superset(), {
-	      'start:processQueue': this.startLoading,
-	      'end:processQueue': this.endLoading,
-	      'end:fullSync': this.checkOverflow
-	    });
-	    this.on({
-	      'all': this.checkOverflow
-	    });
-	    _.bindAll(this, 'onScroll', 'loadMore', 'getOverflow');
-	  },
-
-	  // Marionette's default implementation ignores the index, always
-	  // appending the new view to the end. Let's be a little more clever.
-	  //appendHtml: function(collectionView, itemView, index){
-	  //  if (!index) {
-	  //    collectionView.$el.prepend(itemView.el);
-	  //  } else {
-	  //    $(collectionView.$('li')[index - 1]).after(itemView.el);
-	  //  }
-	  //},
-
-	  onShow: function(){
-	    this._parent.$el.scroll(this.onScroll);
-	  },
-
-	  onScroll: _.throttle(function(){
-	    if(this.getOverflow() < 100){
-	      this.loadMore();
-	    }
-	  }, 200),
-
-	  checkOverflow: _.debounce(function(){
-	    if(this.getOverflow() < 100){
-	      this.loadMore();
-	    }
-	  }, 200),
-
-	  /**
-	   * returns overflow at bottom in px
-	   * - added clientHeight check to prevent false trigger when div not drawn
-	   * @returns {number}
-	   */
-	  getOverflow: function(){
-	    if(this._parent && this._parent.el.clientHeight) {
-	      var sH = this._parent.el.scrollHeight,
-	          cH = this._parent.el.clientHeight,
-	          sT = this._parent.el.scrollTop;
-	      return sH - cH - sT;
-	    }
-	  },
-
-	  loadMore: function() {
-	    // get next page from filtered collection
-	    if (this.collection.hasNextPage()) {
-	      return this.collection.appendNextPage();
-	    }
-
-	    // load more from queue
-	    if (this.collection.superset().queue.length > 0) {
-	      this.remoteFetchMore();
-	    }
-	  },
-
-	  remoteFetchMore: function(){
-	    this.collection.superset().processQueue({
-	      filter: this.collection.getRemoteFilter()
-	    });
-	  },
-
-	  startLoading: function(){
-	    this.toggleLoading(true);
-	  },
-
-	  endLoading: function(){
-	    this.toggleLoading(false);
-	  },
-
-	  toggleLoading: function(loading){
-	    this.$el.toggleClass('loading', loading);
-	  }
-
-	});
-
-/***/ },
-/* 208 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var POS = __webpack_require__(5);
-	var LayoutView = __webpack_require__(13);
-	var Product = __webpack_require__(209);
-	var Variations = __webpack_require__(212);
-
-	var Layout = LayoutView.extend({
-
-	  tagName: 'li',
-
-	  className: function () {
-	    return this.model.get('type');
-	  },
-
-	  template: function () {
-	    return '' +
-	      '<div class="item"></div>' +
-	      '<div class="drawer"></div>';
-	  },
-
-	  regions: {
-	    item  : '.item',
-	    drawer: '.drawer'
-	  },
-
-	  onRender: function(){
-	    var view = new Product({
-	      model: this.model
-	    });
-
-	    this.listenTo( view, {
-	      'open:drawer'     : this.openDrawer,
-	      'close:drawer'    : this.closeDrawer,
-	      'toggle:drawer'   : this.toggleDrawer
-	    });
-
-	    this.getRegion('item').show(view);
-	  },
-
-	  openDrawer: function(options){
-	    options = options || {};
-	    options.model = this.model;
-	    options.className = 'variations';
-	    var view = new Variations(options);
-	    this.getRegion('drawer').show(view);
-	    this.$el.addClass('drawer-open');
-	  },
-
-	  closeDrawer: function(){
-	    var drawer = this.getRegion('drawer');
-
-	    drawer.$el.slideUp( 250, function(){
-	      drawer.empty();
-	      drawer.$el.show();
-	    });
-
-	    this.$el.removeClass('drawer-open');
-	  },
-
-	  toggleDrawer: function(options){
-	    var drawer = this.getRegion('drawer'),
-	      open = drawer.hasView();
-
-	    if(open && options.filter){
-	      return drawer.currentView.filterVariations(options.filter);
-	    }
-
-	    if(open){
-	      this.closeDrawer();
-	    } else {
-	      this.openDrawer(options);
-	    }
-	  }
-
-	});
-
-	module.exports = Layout;
-	POS.attach('POSApp.Products.Item.Layout', Layout);
-
-/***/ },
-/* 209 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var POS = __webpack_require__(5);
-	var hbs = __webpack_require__(16);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	var Tooltip = __webpack_require__(128);
-	var Radio = __webpack_require__(4);
-	var Variations = __webpack_require__(210);
-
-	var Item = ItemView.extend({
-	  template: hbs.compile( $('#tmpl-product').html() ),
-
-	  ui: {
-	    add      : 'a[data-action="add"]',
-	    vpopover : 'a[data-action="variations"]',
-	    vdrawer  : '.title dl.variations dd a'
-	  },
-
-	  events: {
-	    'click @ui.add' : 'addToCart',
-	    'click @ui.vpopover' : 'variationsPopover',
-	    'click @ui.vdrawer'  : 'variationsDrawer'
-	  },
-
-	  modelEvents: {
-	    'change:updated_at': 'render'
-	  },
-
-	  behaviors: {
-	    Tooltip: {
-	      behaviorClass: Tooltip,
-	      html: true
-	    }
-	  },
-
-	  addToCart: function(e){
-	    e.preventDefault();
-	    Radio.request('router', 'add:to:cart', {model: this.model});
-	  },
-
-	  variationsPopover: function(e){
-	    e.preventDefault();
-
-	    var view = new Variations({
-	      model: this.model
-	    });
-
-	    this.listenTo(view, 'add:to:cart', function(args){
-	      var product = args.collection.models[0].toJSON();
-	      Radio.request('router', 'add:to:cart', product);
-	      Radio.request('popover', 'close');
-	    });
-
-	    var options = _.extend({
-	      view   : view,
-	      parent : this,
-	      model  : this.model,
-	      target : $(e.currentTarget)
-	    }, view.popover);
-
-	    Radio.request('popover', 'open', options);
-	  },
-
-	  variationsDrawer: function(e){
-	    e.preventDefault();
-	    var options = {};
-
-	    var slug = $(e.target).data('variation');
-	    if(slug){
-	      options.filter = {
-	        slug: slug,
-	        label: $(e.target).text()
-	        //option: $(e.target).data('value')
-	      };
-	    }
-
-	    this.trigger('toggle:drawer', options);
-	  },
-
-	  templateHelpers: function(){
-	    var data = {};
-	    if(this.model.get('type') === 'variable'){
-	      data.price = this.model.range('price');
-	      data.sale_price = this.model.range('sale_price');
-	      data.regular_price = this.model.range('regular_price');
-	      data.product_variations = this.model.productVariations();
-	    }
-	    data.product_attributes = this.model.productAttributes();
-	    return data;
-	  }
-
-	});
-
-	module.exports = Item;
-	POS.attach('POSApp.Products.Item', Item);
-
-/***/ },
-/* 210 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var Tmpl = __webpack_require__(211);
-	var POS = __webpack_require__(5);
-	var hbs = __webpack_require__(16);
-	var Radio = __webpack_require__(4);
-	var _ = __webpack_require__(6);
-	var $ = __webpack_require__(10);
-	var polyglot = __webpack_require__(17);
-
-	// rough calculation of variation option size
-	var hasManyOptions = function(variation){
-	  var opts = variation.options.length,
-	    chars = variation.options.reduce(function(total, opt){
-	      return total + opt.length;
-	    }, 0);
-	  return (opts * 26) + (chars * 5) > 220;
-	};
-
-	var Variations = ItemView.extend({
-	  template: hbs.compile(Tmpl),
-
-	  popover: {
-	    className: 'popover popover-variations popover-dark-bg'
-	  },
-
-	  initialize: function(){
-	    this.collection = Radio.request('entities', 'get', {
-	      type: 'variations',
-	      parent: this.model
-	    });
-	    this.collection.resetFilters();
-	  },
-
-	  templateHelpers: function(){
-	    var data = {};
-	    data.variations = _.chain(this.model.get('attributes'))
-	      .where({variation:true})
-	      .sortBy(function(variation){
-	        if(hasManyOptions(variation)){
-	          variation.select = true;
-	          variation.emptyOption = polyglot.t('messages.choose');
-	        }
-	        return variation.position;
-	      })
-	      .value();
-	    return data;
-	  },
-
-	  ui: {
-	    add: '*[data-action="add"]',
-	    btn: '.btn-group .btn',
-	    select: 'select'
-	  },
-
-	  triggers: {
-	    'click @ui.add': 'add:to:cart'
-	  },
-
-	  events: {
-	    'click @ui.btn'     : 'onVariationSelect',
-	    'change @ui.select' : 'onVariationSelect'
-	  },
-
-	  onVariationSelect: function(e){
-	    var target = $(e.currentTarget);
-
-	    // toggle
-	    if( target.is('button') ){
-	      target
-	        .addClass('active')
-	        .siblings('.btn')
-	        .removeClass('active');
-	    }
-
-	    // filter
-	    var slug = target.data('variation');
-	    var label = target.val();
-	    this.collection.filterBy(slug, function(model){
-	      return _.some(model.get('attributes'), function(obj){
-	        return obj.slug === slug && obj.label === label;
-	      });
-	    });
-	    this.ui.add.prop('disabled', this.collection.length !== 1);
-	  }
-
-	});
-
-	module.exports = Variations;
-	POS.attach('POSApp.Products.Variations', Variations);
-
-/***/ },
-/* 211 */
-/***/ function(module, exports) {
-
-	module.exports = "{{#variations}}\n  <strong>{{name}}</strong>\n  {{#unless this.select}}\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n    {{#each options}}\n      <button class=\"btn btn-default\" value=\"{{this}}\" data-variation=\"{{../slug}}\">{{this}}</button>\n    {{/each}}\n    </div>\n  {{/unless}}\n  {{#if this.select}}\n    <select data-variation=\"{{slug}}\">\n        <option value=\"\">{{this.emptyOption}}</option>\n    {{#each options}}\n        <option value=\"{{this}}\">{{this}}</option>\n    {{/each}}\n    </select>\n  {{/if}}\n{{/variations}}\n<button class=\"btn btn-success\" data-action=\"add\" disabled>Add to Cart</button>"
-
-/***/ },
-/* 212 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var CollectionView = __webpack_require__(103);
-	var Variation = __webpack_require__(213);
-	var Radio = __webpack_require__(4);
-	var _ = __webpack_require__(6);
-
-	var Empty = ItemView.extend({
-	  tagName: 'li',
-	  className: 'empty',
-	  template: '#tmpl-products-empty'
-	});
-
-	module.exports = CollectionView.extend({
-	  childView: Variation,
-	  emptyView: Empty,
-	  childViewContainer: 'ul',
-
-	  initialize: function(options){
-	    options = options || {};
-
-	    this.collection = Radio.request('entities', 'get', {
-	      type: 'variations',
-	      parent: this.model
-	    });
-
-	    this.collection.resetFilters();
-	    this.filterVariations(options.filter);
-	  },
-
-	  onShow: function() {
-	    this.$el.hide().slideDown(250);
-	  },
-
-	  filterVariations: function(filter){
-	    if(filter){
-	      filter = filter || {};
-	      var matchMaker = function(model){
-	        var attributes = model.get('attributes');
-	        return _.any(attributes, function(attribute){
-	          return attribute.slug === filter.slug &&
-	            attribute.label === filter.label;
-	        });
-
-	      };
-	      this.collection.filterBy('variation', matchMaker);
-	    }
-	  }
-
-	});
-
-/***/ },
-/* 213 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var POS = __webpack_require__(5);
-	var hbs = __webpack_require__(16);
-	var $ = __webpack_require__(10);
-	var Radio = __webpack_require__(4);
-
-	var Item = ItemView.extend({
-	  template: hbs.compile( $('#tmpl-product').html() ),
-	  className: 'variation',
-
-	  ui: {
-	    add : 'a[data-action="add"]'
-	  },
-
-	  events: {
-	    'click @ui.add' : 'addToCart'
-	  },
-
-	  addToCart: function(e){
-	    e.preventDefault();
-	    Radio.request('router', 'add:to:cart', {model: this.model});
-	  },
-
-	  templateHelpers: function(){
-	    return {
-	      variation: true,
-	      title: this.options.model.parent.get('title')
-	    };
-	  }
-
-	});
-
-	module.exports = Item;
-	POS.attach('POSApp.Products.Item.Drawer.Variation', Item);
-
-/***/ },
-/* 214 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Route = __webpack_require__(115);
-	var LayoutView = __webpack_require__(215);
-	var ItemsView = __webpack_require__(216);
-	var TotalsView = __webpack_require__(221);
-	var NotesView = __webpack_require__(222);
-	var Buttons = __webpack_require__(109);
-	var CustomerSelect = __webpack_require__(130);
-	//var debug = require('debug')('cart');
-	var _ = __webpack_require__(6);
-	var POS = __webpack_require__(5);
-	var Utils = __webpack_require__(79);
-	var polyglot = __webpack_require__(17);
-
-	var CartRoute = Route.extend({
-
-	  initialize: function( options ) {
-	    options = options || {};
-	    this.container  = options.container;
-	    this.collection = options.collection;
-	    this.setTabLabel({
-	      tab   : 'right',
-	      label : polyglot.t('titles.cart')
-	    });
-	  },
-
-	  fetch: function() {
-	    if (this.collection.isNew()) {
-	      return this.collection.fetch({ silent: true });
-	    }
-	  },
-
-	  onFetch: function(id){
-	    this.order = this.collection.setActiveOrder(id);
-
-	    if(this.order){
-	      this.setTabLabel({
-	        tab   : 'right',
-	        label : this.tabLabel(this.order)
-	      });
-
-	      this.listenTo( this.order, 'change:total', function(model){
-	        this.setTabLabel({
-	          tab   : 'right',
-	          label : this.tabLabel(model)
-	        });
-	      });
-	    }
-	  },
-
-	  render: function() {
-	    this.layout = new LayoutView({
-	      order: this.order
-	    });
-
-	    this.listenTo( this.layout, 'show', this.onShow );
-
-	    this.container.show( this.layout );
-	  },
-
-	  onRender: function(){
-	    if( this.order && !this.order.isEditable() ){
-	      this.navigate('receipt/' + this.order.id, { trigger: true });
-	    }
-	  },
-
-	  onShow: function(){
-	    if(!this.order){
-	      return this.noActiveOrder();
-	    }
-
-	    this.showCart();
-	    this.showTotals();
-	    this.showCustomer();
-	    this.showActions();
-	    this.showNotes();
-	  },
-
-	  /**
-	   * Empty Cart
-	   */
-	  noActiveOrder: function(){
-	    var view = new ItemsView();
-	    this.layout.getRegion('list').show(view);
-	    _.invoke([
-	      this.layout.getRegion('totals'),
-	      this.layout.getRegion('customer'),
-	      this.layout.getRegion('actions'),
-	      this.layout.getRegion('note')
-	    ], 'empty');
-	  },
-
-	  /**
-	   * Cart Items
-	   */
-	  showCart: function() {
-	    var view = new ItemsView({
-	      collection: this.order.cart
-	    });
-	    this.layout.getRegion('list').show(view);
-	  },
-
-	  /**
-	   * Cart Totals
-	   */
-	  showTotals: function() {
-	    var view = new TotalsView({
-	      model: this.order
-	    });
-	    this.on('discount:clicked', view.showDiscountRow);
-	    this.layout.getRegion('totals').show(view);
-	  },
-
-	  /**
-	   * Customer Select
-	   */
-	  showCustomer: function(){
-	    var view = new CustomerSelect({
-	      model: this.order
-	    });
-
-	    this.listenTo(view, 'customer:select', function(customer) {
-	      this.order.unset('customer');
-	      this.order.save({
-	        customer_id: customer.id,
-	        customer: customer
-	      });
-	    });
-
-	    // bit of a hack
-	    // get the "Customer:" translation and add it to the view
-	    this.listenTo(this.layout.getRegion('customer'), 'before:show', function(){
-	      var label = this.layout.getRegion('customer').$el.html();
-	      view.$el.prepend( label );
-	    });
-
-	    this.layout.getRegion('customer').show( view );
-	  },
-
-	  /**
-	   * Actions
-	   * - order discount removed in WC 2.3
-	   */
-	  showActions: function() {
-	    var view = new Buttons({
-	      buttons: [
-	        {action: 'void',      className: 'btn-danger pull-left'},
-	        {action: 'fee',       className: 'btn-primary'},
-	        {action: 'shipping',  className: 'btn-primary'},
-	        //{action: 'discount',  className: 'btn-primary'},
-	        {action: 'note',      className: 'btn-primary'},
-	        {action: 'checkout',  className: 'btn-success'}
-	      ]
-	    });
-
-	    this.listenTo(view, {
-	      'action:void': function(btn, view){
-	        view.triggerMethod('disableButtons');
-	        this.layout.getRegion('list').currentView.voidCart();
-	      },
-	      'action:note': function(){
-	        this.layout.getRegion('note').currentView.showNoteField();
-	      },
-	      //'action:discount': function(){
-	      //  this.layout.getRegion('totals').currentView.showDiscountRow();
-	      //},
-	      'action:fee': function(){
-	        this.order.cart.addToCart({
-	          type  : 'fee',
-	          title : polyglot.t('titles.fee')
-	        });
-	      },
-	      'action:shipping': function(){
-	        this.order.cart.addToCart({
-	          type        : 'shipping',
-	          method_title: polyglot.t('titles.shipping'),
-	          method_id   : '' // todo: settings
-	        });
-	      },
-	      'action:checkout': function(){
-	        this.navigate('checkout/' + this.order.id, { trigger: true });
-	      }
-	    });
-
-	    this.layout.getRegion('actions').show( view );
-	  },
-
-	  /**
-	   * Order Notes
-	   */
-	  showNotes: function() {
-	    var view = new NotesView({
-	      model: this.order
-	    });
-	    this.on( 'note:clicked', view.showNoteField );
-	    this.layout.getRegion('note').show( view );
-	  },
-
-	  tabLabel: function(order){
-	    var prefix = polyglot.t('titles.cart'),
-	      total = order.get('total'),
-	      formatTotal = Utils.formatMoney(total);
-
-	    return prefix + ': ' + formatTotal;
-	  }
-
-	});
-
-	module.exports = CartRoute;
-	POS.attach('POSApp.Cart.Route', CartRoute);
-
-/***/ },
-/* 215 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-
-	module.exports = LayoutView.extend({
-	  template: '#tmpl-cart',
-
-	  initialize: function(options){
-	    options = options || {};
-	    this.order = options.order;
-	  },
-
-	  tagName: 'section',
-
-	  regions: {
-	    list      : '.list',
-	    totals    : '.list-totals',
-	    customer  : '.cart-customer',
-	    actions   : '.list-actions',
-	    note      : '.cart-notes',
-	    footer    : '.list-footer'
-	  },
-
-	  attributes: {
-	    'class'         : 'module cart-module'
-	  },
-
-	  /**
-	   * add/remove cart-empty class
-	   */
-	  onShow: function(){
-	    this.$el.toggleClass('cart-empty', !this.order);
-	  }
-
-	});
-
-/***/ },
-/* 216 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var CollectionView = __webpack_require__(103);
-	var LineItem = __webpack_require__(217);
-	var POS = __webpack_require__(5);
-
-	var Empty = ItemView.extend({
-	  tagName: 'li',
-	  className: 'empty',
-	  template: '#tmpl-cart-empty'
-	});
-
-	var View = CollectionView.extend({
-	  tagName: 'ul',
-	  childView: LineItem,
-	  emptyView: Empty,
-	  voidCart: function(){
-	    this.children.each(function(child){
-	      child.getRegion('item').currentView.removeItem();
-	    });
-	  }
-	});
-
-	module.exports = View;
-	POS.attach('POSApp.Cart.Views.Items', View);
-
-/***/ },
-/* 217 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-	var ItemView = __webpack_require__(218);
-	var DrawerView = __webpack_require__(220);
-	//var bb = require('backbone');
-
-	module.exports = LayoutView.extend({
-	  tagName: 'li',
-	  className: function() { return this.model.get('type'); },
-	  template: function() {
-	    return '<div class="item"></div><div class="drawer"></div>';
-	  },
-	  regions: {
-	    item: '.item',
-	    drawer: '.drawer'
-	  },
-
-	  modelEvents: {
-	    'pulse': 'pulse'
-	  },
-
-	  onRender: function(){
-	    var view = new ItemView({ model: this.model });
-
-	    this.listenTo( view, 'drawer:open', this.openDrawer );
-	    this.listenTo( view, 'drawer:close', this.closeDrawer );
-	    this.listenTo( view, 'drawer:toggle', this.toggleDrawer );
-
-	    this.getRegion('item').show(view);
-	  },
-
-	  openDrawer: function(){
-	    var view = new DrawerView({ model: this.model });
-	    this.getRegion('drawer').show(view);
-	    this.$el.addClass('drawer-open');
-	  },
-
-	  closeDrawer: function(){
-	    this.getRegion('drawer').empty();
-	    this.$el.removeClass('drawer-open');
-	  },
-
-	  toggleDrawer: function(){
-	    if( this.getRegion('drawer').hasView() ){
-	      this.closeDrawer();
-	    } else {
-	      this.openDrawer();
-	    }
-	  },
-
-	  pulse: function(opt) {
-	    if(opt === 'remove'){ return; }
-	    var self = this,
-	        list        = this.$el.closest('.list'),
-	        scrollTop   = list.scrollTop(),
-	        listTop     = list.position().top,
-	        listBottom  = list.height() + listTop,
-	        itemTop     = this.$el.position().top,
-	        itemBottom  = this.$el.height() + itemTop,
-	        type        = self.model.get( 'type' );
-
-	    if( itemTop < listTop ) {
-	      scrollTop -= ( listTop - itemTop );
-	    }
-
-	    if( itemBottom > listBottom ) {
-	      scrollTop += ( itemTop - list.height() + 4 );
-	    }
-
-	    // scroll to row
-	    this.$el.addClass('bg-success')
-	      .closest('.list')
-	      .animate({scrollTop: scrollTop}, 'fast', function() {
-	        // focus title if shipping or fee
-	        if( type === 'fee' || type === 'shipping' ) {
-	          self.$('.title strong.action-edit-title').focus();
-	        }
-
-	        // pulse
-	        self.$el.animate({backgroundColor: 'transparent'}, 500, function() {
-	          self.$el.removeClass('bg-success').removeAttr('style');
-	        });
-	      }
-	    );
-	  }
-	});
-
-/***/ },
-/* 218 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var FormView = __webpack_require__(119);
-	var Utils = __webpack_require__(79);
-	var bb = __webpack_require__(11);
-	var Radio = bb.Radio;
-	var AutoGrow = __webpack_require__(197);
-	var Numpad = __webpack_require__(219);
-	var hbs = __webpack_require__(16);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-
-	module.exports = FormView.extend({
-	  template: hbs.compile( $('#tmpl-cart-item').html() ),
-
-	  initialize: function() {
-	    this.tax = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'tax'
-	    }) || {};
-	  },
-
-	  templateHelpers: function(){
-	    var type = this.model.get('type');
-	    return {
-	      product: (type !== 'shipping' && type !== 'fee')
-	    };
-	  },
-
-	  behaviors: {
-	    AutoGrow: {
-	      behaviorClass: AutoGrow
-	    },
-	    Numpad: {
-	      behaviorClass: Numpad
-	    }
-	  },
-
-	  ui: {
-	    remove  : '*[data-action="remove"]',
-	    more    : '*[data-action="more"]',
-	    title   : '.title'
-	  },
-
-	  events: {
-	    'click @ui.remove': 'removeItem',
-	    'click @ui.title': 'focusTitle'
-	  },
-
-	  triggers: {
-	    'click @ui.more'  : 'drawer:toggle'
-	  },
-
-	  modelEvents: {
-	    'change:title'        : 'save',
-	    'change:method_title' : 'save'
-	  },
-
-	  bindings: {
-	    'input[name="quantity"]' : {
-	      observe: 'quantity',
-	      onGet: function(value) {
-	        return Utils.formatNumber(value, 'auto');
-	      },
-	      onSet: Utils.unformat
-	    },
-	    '*[data-name="title"]' : {
-	      observe: 'title',
-	      events: ['blur']
-	    },
-	    'dl.meta': {
-	      observe: 'meta',
-	      updateMethod: 'html',
-	      onGet: function(val){
-	        var row = '';
-	        _.each(val, function(meta){
-	          row += '<dt>' + meta.label + '</dt><dd>' + meta.value + '</dd>';
-	        });
-	        return row;
-	      }
-	    },
-	    '*[data-name="method_title"]': 'method_title',
-	    'input[name="item_price"]': {
-	      observe: 'item_price',
-	      onGet: Utils.formatNumber,
-	      onSet: Utils.unformat
-	    },
-	    '.total': {
-	      observe: ['total', 'subtotal', 'tax_class', 'taxable'],
-	      updateMethod: 'html',
-	      onGet: function(value) {
-	        if( this.tax.tax_display_cart === 'incl' ) {
-	          value[0] = this.model.sum(['total', 'total_tax']);
-	          value[1] = this.model.sum(['subtotal', 'subtotal_tax']);
-	        }
-
-	        var total     = Utils.formatMoney(value[0]),
-	            subtotal  = Utils.formatMoney(value[1]);
-
-	        if(total !== subtotal){
-	          return '<del>' + subtotal + '</del> <ins>' + total + '</ins>';
-	        } else {
-	          return total;
-	        }
-	      }
-	    }
-	  },
-
-	  save: function(){
-	    console.log(arguments);
-	    this.model.save();
-	  },
-
-	  removeItem: function(e) {
-	    if(e) { e.preventDefault(); }
-	    var self = this;
-	    this.ui.remove.attr('disabled', 'true');
-	    this.$el.addClass('bg-danger')
-	      .fadeOut(500, function(){
-	      self.model.destroy();
-	    });
-	  },
-
-	  focusTitle: function(){
-	    this.ui.title.find('strong').focus();
-	  }
-
-	});
-
-/***/ },
-/* 219 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var Behavior = __webpack_require__(112);
-	var POS = __webpack_require__(5);
-	var Modernizr = global['Modernizr'];
-	var Radio = __webpack_require__(4);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-
-	var NumpadBehavior = Behavior.extend({
-
-	  ui: {
-	    target: '*[data-numpad]'
-	  },
-
-	  events: {
-	    'click @ui.target'      : 'numpadPopover',
-	    'open:numpad @ui.input' : 'numpadPopover',
-	    'keypress @ui.target'      : 'keyboardEntry'
-	  },
-
-	  onRender: function() {
-	    if(Modernizr.touch) {
-	      this.ui.target.each(function(){
-	        if( $(this).is('input') ){
-	          $(this).attr('readonly', true);
-	        }
-	      });
-	    }
-	  },
-
-	  /* jshint -W071 */
-	  numpadPopover: function(e){
-	    var target  = $(e.target),
-	        name    = target.attr('name'),
-	        options = _.clone( target.data() );
-
-	    // numpad
-	    _.defaults( options, {
-	      value : this.view.model.get( name )
-	    });
-
-	    if( _.isString( options.original ) ){
-	      options.original = this.view.model.get(options.original);
-	    }
-
-	    var numpad = Radio.request('numpad', 'view', options);
-
-	    this.listenTo(numpad, 'input', function(value){
-	      target.popover('hide');
-	      this.view.model.set( name, value, { numpadChange: true } );
-	    });
-
-	    // popover
-	    target.one('shown.bs.popover', function(){
-	      if(!Modernizr.touch) {
-	        numpad.ui.input.select();
-	      }
-	    });
-
-	    _.defaults( options, {
-	      target    : target,
-	      view      : numpad,
-	      parent    : this.view,
-	      className : 'popover popover-numpad popover-dark-bg',
-	      placement : 'bottom'
-	    });
-
-	    Radio.request('popover', 'open', options);
-	  },
-	  /* jshint +W071 */
-
-	  keyboardEntry: function(e){
-	    var target = $(e.target);
-	    if( target.data('popoverOpen') ){
-	      target.one('hidden.bs.popover', function(){
-	        target.val( String.fromCharCode(e.keyCode) ).trigger('input');
-	      });
-	      target.popover('hide');
-	    }
-	  }
-
-	});
-
-	module.exports = NumpadBehavior;
-	POS.attach('Behaviors.Numpad', NumpadBehavior);
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 220 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var FormView = __webpack_require__(119);
-	var Utils = __webpack_require__(79);
-	var AutoGrow = __webpack_require__(197);
-	var Numpad = __webpack_require__(219);
-	var hbs = __webpack_require__(16);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	var bb = __webpack_require__(11);
-	var Radio = bb.Radio;
-
-	module.exports = FormView.extend({
-	  initialize: function() {
-	    this.template = hbs.compile( $('#tmpl-cart-item-drawer').html() );
-	  },
-
-	  behaviors: {
-	    AutoGrow: {
-	      behaviorClass: AutoGrow
-	    },
-	    Numpad: {
-	      behaviorClass: Numpad
-	    }
-	  },
-
-	  ui: {
-	    addMeta     : '.action-add-meta',
-	    removeMeta  : '.action-remove-meta',
-	    metaLabel   : 'input[name="meta.label"]',
-	    metaValue   : 'textarea[name="meta.value"]'
-	  },
-
-	  events: {
-	    'click @ui.addMeta'     : 'addMetaFields',
-	    'click @ui.removeMeta'  : 'removeMetaFields',
-	    'blur @ui.metaLabel'    : 'updateMeta',
-	    'blur @ui.metaValue'    : 'updateMeta'
-	  },
-
-	  modelEvents: {
-	    'pulse': 'pulse'
-	  },
-
-	  bindings: {
-	    'input[name="regular_price"]' : {
-	      observe: 'regular_price',
-	      onGet: Utils.formatNumber,
-	      onSet: Utils.unformat
-	    },
-	    'input[name="taxable"]' : 'taxable',
-	    'select[name="tax_class"]' : {
-	      observe: 'tax_class',
-	      selectOptions: {
-	        collection: function(){
-	          return Radio.request('entities', 'get', {
-	            type: 'option',
-	            name: 'tax_labels'
-	          });
-	        }
-	      },
-	      attributes: [{
-	        name: 'disabled',
-	        observe: 'taxable',
-	        onGet: function(val) {
-	          return !val;
-	        }
-	      }]
-	    },
-	    'select[name="method_id"]': {
-	      observe: 'method_id',
-	      selectOptions: {
-	        collection: function(){
-	          return Radio.request('entities', 'get', {
-	            type: 'option',
-	            name: 'shipping'
-	          });
-	        },
-	        comparator: function(){}
-	      }
-	    }
-	  },
-
-	  onShow: function() {
-	    this.$el.hide().slideDown(250);
-	  },
-
-	  remove: function() {
-	    this.$el.slideUp( 250, function() {
-	      FormView.prototype.remove.call(this);
-	    }.bind(this));
-	  },
-
-	  pulse: function(type){
-	    if(type === 'remove'){
-	      return this.$el.slideUp(250);
-	    }
-	  },
-
-	  updateMeta: function(e) {
-	    var el        = $(e.target),
-	        name      = el.attr('name').split('.'),
-	        attribute = name[0],
-	        value     = el.val(),
-	        data      = {},
-	        self      = this;
-
-	    var newValue = function(){
-	      var key = el.parent('span').data('key');
-	      var meta = ( self.model.get('meta') || [] );
-
-	      // select row (or create new one)
-	      var row = _.where( meta, { 'key': key } );
-	      row = row.length > 0 ? row[0] : { 'key': key };
-	      row[ name[1] ] = value;
-
-	      // add the change row and make unique on key
-	      meta.push(row);
-	      return _.uniq( meta, 'key' );
-	    };
-
-	    if( name.length > 1 && attribute === 'meta' ) {
-	      value = newValue();
-	    }
-
-	    data[ attribute ] = value;
-
-	    this.model.save(data);
-	  },
-
-	  addMetaFields: function(e){
-	    e.preventDefault();
-
-	    var row = $(e.currentTarget).prev('span').data('key');
-	    var i = row ? row + 1 : 1 ;
-
-	    $('<span data-key="'+ i +'" />')
-	      .append('' +
-	        '<input type="text" name="meta.label">' +
-	        '<textarea name="meta.value"></textarea>' +
-	        '<a href="#" class="action-remove-meta">' +
-	        '<i class="icon icon-times"></i>' +
-	        '</a>')
-	      .insertBefore( $(e.currentTarget) );
-	  },
-
-	  removeMetaFields: function(e){
-	    e.preventDefault();
-
-	    var row = $(e.currentTarget).parent('span'),
-	        meta = ( this.model.get('meta') || [] ),
-	        index = _.findIndex( meta, { 'key': row.data('key') } );
-
-	    if( index >= 0 ){
-	      meta.splice( index, 1 );
-	      this.model.save({ 'meta': meta });
-	      this.model.trigger('change:meta');
-	    }
-
-	    row.remove();
-	  }
-
-	});
-
-/***/ },
-/* 221 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(119);
-	var $ = __webpack_require__(10);
-	var hbs = __webpack_require__(16);
-	var Radio = __webpack_require__(4);
-
-	module.exports = ItemView.extend({
-	  tagName: 'ul',
-	  template: hbs.compile( $('#tmpl-cart-totals').html() ),
-
-	  initialize: function() {
-	    this.tax = Radio.request('entities', 'get', {
-	      type : 'option',
-	      name : 'tax'
-	    }) || {};
-	  },
-
-	  // todo: why is this necessary?!
-	  // view should re-render automatically on model change
-	  modelEvents: {
-	    'change': 'render'
-	  },
-
-	  /**
-	   *
-	   */
-	  templateHelpers: function(){
-	    var data = {
-	      itemized: this.tax.tax_total_display === 'itemized',
-	      has_discount: 0 !== this.model.get('cart_discount')
-	    };
-
-	    if( this.tax.tax_display_cart === 'incl' ) {
-	      data.subtotal = this.model.sum(['subtotal', 'subtotal_tax']);
-	      data.cart_discount = this.model.sum(
-	        ['cart_discount', 'cart_discount_tax']
-	      );
-	      data.incl_tax = true;
-	    }
-
-	    return data;
-	  }
-
-	});
-
-/***/ },
-/* 222 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var _ = __webpack_require__(6);
-
-	module.exports = ItemView.extend({
-	  template: _.template( '<%= note %>' ),
-
-	  modelEvents: {
-	    'change:note': 'render'
-	  },
-
-	  events: {
-	    'click'   : 'edit',
-	    'keypress'  : 'saveOnEnter',
-	    'blur'    : 'save'
-	  },
-
-	  onShow: function() {
-	    this.showOrHide();
-	  },
-
-	  showOrHide: function() {
-	    if( this.model.get('note') === '' ) {
-	      this.$el.hide();
-	    }
-	  },
-
-	  edit: function() {
-	    this.$el.attr('contenteditable','true').focus();
-	  },
-
-	  save: function() {
-	    var value = this.$el.text();
-
-	    // validate and save
-	    this.model.save({ note: value });
-	    this.$el.attr('contenteditable','false');
-	    this.showOrHide();
-	  },
-
-	  saveOnEnter: function(e) {
-	    // save note on enter
-	    if (e.which === 13) {
-	      e.preventDefault();
-	      this.$el.blur();
-	    }
-	  },
-
-	  showNoteField: function() {
-	    this.$el.show();
-	    this.$el.attr('contenteditable','true').focus();
-	  }
-	});
-
-/***/ },
-/* 223 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Route = __webpack_require__(115);
-	//var debug = require('debug')('checkout');
-	var POS = __webpack_require__(5);
-	var LayoutView = __webpack_require__(224);
-	var StatusView = __webpack_require__(225);
-	var GatewaysView = __webpack_require__(227);
-	var polyglot = __webpack_require__(17);
-	var Radio = __webpack_require__(4);
-
-	var CheckoutRoute = Route.extend({
-
-	  initialize: function(options){
-	    options = options || {};
-	    this.container = options.container;
-	    this.collection = options.collection;
-	    this.setTabLabel({
-	      tab   : 'right',
-	      label : polyglot.t('titles.checkout')
-	    });
-	  },
-
-	  fetch: function(){
-	    if(this.collection.isNew()){
-	      return this.collection.fetch();
-	    }
-	  },
-
-	  onFetch: function(id){
-	    this.order = this.collection.setActiveOrder(id);
-
-	    if(this.order){
-	      this.listenTo( this.order, 'change:status', function(model){
-	        if(!model.isEditable() && model.get('status') !== 'failed'){
-	          this.navigate('receipt/' + model.id, { trigger: true });
-	        }
-	      });
-	    }
-	  },
-
-	  render: function(){
-	    this.layout = new LayoutView();
-
-	    this.listenTo( this.layout, 'show', function(){
-	      this.showStatus();
-	      this.showGateways();
-	      this.showActions();
-	    });
-
-	    this.container.show(this.layout);
-	  },
-
-	  onRender: function(){
-	    if( this.order && !this.order.isEditable() ){
-	      this.navigate('receipt/' + this.order.id, { trigger: true });
-	    }
-	  },
-
-	  showStatus: function(){
-	    var view = new StatusView({
-	      model: this.order
-	    });
-	    this.layout.getRegion('header').show(view);
-	  },
-
-	  showGateways: function(){
-	    this.order.gateways.order = this.order;
-	    var view = new GatewaysView({
-	      collection: this.order.gateways
-	    });
-	    this.layout.getRegion('list').show(view);
-	  },
-
-	  showActions: function(){
-	    var view = Radio.request('buttons', 'view', {
-	      buttons: [{
-	        action: 'return-to-sale',
-	        className: 'btn pull-left'
-	      },{
-	        action: 'process-payment',
-	        className: 'btn btn-success',
-	        icon: 'prepend'
-	      }]
-	    });
-
-	    this.listenTo(view, {
-	      'action:return-to-sale': function(){
-	        this.navigate('cart/' + this.order.id, { trigger: true });
-	      },
-	      'action:process-payment': function(btn){
-	        btn.trigger('state', 'loading');
-	        this.order.process()
-	          .always(function(){
-	            btn.trigger('state', 'reset');
-	          });
-	      }
-	    });
-
-	    this.layout.getRegion('actions').show(view);
-	  }
-
-	});
-
-	module.exports = CheckoutRoute;
-	POS.attach('POSApp.Checkout.Route', CheckoutRoute);
-
-/***/ },
-/* 224 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-	var POS = __webpack_require__(5);
-	var hbs = __webpack_require__(16);
-
-	var Layout = LayoutView.extend({
-
-	  initialize: function(){
-	    this.template = hbs.compile('' +
-	      '<div class="list-header"></div>' +
-	      '<div class="list"></div>' +
-	      '<div class="list-actions"></div>' +
-	      '<div class="list-footer"></div>'
-	    );
-	  },
-
-	  tagName: 'section',
-
-	  regions: {
-	    header  : '.list-header',
-	    list    : '.list',
-	    actions : '.list-actions',
-	    footer  : '.list-footer'
-	  },
-
-	  attributes: {
-	    'class'         : 'module checkout-module'
-	  }
-
-	});
-
-	module.exports = Layout;
-	POS.attach('POSApp.Checkout.Views.Layout', Layout);
-
-/***/ },
-/* 225 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var POS = __webpack_require__(5);
-	var hbs = __webpack_require__(16);
-	//var $ = require('jquery');
-	var polyglot = __webpack_require__(17);
-	var Tmpl = __webpack_require__(226);
-	var _ = __webpack_require__(6);
-
-	var View = ItemView.extend({
-	  template: hbs.compile(Tmpl),
-
-	  initialize: function(){
-
-	  },
-
-	  templateHelpers: function(){
-	    return {
-	      status: this.getStatus(),
-	      message: this.getMessage()
-	    };
-	  },
-
-	  modelEvents: {
-	    'change:payment_details': 'render'
-	  },
-
-	  getStatus: function(){
-	    if(this.model.get('payment_details.paid') === false){
-	      this.$el.addClass('fail');
-	      return polyglot.t('titles.unpaid');
-	    }
-	    return polyglot.t('titles.to-pay');
-	  },
-
-	  getMessage: function(){
-	    var messages = this.model.get('payment_details.message');
-	    if( _.isArray(messages) ){
-	      return _.last(messages);
-	    }
-	    return messages;
-	  }
-
-	});
-
-	module.exports = View;
-	POS.attach('POSApp.Checkout.Views.Status', View);
-
-/***/ },
-/* 226 */
-/***/ function(module, exports) {
-
-	module.exports = "<h4>{{status}}: {{{money total}}}</h4>\n{{#if message}}\n  <p>{{{message}}}</p>\n{{/if}}"
-
-/***/ },
-/* 227 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var CollectionView = __webpack_require__(103);
-	var Gateway = __webpack_require__(228);
-	var POS = __webpack_require__(5);
-
-	var EmptyView = ItemView.extend({
-	  tagName: 'li',
-	  className: 'empty',
-	  template: '#tmpl-checkout-gateways-empty'
-	});
-
-	var View = CollectionView.extend({
-	  tagName: 'ul',
-	  childView: Gateway,
-	  emptyView: EmptyView
-	});
-
-	module.exports = View;
-	POS.attach('POSApp.Checkout.Views.Gateways', View);
-
-/***/ },
-/* 228 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-	var GatewayView = __webpack_require__(229);
-	var DrawerView = __webpack_require__(230);
-
-	module.exports = LayoutView.extend({
-	  tagName: 'li',
-
-	  template: function() {
-	    return '<div class="gateway"></div><div class="drawer"></div>';
-	  },
-
-	  regions: {
-	    gatewayRegion: '.gateway',
-	    drawerRegion: '.drawer'
-	  },
-
-	  initialize: function(){
-	    this.listenTo(this.model, 'change:active', this.toggleDrawer);
-	  },
-
-	  onRender: function(){
-	    var view = new GatewayView({
-	      model: this.model
-	    });
-	    this.gatewayRegion.show(view);
-	  },
-
-	  onShow: function(){
-	    if(this.model.get('active')){
-	      this.openDrawer();
-	    }
-	  },
-
-	  openDrawer: function(){
-	    var view = new DrawerView({
-	      model: this.model
-	    });
-	    this.drawerRegion.show(view);
-	    this.$el.addClass('active');
-	  },
-
-	  closeDrawer: function(){
-	    this.drawerRegion.empty();
-	    this.$el.removeClass('active');
-	  },
-
-	  toggleDrawer: function(){
-	    if( this.drawerRegion.hasView() ){
-	      this.closeDrawer();
-	    } else {
-	      this.openDrawer();
-	    }
-	  }
-	});
-
-/***/ },
-/* 229 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var hbs = __webpack_require__(16);
-	//var $ = require('jquery');
-
-	module.exports = ItemView.extend({
-	  tagName: 'h5',
-	  template: hbs.compile('' +
-	    '{{method_title}}' +
-	    '{{#if icon}}<img src="{{icon}}">{{/if}}'
-	  ),
-
-	  events: {
-	    'click': 'makeActive'
-	  },
-
-	  makeActive: function(){
-	    this.model.set({
-	      active: true
-	    });
-	  }
-	});
-
-/***/ },
-/* 230 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var FormView = __webpack_require__(119);
-	var hbs = __webpack_require__(16);
-	var $ = __webpack_require__(10);
-	var Numpad = __webpack_require__(219);
-	var Utils = __webpack_require__(79);
-	var polyglot = __webpack_require__(17);
-
-	module.exports = FormView.extend({
-
-	  initialize: function() {
-	    this.template = hbs.compile(
-	      $('script[data-gateway="' + this.model.id + '"]').html()
-	    );
-	    this.order_total = this.model.collection.order.get('total');
-	    this.updateStatusMessage();
-	  },
-
-	  templateHelpers: function(){
-	    return {
-	      total: this.order_total
-	    };
-	  },
-
-	  behaviors: {
-	    Numpad: {
-	      behaviorClass: Numpad
-	    }
-	  },
-
-	  modelEvents: {
-	    'change:message': 'updateStatusMessage'
-	  },
-
-	  onRender: function(){
-	    var self = this;
-
-	    if(this.model.id === 'pos_cash'){
-	      return this.posCashRender();
-	    }
-
-	    if(this.model.id === 'pos_card'){
-	      return this.posCardRender();
-	    }
-
-	    this.$('input, select, textarea').each(function(){
-	      var name = $(this).attr('name');
-	      var id = $(this).attr('id');
-	      if(name){
-	        self.addBinding(null, '*[name="' + name + '"]', name);
-	      }
-	      if(!name && id){
-	        self.addBinding(null, '#' + id, id);
-	      }
-	    });
-	  },
-
-	  posCashRender: function(){
-	    this.addBinding(null, {
-	      '#pos-cash-tendered': {
-	        observe: 'pos-cash-tendered',
-	        onGet: function(value){
-	          this.calcChange(value);
-	          return Utils.formatNumber(value);
-	        },
-	        onSet: function(value){
-	          var val = Utils.unformat(value);
-	          this.calcChange(val);
-	          return val;
-	        },
-	        initialize: function($el, model){
-	          if(!model.get('pos-cash-tendered')){
-	            model.set({ 'pos-cash-tendered': this.order_total });
-	          }
-	        }
-	      }
-	    });
-	  },
-
-	  posCardRender: function(){
-	    this.addBinding(null, {
-	      '#pos-cashback': {
-	        observe: 'pos-cashback',
-	        onGet: Utils.formatNumber,
-	        onSet: Utils.unformat
-	      }
-	    });
-	  },
-
-	  onShow: function() {
-	    this.$el.hide().slideDown(250);
-	  },
-
-	  remove: function() {
-	    this.$el.slideUp( 250, function() {
-	      FormView.prototype.remove.call(this);
-	    }.bind(this));
-	  },
-
-	  calcChange: function(tendered){
-	    var change = tendered - this.order_total;
-	    var msg = polyglot.t('titles.change') + ': ' + Utils.formatMoney(change);
-	    this.model.set({ message: msg });
-	  },
-
-	  updateStatusMessage: function(){
-	    this.model.collection.order.set({
-	      'payment_details.message': this.model.get('message')
-	    });
-	  }
-
-	});
-
-/***/ },
-/* 231 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Route = __webpack_require__(115);
-	var Radio = __webpack_require__(4);
-	//var debug = require('debug')('receipt');
-	var POS = __webpack_require__(5);
-	var LayoutView = __webpack_require__(232);
-	var StatusView = __webpack_require__(233);
-	var ItemsView = __webpack_require__(235);
-	var TotalsView = __webpack_require__(237);
-	var EmailView = __webpack_require__(238);
-	var polyglot = __webpack_require__(17);
-	var Buttons = __webpack_require__(109);
-	var $ = __webpack_require__(10);
-
-	var ReceiptRoute = Route.extend({
-
-	  initialize: function( options ) {
-	    options = options || {};
-	    this.container = options.container;
-	    this.collection = options.collection;
-	    this.setTabLabel({
-	      tab   : 'right',
-	      label : polyglot.t('titles.receipt')
-	    });
-	    this.tax = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'tax'
-	    }) || {};
-	  },
-
-	  fetch: function() {
-	    if(this.collection.isNew()){
-	      return this.collection.fetch();
-	    }
-	  },
-
-	  onFetch: function(id){
-	    this.order = this.collection.get(id);
-	    this.order.clearCart();
-
-	    // redirect, ie: offsite payment
-	    var redirect = this.order.get('payment_details.redirect');
-	    if(redirect && redirect !== ''){
-	      window.open(redirect, '_blank');
-	    }
-
-	    // update products
-	    var products = Radio.request('entities', 'get', {
-	      type: 'collection',
-	      name: 'products'
-	    });
-	    products.fetchUpdated();
-	  },
-
-	  render: function() {
-	    this.layout = new LayoutView({
-	      model: this.order
-	    });
-
-	    this.listenTo( this.layout, 'show', function() {
-	      this.showStatus();
-	      this.showItems();
-	      this.showTotals();
-	      this.showActions();
-	    });
-
-	    this.container.show( this.layout );
-	  },
-
-	  showStatus: function(){
-	    var view = new StatusView({
-	      model: this.order
-	    });
-	    this.layout.getRegion('status').show(view);
-	  },
-
-	  showItems: function(){
-	    var view = new ItemsView({
-	      model: this.order
-	    });
-
-	    this.layout.getRegion('list').show(view);
-	  },
-
-	  showTotals: function(){
-	    var view = new TotalsView({
-	      model: this.order
-	    });
-
-	    this.layout.getRegion('totals').show(view);
-	  },
-
-	  showActions: function(){
-	    var view = new Buttons({
-	      buttons: [{
-	        action: 'print',
-	        className: 'btn-primary pull-left'
-	      }, {
-	        action: 'email',
-	        className: 'btn-primary pull-left'
-	      }, {
-	        action: 'new-order',
-	        className: 'btn-success'
-	      }]
-	    });
-
-	    this.listenTo(view, {
-	      'action:print': this.print,
-	      'action:email': this.email,
-	      'action:new-order': function(){
-	        this.navigate('', { trigger: true });
-	      }
-	    });
-
-	    this.layout.getRegion('actions').show(view);
-	  },
-
-	  print: function(){
-	    Radio.request('print', 'print', {
-	      template: 'receipt',
-	      model: this.order
-	    });
-	  },
-
-	  email: function(){
-	    var self = this;
-
-	    var view = new EmailView({
-	      order_id: this.order.get('id'),
-	      email: this.order.get('customer.email')
-	    });
-
-	    Radio.request('modal', 'open', view)
-	      .then(function(args){
-	        var buttons = args.view.getButtons();
-	        self.listenTo(buttons, 'action:send', function(btn, view){
-	          var email = args.view.getRegion('content').currentView.getEmail();
-	          self.send(btn, view, email);
-	        });
-	      });
-
-	  },
-
-	  // todo: refactor
-	  send: function(btn, view, email){
-	    var order_id = this.order.get('id'),
-	        ajaxurl = Radio.request('entities', 'get', {
-	          type: 'option',
-	          name: 'ajaxurl'
-	        });
-
-	    btn.trigger('state', [ 'loading', '' ]);
-
-	    function onSuccess(resp){
-	      if(resp.result === 'success'){
-	        btn.trigger('state', [ 'success', resp.message ]);
-	      } else {
-	        btn.trigger('state', [ 'error', resp.message ]);
-	      }
-	    }
-
-	    function onError(jqxhr){
-	      var message = null;
-	      if(jqxhr.responseJSON && jqxhr.responseJSON.errors){
-	        message = jqxhr.responseJSON.errors[0].message;
-	      }
-	      btn.trigger('state', ['error', message]);
-	    }
-
-	    $.getJSON( ajaxurl, {
-	      action: 'wc_pos_email_receipt',
-	      order_id: order_id,
-	      email : email
-	    })
-	    .done(onSuccess)
-	    .fail(onError);
-	  }
-
-	});
-
-	module.exports = ReceiptRoute;
-	POS.attach('POSApp.Receipt.Route', ReceiptRoute);
-
-/***/ },
-/* 232 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-
-	module.exports = LayoutView.extend({
-	  template: '#tmpl-receipt',
-
-	  tagName: 'section',
-
-	  regions: {
-	    status  : '.status',
-	    list    : '.list',
-	    totals  : '.list-totals',
-	    actions : '.list-actions'
-	  },
-
-	  className: function(){
-	    return 'module receipt-module ' + this.model.get('status');
-	  }
-
-	});
-
-/***/ },
-/* 233 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var POS = __webpack_require__(5);
-	var hbs = __webpack_require__(16);
-	//var $ = require('jquery');
-	var polyglot = __webpack_require__(17);
-	var Tmpl = __webpack_require__(234);
-	var _ = __webpack_require__(6);
-
-	var View = ItemView.extend({
-
-	  template: hbs.compile(Tmpl),
-
-	  className: function(){
-	    return this.model.get('payment_details.paid') ? 'paid' : 'unpaid';
-	  },
-
-	  initialize: function(){
-	    var status = this.model.get('payment_details.paid') ? 'paid' : 'unpaid';
-	    this.status = polyglot.t('titles.' + status);
-
-	    var message = this.model.get('payment_details.message');
-	    if( _.isArray(message) ){
-	      this.message = _.last(message);
-	    } else {
-	      this.message = message;
-	    }
-	  },
-
-	  templateHelpers: function(){
-	    return {
-	      status: this.status,
-	      message: this.message
-	    };
-	  }
-
-	});
-
-	module.exports = View;
-	POS.attach('POSApp.Receipt.Views.Status', View);
-
-/***/ },
-/* 234 */
-/***/ function(module, exports) {
-
-	module.exports = "<h4>{{status}}: {{{money total}}}</h4>\n{{#if message}}\n  <p>{{{message}}}</p>\n{{/if}}"
-
-/***/ },
-/* 235 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ReceiptView = __webpack_require__(236);
-	var POS = __webpack_require__(5);
-	var hbs = __webpack_require__(16);
-	var $ = __webpack_require__(10);
-
-	var View = ReceiptView.extend({
-	  tagName: 'ul',
-	  template: hbs.compile( $('#tmpl-receipt-items').html() )
-	});
-
-	module.exports = View;
-	POS.attach('POSApp.Receipt.Views.Items', View);
-
-/***/ },
-/* 236 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Prepare order JSON for display on receipts
-	 */
-	var ItemView = __webpack_require__(15);
-	var POS = __webpack_require__(5);
-	var Radio = __webpack_require__(4);
-	var _ = __webpack_require__(6);
-
-	/* jshint  -W101, -W071, -W074 */
-	module.exports = POS.ReceiptView = ItemView.extend({
-
-	  viewOptions: ['data'],
-
-	  initialize: function() {
-	    var tax = Radio.request('entities', 'get', {
-	        type: 'option',
-	        name: 'tax'
-	      }) || {};
-	    var data = this.prepare( this.model.toJSON(), tax );
-	    this.mergeOptions({ data: data }, this.viewOptions);
-	  },
-
-	  templateHelpers: function(){
-	    return this.data;
-	  },
-
-	  prepare: function(data, settings){
-	    data.incl_tax = settings.tax_display_cart === 'incl';
-	    data.itemized = settings.tax_total_display === 'itemized';
-
-	    /**
-	     * Line Items
-	     */
-	      // - add regular_price
-	    _.each( data.line_items, function(item) {
-	      item.on_sale = item.subtotal !== item.total;
-	      if(!item.regular_price){
-	        var quantity = item.quantity || 1;
-	        item.regular_price = parseFloat(item.subtotal) / quantity;
-	      }
-	    });
-
-	    if( data.incl_tax ) {
-	      _.each( data.line_items, function(item) {
-	        var quantity = item.quantity || 1;
-	        item.subtotal = parseFloat(item.subtotal) + parseFloat(item.subtotal_tax);
-	        item.total = parseFloat(item.total) + parseFloat(item.total_tax);
-	        item.regular_price = item.subtotal / quantity;
-	        item.price = item.total / quantity;
-	      });
-	    }
-
-	    /**
-	     * Totals
-	     */
-	    if( data.itemized ){
-	      _.each( data.tax_lines, function(line) {
-	        line.has_tax = 0 !== parseFloat(line.total);
-	      });
-	    }
-
-	    // WC 2.3 changed cart_discount to total_discount
-	    data.cart_discount = data.cart_discount || data.total_discount;
-
-	    if( data.incl_tax ) {
-	      data.subtotal = parseFloat(data.subtotal) + parseFloat(data.subtotal_tax);
-	      data.cart_discount = parseFloat(data.cart_discount) +
-	      parseFloat(data.cart_discount_tax);
-
-	      _.each( data.shipping_lines, function(item) {
-	        item.total = parseFloat(item.total) + parseFloat(item.total_tax);
-	      });
-
-	      _.each( data.fee_lines, function(item) {
-	        item.total = parseFloat(item.total) + parseFloat(item.total_tax);
-	      });
-	    }
-
-	    data.has_tax = data.total_tax && 0 !== parseFloat(data.total_tax);
-	    data.has_discount = data.cart_discount && 0 !== parseFloat(data.cart_discount);
-	    data.has_order_discount = data.order_discount && 0 !== parseFloat(data.order_discount);
-
-	    return data;
-	  }
-
-	});
-	/* jshint  +W101, +W071, +W074 */
-
-/***/ },
-/* 237 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ReceiptView = __webpack_require__(236);
-	var POS = __webpack_require__(5);
-	var hbs = __webpack_require__(16);
-	var $ = __webpack_require__(10);
-
-	var View = ReceiptView.extend({
-	  tagName: 'ul',
-	  template: hbs.compile( $('#tmpl-receipt-totals').html() )
-	});
-
-	module.exports = View;
-	POS.attach('POSApp.Receipt.Views.Totals', View);
-
-/***/ },
-/* 238 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var POS = __webpack_require__(5);
-	var hbs = __webpack_require__(16);
-	var polyglot = __webpack_require__(17);
-	var Tmpl = __webpack_require__(239);
-
-	var View = ItemView.extend({
-
-	  template: hbs.compile(Tmpl),
-
-	  viewOptions: ['email'],
-
-	  initialize: function(options){
-	    this.mergeOptions(options, this.viewOptions);
-	    this.modal = {
-	      header: {
-	        title: polyglot.t('titles.email-receipt')
-	      },
-	      footer: {
-	        buttons: [
-	          {
-	            type: 'message'
-	          }, {
-	            action: 'send',
-	            className: 'btn-success',
-	            icon: 'prepend'
-	          }
-	        ]
-	      }
-	    };
-	  },
-
-	  ui: {
-	    email: 'input'
-	  },
-
-	  templateHelpers: function(){
-	    var data = {
-	      email: this.email
-	    };
-	    return data;
-	  },
-
-	  getEmail: function(){
-	    return this.ui.email.val() || this.email;
-	  }
-
-	});
-
-	module.exports = View;
-	POS.attach('POSApp.Receipt.Views.Email', View);
-
-/***/ },
-/* 239 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"input-group\">\n  <span class=\"input-group-addon\">@</span>\n  <input type=\"text\" class=\"form-control\" placeholder=\"{{email}}\">\n</div>"
-
-/***/ },
-/* 240 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Router = __webpack_require__(123);
-	var LayoutView = __webpack_require__(241);
-	var FormRoute = __webpack_require__(242);
-	var StatusRoute = __webpack_require__(245);
-	var Radio = __webpack_require__(4);
-	var Collection = __webpack_require__(64);
-	var $ = __webpack_require__(10);
-
-	module.exports = Router.extend({
-
-	  routes: {
-	    'support' : 'showStatus'
-	  },
-
-	  initialize: function(options) {
-	    this.container = options.container;
-	    this.collection = new Collection();
-	  },
-
-	  onBeforeEnter: function() {
-	    this.layout = new LayoutView();
-	    this.container.show(this.layout);
-	    this.updateTitle();
-	    this.showForm();
-	  },
-
-	  updateTitle: function(){
-	    // TODO: put menu into params
-	    var title = $('#menu li.support').text();
-	    Radio.request('header', 'update:title', title);
-	  },
-
-	  showForm: function(){
-	    var route = new FormRoute({
-	      container  : this.layout.getRegion('left')
-	    });
-	    route.enter();
-	  },
-
-	  showStatus: function(){
-	    return new StatusRoute({
-	      container  : this.layout.getRegion('right'),
-	      collection : this.collection
-	    });
-	  }
-
-	});
-
-/***/ },
-/* 241 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-
-	module.exports = LayoutView.extend({
-
-	  columns: 2,
-
-	  template: function(){
-	    return '' +
-	      '<div id="left"></div>' +
-	      '<div id="right"></div>';
-	  },
-
-	  regions: {
-	    left: '#left',
-	    right: '#right'
-	  }
-
-	});
-
-/***/ },
-/* 242 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Route = __webpack_require__(115);
-	var POS = __webpack_require__(5);
-	var Layout = __webpack_require__(243);
-	var Form = __webpack_require__(244);
-	var $ = __webpack_require__(10);
-	var Radio = __webpack_require__(4);
-	var Buttons = __webpack_require__(109);
-	var _ = __webpack_require__(6);
-
-	var FormRoute = Route.extend({
-
-	  initialize: function(options){
-	    this.container = options.container;
-	    this.setTabLabel({
-	      tab   : 'left',
-	      label : $('#tmpl-support-form').data('title')
-	    });
-	  },
-
-	  fetch: function(){
-
-	  },
-
-	  render: function(){
-	    this.layout = new Layout();
-
-	    this.listenTo(this.layout, 'show', function(){
-	      this.showForm();
-	      this.showActions();
-	    });
-
-	    this.container.show(this.layout);
-	  },
-
-	  showForm: function(){
-	    var view = new Form();
-	    this.layout.getRegion('form').show( view );
-	  },
-
-	  showActions: function(){
-	    var view = new Buttons({
-	      buttons: [{
-	        type: 'message'
-	      },{
-	        action: 'send',
-	        className: 'btn-success',
-	        icon: 'prepend'
-	      }]
-	    });
-
-	    this.listenTo(view, 'action:send', this.email);
-
-	    this.layout.getRegion('actions').show(view);
-	  },
-
-	  email: function(btn, view){
-	    var form = this.layout.getRegion('form').currentView,
-	        data = {
-	          action  : 'wc_pos_send_support_email',
-	          name    : form.$('[data-name="name"]').text(),
-	          email   : form.$('[data-name="email"]').text(),
-	          message : form.$('[data-name="message"]').text(),
-	          status  : form.$('#pos_status').val()
-	        },
-	        ajaxurl = Radio.request('entities', 'get', {
-	          type: 'option',
-	          name: 'ajaxurl'
-	        });
-
-	    btn.trigger('state', 'loading');
-	    view.triggerMethod('message', 'reset');
-
-	    var onError = function(message){
-	      btn.trigger('state', 'error');
-	      view.triggerMethod('message', message, 'error');
-	    };
-
-	    var onSuccess = function(data){
-	      if(!_.isObject(data) || data.result !== 'success'){
-	        return onError(data.message);
-	      }
-	      btn.trigger('state', 'success');
-	      view.triggerMethod('message', data.message, 'success');
-	    };
-
-	    $.post( ajaxurl, data )
-	    .done(onSuccess)
-	    .fail(onError);
-	  }
-
-	});
-
-	module.exports = FormRoute;
-	POS.attach('SupportApp.Form.Route', FormRoute);
-
-
-/***/ },
-/* 243 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-	var POS = __webpack_require__(5);
-	var $ = __webpack_require__(10);
-
-	var Layout = LayoutView.extend({
-	  template: function(){
-	    return '' +
-	      '<div class="list-header"><div><h4></h4></div></div>' +
-	      '<div class="list"></div>' +
-	      '<div class="list-actions"></div>' +
-	      '<div class="list-footer"></div>';
-	  },
-
-	  tagName: 'section',
-
-	  regions: {
-	    header   : '.list-header',
-	    form     : '.list',
-	    actions  : '.list-actions',
-	    footer   : '.list-footer'
-	  },
-
-	  attributes: {
-	    'class'  : 'module support-module'
-	  },
-
-	  onRender: function(){
-	    var title = $('#tmpl-support-form').data('title');
-	    this.$('.list-header h4').text(title);
-	  }
-
-	});
-
-	module.exports = Layout;
-	POS.attach('SupportApp.Views.Layout', Layout);
-
-/***/ },
-/* 244 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var $ = __webpack_require__(10);
-
-	module.exports = ItemView.extend({
-	  tagName: 'ul',
-	  template: '#tmpl-support-form',
-
-	  ui: {
-	    toggle : '.toggle',
-	    status : '#pos_status',
-	    message: 'div[data-name="message"]'
-	  },
-
-	  events: {
-	    'click @ui.toggle': 'toggleReport',
-	    'focusout @ui.message': 'focusout'
-	  },
-
-	  onRender: function(){
-	    this.ui.status.append('\n*** Browser Info ***\n\n' +
-	      navigator.userAgent + '; ' + $('html').attr('class') + '\n\n');
-	  },
-
-	  toggleReport: function(e) {
-	    e.preventDefault();
-	    $(e.currentTarget).next('textarea').toggle();
-	  },
-
-	  focusout: function(e){
-	    var element = $(e.target);
-	    if (!element.text().replace(' ', '').length) {
-	      element.empty();
-	    }
-	  }
-
-	});
-
-/***/ },
-/* 245 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Route = __webpack_require__(115);
-	var POS = __webpack_require__(5);
-	var Layout = __webpack_require__(246);
-	var Status = __webpack_require__(247);
-	var $ = __webpack_require__(10);
-	var _ = __webpack_require__(6);
-	//var Modernizr = global['Modernizr'];
-	var Radio = __webpack_require__(4);
-	var polyglot = __webpack_require__(17);
-	//var debug = require('debug')('systemStatus');
-
-	var StatusRoute = Route.extend({
-
-	  databases: ['products', 'orders', 'cart'],
-
-	  initialize: function(options){
-	    this.container = options.container;
-	    this.collection = options.collection;
-	    this.setTabLabel({
-	      tab   : 'right',
-	      label : polyglot.t('titles.system-status')
-	    });
-
-	    this.ajaxurl = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'ajaxurl'
-	    });
-
-	    this.nonce = Radio.request('entities', 'get', {
-	      type: 'option',
-	      name: 'nonce'
-	    });
-	  },
-
-	  fetch: function(){
-	    // if not fetched, need to fetch all local records
-	    var fetched = _.map(this.databases, this.fetchDB, this);
-	    // add the server tests
-	    fetched.push( this._fetch() );
-	    return $.when.apply($, fetched);
-	  },
-
-	  _fetch: function(){
-	    var self = this;
-	    return $.getJSON( this.ajaxurl, {
-	      action: 'wc_pos_system_status',
-	      security: this.nonce
-	    }, function( resp ){
-	      self.tests = resp;
-	    });
-	  },
-
-	  render: function(){
-	    this.layout = new Layout();
-
-	    this.listenTo(this.layout, 'show', function(){
-	      this.showStatus();
-	    });
-
-	    this.container.show(this.layout);
-	  },
-
-	  showStatus: function(){
-	    var view = new Status({
-	      tests: this.tests,
-	      storage: this.storageStatus()
-	    });
-
-	    this.listenTo(view, {
-	      'action:clear'  : this.clearDB
-	    });
-
-	    this.layout.getRegion('status').show( view );
-	  },
-
-	  storageStatus: function(){
-	    return _.map(this.databases, function(db){
-	      var title = polyglot.t('titles.' + db),
-	          count = this[db].length,
-	          message = title + ': ' + count + ' ' +
-	            polyglot.t('plural.records', count);
-	      return {
-	        message : message,
-	        button  : {
-	          action: 'clear-' + db,
-	          label : 'Clear'
-	        }
-	      };
-	    }, this);
-	  },
-
-	  fetchDB: function(db){
-	    this[db] = Radio.request('entities', 'get', {
-	      type: 'collection',
-	      name: db
-	    });
-
-	    if(this[db].isNew()){
-	      return this[db].fetch();
-	    }
-	  },
-
-	  clearDB: function(db){
-	    var collection = this[db],
-	        self = this;
-
-	    collection.db.clear()
-	      .then(function(){
-	        collection.reset();
-	        collection.queue = [];
-	        self.render();
-	      });
-	  }
-
-	});
-
-	module.exports = StatusRoute;
-	POS.attach('SupportApp.Status.Route', StatusRoute);
-
-/***/ },
-/* 246 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-	var POS = __webpack_require__(5);
-	var polyglot = __webpack_require__(17);
-
-	var Layout = LayoutView.extend({
-	  template: function(){
-	    var title = polyglot.t('titles.system-status');
-	    return '' +
-	      '<div class="list-header"><div><h4>' + title + '</h4></div></div>' +
-	      '<div class="list"></div>' +
-	      '<div class="list-footer"></div>';
-	  },
-
-	  tagName: 'section',
-
-	  regions: {
-	    header   : '.list-header',
-	    status   : '.list',
-	    footer   : '.list-footer'
-	  },
-
-	  attributes: {
-	    'class'  : 'module status-module'
-	  }
-
-	});
-
-	module.exports = Layout;
-	POS.attach('SupportApp.Views.Layout', Layout);
-
-/***/ },
-/* 247 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ItemView = __webpack_require__(15);
-	var $ = __webpack_require__(10);
-	var Tmpl = __webpack_require__(248);
-	var hbs = __webpack_require__(16);
-	var polyglot = __webpack_require__(17);
-	var EmulateHTTP = __webpack_require__(139);
-
-	module.exports = ItemView.extend({
-	  tagName: 'ul',
-	  template: hbs.compile(Tmpl),
-
-	  ui: {
-	    toggle: '.toggle',
-	    btn   : '.btn'
-	  },
-
-	  events: {
-	    'click @ui.toggle': 'toggleReport',
-	    'click @ui.btn'   : 'buttonClick'
-	  },
-
-	  behaviors: {
-	    EmulateHTTP: {
-	      behaviorClass: EmulateHTTP
-	    }
-	  },
-
-	  templateHelpers: function(){
-	    return {
-	      'sub-heading': polyglot.t('titles.local-storage'),
-	      tests: this.options.tests,
-	      storage: this.options.storage
-	    };
-	  },
-
-	  toggleReport: function(e){
-	    e.preventDefault();
-	    $(e.currentTarget).next('textarea').toggle();
-	  },
-
-	  buttonClick: function(e){
-	    var action = $(e.target).data('action').split('-'),
-	        key = action.shift();
-
-	    if(key){
-	      e.preventDefault();
-	      this.trigger('action:' + key, action[0]);
-	    }
-	  }
-
-	});
-
-/***/ },
-/* 248 */
-/***/ function(module, exports) {
-
-	module.exports = "{{#each tests}}\n  <li>\n    <div class=\"shrink\">\n      {{#if pass}}\n        <i class=\"icon-success icon-lg\"></i>\n      {{else}}\n        <i class=\"icon-error icon-lg\"></i>\n      {{/if}}\n    </div>\n    <div class=\"title\">{{title}}</div>\n    <div class=\"message\">\n      {{{message}}}\n      {{#each buttons}}\n        <a href=\"{{#if href}}{{href}}{{else}}#{{/if}}\" {{#if action}}data-action=\"{{action}}\"{{/if}} class=\"btn btn-default\">{{prompt}}</a>\n      {{/each}}\n    </div>\n  </li>\n{{/each}}\n\n<li class=\"sub-heading\"><div>{{sub-heading}}</div></li>\n\n{{#each storage}}\n<li>\n  {{#if icon}}\n  <div class=\"shrink\">\n    <i class=\"icon-{{icon}} icon-lg\"></i>\n  </div>\n  {{/if}}\n  {{#if title}}\n  <div class=\"title\">{{title}}</div>\n  {{/if}}\n  <div class=\"message\">\n    {{{message}}}\n    {{#if button}}\n      <button class=\"btn btn-default\" data-action=\"{{button.action}}\">{{button.label}}</button>\n    {{/if}}\n  </div>\n</li>\n{{/each}}"
-
-/***/ },
-/* 249 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var POS = __webpack_require__(5);
-	var Router = __webpack_require__(123);
-	var LayoutView = __webpack_require__(250);
-	var ReceiptRoute = __webpack_require__(251);
-	var Radio = __webpack_require__(4);
-	//var bb = require('backbone');
-
-	var PrintRouter = Router.extend({
-	  routes: {
-	    'print(/:id)(/)' : 'showReceipt'
-	  },
-
-	  initialize: function(options) {
-	    this.container = options.container;
-	  },
-
-	  onBeforeEnter: function() {
-	    this.layout = new LayoutView();
-	    this.container.show(this.layout);
-	  },
-
-	  onBeforeRoute: function(){
-	    this.showActions();
-	  },
-
-	  showReceipt: function(){
-	    return new ReceiptRoute({
-	      container: this.layout.getRegion('iframe')
-	    });
-	  },
-
-	  showActions: function(){
-	    var buttons = Radio.request('buttons', 'view', {
-	      buttons: [{
-	        action: 'print',
-	        className: 'btn-success'
-	      }]
-	    });
-
-	    this.listenTo(buttons, 'action:print', function(){
-	      this.layout.getRegion('iframe').currentView.print();
-	    });
-
-	    this.layout.getRegion('actions').show(buttons);
-	  }
-
-	});
-
-	module.exports = PrintRouter;
-	POS.attach('Print.Router', PrintRouter);
-
-/***/ },
-/* 250 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var LayoutView = __webpack_require__(13);
-
-	module.exports = LayoutView.extend({
-
-	  className: 'print-preview',
-
-	  template: function(){
-	    return '' +
-	      '<div id="iframe"></div>' +
-	      '<div id="actions"></div>';
-	  },
-
-	  regions: {
-	    iframe: '#iframe',
-	    actions: '#actions'
-	  }
-
-	});
-
-/***/ },
-/* 251 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Route = __webpack_require__(115);
-	var Radio = __webpack_require__(4);
-	var View = __webpack_require__(252);
-
-	var ReceiptRoute = Route.extend({
-
-	  initialize: function( options ) {
-	    options = options || {};
-	    this.container = options.container;
-	    this.collection = Radio.request('entities', 'get', {
-	      name: 'orders',
-	      type: 'collection'
-	    });
-	  },
-
-	  fetch: function() {
-	    if (this.collection.length === 0) {
-	      return this.collection.fetch({ remote: true });
-	    }
-	  },
-
-	  render: function() {
-	    var view = new View({
-	      model: this.collection.at(0)
-	    });
-	    this.container.show(view);
-	  }
-
-	});
-
-	module.exports = ReceiptRoute;
-
-/***/ },
-/* 252 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ReceiptView = __webpack_require__(236);
-	var hbs = __webpack_require__(16);
-	var $ = __webpack_require__(10);
-
-	module.exports = ReceiptView.extend({
-
-	  tagName: 'iframe',
-
-	  template: function(){},
-
-	  onShow: function(){
-	    var template = hbs.compile( $('#tmpl-print-receipt').html() );
-	    this.window = this.el.contentWindow;
-	    this.window.document.write(template( this.data ));
-	  },
-
-	  print: function(){
-	    this.window.focus(); // required for IE
-	    this.window.print();
-	  }
-
-	});
-
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var _ = __webpack_require__(6);
-	var hbs = __webpack_require__(16);
-	var accounting = __webpack_require__(61);
-	var moment = __webpack_require__(74);
-	var Utils = __webpack_require__(79);
-	//var Radio = require('backbone.radio');
+	var _ = __webpack_require__(5);
+	var hbs = __webpack_require__(7);
+	var accounting = __webpack_require__(9);
+	var moment = __webpack_require__(27);
+	var Utils = __webpack_require__(8);
+	var App = __webpack_require__(2);
 
 	/**
 	 * is, compare helpers taken from
@@ -15734,6 +11567,27 @@
 	  }
 	});
 
+	hbs.registerHelper('formatCustomerName', function(customer) {
+	  var name = _(customer).pick(['first_name','last_name'])
+	    .values()
+	    .map(function( value ){
+	      return value.trim();
+	    })
+	    .compact()
+	    .value()
+	    .join(' ');
+
+	  if( customer && !name ){
+	    name = customer.username;
+	  }
+
+	  return name;
+	});
+
+	hbs.registerHelper('namespace', function(str){
+	  return App.prototype.namespace(str);
+	});
+
 	//hbs.registerHelper('getOption', function(key){
 	//  var lookup = key.split('.');
 	//  var option = Radio.request( 'entities', 'get', {
@@ -15745,6 +11599,6440 @@
 	//  }
 	//  return option;
 	//});
+
+/***/ },
+/* 112 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Application = __webpack_require__(2);
+	var bb = __webpack_require__(16);
+	var LayoutView = __webpack_require__(113);
+	var debug = __webpack_require__(13)('app');
+
+	module.exports = Application.extend({
+
+	  initialize: function() {
+	    // init Root LayoutView
+	    this.layout = new LayoutView();
+	    this.layout.render();
+	  },
+
+	  /**
+	   * Set up application with start params
+	   */
+	  onBeforeStart: function(){
+	    // debugging
+	    debug( 'starting WooCommerce POS app' );
+
+	    // start header service
+	    this.headerService.start();
+	  },
+
+	  onStart: function(){
+	    bb.history.start();
+	  }
+
+	});
+
+/***/ },
+/* 113 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+	var $ = __webpack_require__(6);
+	var Radio = __webpack_require__(4);
+	var globalChannel = Radio.channel('global');
+
+	module.exports = LayoutView.extend({
+	  el: '#page',
+
+	  template: function(){
+	    return '' +
+	      '<header id="header"></header>' +
+	      '<div id="menu"></div>' +
+	      '<div id="tabs" class="tabs"></div>' +
+	      '<main id="main"></main>' +
+	      '<div id="modal"></div>';
+	  },
+
+	  regions: {
+	    header: '#header',
+	    menu  : '#menu',
+	    tabs  : '#tabs',
+	    main  : '#main',
+	    modal : '#modal'
+	  },
+
+	  initialize: function(){
+	    this.getRegion('main').on('show', this.setup, this);
+	    globalChannel.on('tab:label', this.updateTabLabel, this);
+	  },
+
+	  setup: function(layout){
+	    if(layout.columns && layout.columns === 2){
+	      this.$el.addClass('two-column');
+	      this.showTabs();
+	    } else {
+	      this.$el.removeClass('two-column');
+	      this.getRegion('tabs').empty();
+	    }
+	  },
+
+	  showTabs: function(){
+	    var tabs = this.getRegion('main').tabs = Radio.request('tabs', 'view', {
+	      tabs: [
+	        {id: 'left'},
+	        {id: 'right'}
+	      ]
+	    });
+	    this.listenTo(tabs.collection, 'active:tab', this.toggleLayout);
+	    this.getRegion('tabs').show(tabs);
+	  },
+
+	  toggleLayout: function(model){
+	    $('#main').removeClass('left-active right-active');
+	    $('#main').addClass(model.id + '-active');
+	  },
+
+	  updateTabLabel: function(options){
+	    this.getRegion('main').tabs.setLabel(options);
+	  }
+
+	});
+
+/***/ },
+/* 114 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// some nice features may be:
+	// - queue which prioritises tasks
+	// - retry for server timeouts
+
+	// DO NOT include this file in wp-admin
+	// changes are made to the global $.ajax & bb.sync
+
+	var bb = __webpack_require__(16);
+	var Radio = __webpack_require__(4);
+	bb.idbSync = __webpack_require__(115);
+	bb.ajaxSync = bb.sync;
+
+	// set jquery ajax globals
+	bb.$.ajaxSetup({
+	  data: {
+	    security: function(){
+	      return Radio.request('entities', 'get', {
+	        type: 'option',
+	        name: 'nonce'
+	      });
+	    }
+	  },
+	  // for straight jquery ajax calls
+	  beforeSend: function(xhr){
+	    xhr.setRequestHeader('X-WC-POS', 1);
+	  },
+	  timeout: 50000 // 50 seconds
+	});
+
+	// global ajax error handler
+	bb.$( document ).ajaxError(function( event, jqXHR, ajaxSettings, thrownError ) {
+	  Radio.trigger('global', 'error', {
+	    jqXHR       : jqXHR,
+	    thrownError : thrownError
+	  });
+	});
+
+	// override Backbone.sync
+	bb.sync = function(method, entity, options) {
+	  // idb
+	  if(!options.remote &&
+	    (entity.db || (entity.collection && entity.collection.db))){
+	    return bb.idbSync.apply(this, [method, entity, options]);
+	  }
+	  // server
+	  options.beforeSend = function(xhr){
+	    xhr.setRequestHeader('X-WC-POS', 1);
+	  };
+	  return bb.ajaxSync.apply(this, [method, entity, options]);
+	};
+
+/***/ },
+/* 115 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $ = __webpack_require__(6);
+	var noop = function(){};
+
+	var methods = {
+	  'read': function(model, options, db){
+	    if(model.id){
+	      return db.read(model, options);
+	    }
+	    return db.getAll(options);
+	  },
+	  'create': function(model, options, db){
+	    if (model.id) {
+	      return db.update(model, options);
+	    }
+	    return db.create(model, options);
+	  },
+	  'update': function(model, options, db){
+	    if (model.id) {
+	      return db.update(model, options);
+	    }
+	    return db.create(model, options);
+	  },
+	  'delete': function(model, options, db){
+	    if (model.id) {
+	      return db.destroy(model, options);
+	    }
+	  }
+	};
+
+	var sync = function(method, entity, options) {
+	  var deferred = new $.Deferred(),
+	      db = entity.db || entity.collection.db,
+	      success = options.success || noop,
+	      error = options.success || noop;
+
+	  options.success = function (result) {
+	    success.apply(this, arguments);
+	    deferred.resolve(result);
+	  };
+
+	  options.error = function (result) {
+	    error.apply(this, arguments);
+	    deferred.reject(result);
+	  };
+
+	  db.open()
+	    .then(function(){
+	      if(methods[method]){
+	        return methods[method](entity, options, db);
+	      }
+	    });
+
+	  return deferred.promise();
+	};
+
+	module.exports = sync;
+
+/***/ },
+/* 116 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var Service = __webpack_require__(20);
+	var TitleBar = __webpack_require__(117);
+	var Menu = __webpack_require__(154);
+	var App = __webpack_require__(2);
+	var Radio = __webpack_require__(4);
+	var routerChannel = Radio.channel('router');
+	var BrowserModal = __webpack_require__(156);
+	var _ = __webpack_require__(5);
+	var Modernizr = global['Modernizr'];
+
+	var Service = Service.extend({
+	  channelName: 'header',
+
+	  initialize: function(options) {
+	    options = options || {};
+	    this.header = options.headerContainer;
+	    this.menu = options.menuContainer;
+
+	    this.listenToOnce(routerChannel, {
+	      'route': this.browserCheck
+	    });
+
+	    this.channel.reply({
+	      'update:title': this.updateTitle
+	    }, this);
+	  },
+
+	  onStart: function(){
+	    this.showTitleBar();
+	    this.showMenu();
+	  },
+
+	  showTitleBar: function(){
+	    var view = new TitleBar();
+	    this.header.show(view);
+	  },
+
+	  updateTitle: function(title){
+	    this.header.currentView.update(title);
+	  },
+
+	  showMenu: function(){
+	    var view = new Menu();
+
+	    this.channel.reply({
+	      'open:menu'   : view.open,
+	      'close:menu'  : view.close
+	    }, view);
+
+	    this.menu.show(view);
+	  },
+
+	  browserCheck: function(){
+	    // smil targets all IE: http://caniuse.com/#feat=svg-smil
+	    var props = ['flexbox', 'indexeddb', 'smil'],
+	        pass = _.every(props, function(prop){ return Modernizr[prop]; });
+
+	    if(!pass){
+	      var view = new BrowserModal();
+	      Radio.request('modal', 'open', view);
+	    }
+	  },
+
+	  onStop: function(){
+	    this.channel.reset();
+	  }
+	});
+
+	module.exports = Service;
+	App.prototype.set('HeaderApp.Service', Service);
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 117 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var App = __webpack_require__(2);
+	var HotKeys = __webpack_require__(118);
+	var Dropdown = __webpack_require__(152);
+	var Radio = __webpack_require__(4);
+	var HelpModal = __webpack_require__(153);
+
+	var View = ItemView.extend({
+	  template: 'header',
+
+	  initialize: function(){
+	    var store = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'store'
+	    });
+	    this.storeName = store.name;
+	  },
+
+	  templateHelpers: function(){
+	    return {
+	      name: this.storeName
+	    };
+	  },
+
+	  ui: {
+	    'menu': '#menu-btn'
+	  },
+
+	  events: {
+	    'click @ui.menu': 'openMenu'
+	  },
+
+	  keyEvents: {
+	    'help': 'showHelpModal'
+	  },
+
+	  behaviors: {
+	    HotKeys: {
+	      behaviorClass: HotKeys
+	    },
+	    Dropdown: {
+	      behaviorClass: Dropdown,
+	      position: 'bottom right'
+	      //tetherOptions: {
+	      //  attachment: 'top right',
+	      //  targetAttachment: 'bottom right'
+	      //}
+	    }
+	  },
+
+	  update: function(str){
+	    var title = str ? str : this.storeName;
+	    this.$('h1').text(title);
+	  },
+
+	  openMenu: function(e){
+	    e.preventDefault();
+	    Radio.request('header', 'open:menu');
+	  },
+
+	  showHelpModal: function() {
+	    var view = new HelpModal();
+	    Radio.request('modal', 'open', view);
+	  }
+
+	});
+
+	module.exports = View;
+	App.prototype.set('HeaderApp.Views.TitleBar', View);
+
+/***/ },
+/* 118 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Behavior = __webpack_require__(79);
+	var Radio = __webpack_require__(4);
+	var _ = __webpack_require__(5);
+	var debug = __webpack_require__(13)('hotkey');
+	var App = __webpack_require__(2);
+	var Combokeys = __webpack_require__(119);
+
+	var HotKeys = Behavior.extend({
+	  keys: [],
+
+	  initialize: function(options) {
+	    options = options || {};
+	    this.element = options.el;
+	    this.hotkeys = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'hotkeys'
+	    }) || {};
+	  },
+
+	  // todo: this.element => this.view.el
+	  // todo: refactor!
+	  onRender: function(){
+	    var element = this.element || document.documentElement,
+	        _view = this.view;
+
+	    this.combokeys = new Combokeys(element);
+
+	    _.each( _view.keyEvents, function(callback, id) {
+	      var trigger = this.hotkeys[id];
+
+	      if (!_.isFunction(callback)) { callback = _view[callback]; }
+
+	      if(!trigger || !callback){
+	        return debug('hotkey not found: ' + id, this.view.keyEvents);
+	      }
+
+	      this.combokeys.bind(trigger.key, function(e, combo){
+	        callback.call(_view, e, combo);
+	      });
+
+	      this.keys.push(trigger.key);
+
+	    }, this);
+	  },
+
+	  onDestroy: function(){
+	    _.each( this.keys, function( key ) {
+	      this.combokeys.unbind(key);
+	    }, this);
+	  }
+
+	});
+
+	module.exports = HotKeys;
+	App.prototype.set('Behaviors.HotKeys', HotKeys);
+
+/***/ },
+/* 119 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	module.exports = function (element) {
+	  var self = this
+	  var Combokeys = self.constructor
+
+	  /**
+	   * a list of all the callbacks setup via Combokeys.bind()
+	   *
+	   * @type {Object}
+	   */
+	  self.callbacks = {}
+
+	  /**
+	   * direct map of string combinations to callbacks used for trigger()
+	   *
+	   * @type {Object}
+	   */
+	  self.directMap = {}
+
+	  /**
+	   * keeps track of what level each sequence is at since multiple
+	   * sequences can start out with the same sequence
+	   *
+	   * @type {Object}
+	   */
+	  self.sequenceLevels = {}
+
+	  /**
+	   * variable to store the setTimeout call
+	   *
+	   * @type {null|number}
+	   */
+	  self.resetTimer
+
+	  /**
+	   * temporary state where we will ignore the next keyup
+	   *
+	   * @type {boolean|string}
+	   */
+	  self.ignoreNextKeyup = false
+
+	  /**
+	   * temporary state where we will ignore the next keypress
+	   *
+	   * @type {boolean}
+	   */
+	  self.ignoreNextKeypress = false
+
+	  /**
+	   * are we currently inside of a sequence?
+	   * type of action ("keyup" or "keydown" or "keypress") or false
+	   *
+	   * @type {boolean|string}
+	   */
+	  self.nextExpectedAction = false
+
+	  self.element = element
+
+	  self.addEvents()
+
+	  Combokeys.instances.push(self)
+	  return self
+	}
+
+	module.exports.prototype.bind = __webpack_require__(120)
+	module.exports.prototype.bindMultiple = __webpack_require__(121)
+	module.exports.prototype.unbind = __webpack_require__(122)
+	module.exports.prototype.trigger = __webpack_require__(123)
+	module.exports.prototype.reset = __webpack_require__(124)
+	module.exports.prototype.stopCallback = __webpack_require__(125)
+	module.exports.prototype.handleKey = __webpack_require__(126)
+	module.exports.prototype.addEvents = __webpack_require__(128)
+	module.exports.prototype.bindSingle = __webpack_require__(135)
+	module.exports.prototype.getKeyInfo = __webpack_require__(136)
+	module.exports.prototype.pickBestAction = __webpack_require__(140)
+	module.exports.prototype.getReverseMap = __webpack_require__(141)
+	module.exports.prototype.getMatches = __webpack_require__(142)
+	module.exports.prototype.resetSequences = __webpack_require__(144)
+	module.exports.prototype.fireCallback = __webpack_require__(145)
+	module.exports.prototype.bindSequence = __webpack_require__(148)
+	module.exports.prototype.resetSequenceTimer = __webpack_require__(149)
+	module.exports.prototype.detach = __webpack_require__(150)
+
+	module.exports.instances = []
+	module.exports.reset = __webpack_require__(151)
+
+	/**
+	 * variable to store the flipped version of MAP from above
+	 * needed to check if we should use keypress or not when no action
+	 * is specified
+	 *
+	 * @type {Object|undefined}
+	 */
+	module.exports.REVERSE_MAP = null
+
+
+/***/ },
+/* 120 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+	/**
+	 * binds an event to Combokeys
+	 *
+	 * can be a single key, a combination of keys separated with +,
+	 * an array of keys, or a sequence of keys separated by spaces
+	 *
+	 * be sure to list the modifier keys first to make sure that the
+	 * correct key ends up getting bound (the last key in the pattern)
+	 *
+	 * @param {string|Array} keys
+	 * @param {Function} callback
+	 * @param {string=} action - "keypress", "keydown", or "keyup"
+	 * @returns void
+	 */
+	module.exports = function (keys, callback, action) {
+	  var self = this
+
+	  keys = keys instanceof Array ? keys : [keys]
+	  self.bindMultiple(keys, callback, action)
+	  return self
+	}
+
+
+/***/ },
+/* 121 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * binds multiple combinations to the same callback
+	 *
+	 * @param {Array} combinations
+	 * @param {Function} callback
+	 * @param {string|undefined} action
+	 * @returns void
+	 */
+	module.exports = function (combinations, callback, action) {
+	  var self = this
+
+	  for (var j = 0; j < combinations.length; ++j) {
+	    self.bindSingle(combinations[j], callback, action)
+	  }
+	}
+
+
+/***/ },
+/* 122 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+	/**
+	 * unbinds an event to Combokeys
+	 *
+	 * the unbinding sets the callback function of the specified key combo
+	 * to an empty function and deletes the corresponding key in the
+	 * directMap dict.
+	 *
+	 * TODO: actually remove this from the callbacks dictionary instead
+	 * of binding an empty function
+	 *
+	 * the keycombo+action has to be exactly the same as
+	 * it was defined in the bind method
+	 *
+	 * @param {string|Array} keys
+	 * @param {string} action
+	 * @returns void
+	 */
+	module.exports = function (keys, action) {
+	  var self = this
+
+	  return self.bind(keys, function () {}, action)
+	}
+
+
+/***/ },
+/* 123 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+	/**
+	 * triggers an event that has already been bound
+	 *
+	 * @param {string} keys
+	 * @param {string=} action
+	 * @returns void
+	 */
+	module.exports = function (keys, action) {
+	  var self = this
+	  if (self.directMap[keys + ':' + action]) {
+	    self.directMap[keys + ':' + action]({}, keys)
+	  }
+	  return this
+	}
+
+
+/***/ },
+/* 124 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * resets the library back to its initial state. This is useful
+	 * if you want to clear out the current keyboard shortcuts and bind
+	 * new ones - for example if you switch to another page
+	 *
+	 * @returns void
+	 */
+	module.exports = function () {
+	  var self = this
+	  self.callbacks = {}
+	  self.directMap = {}
+	  return this
+	}
+
+
+/***/ },
+/* 125 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	* should we stop this event before firing off callbacks
+	*
+	* @param {Event} e
+	* @param {Element} element
+	* @return {boolean}
+	*/
+	module.exports = function (e, element) {
+	  // if the element has the class "combokeys" then no need to stop
+	  if ((' ' + element.className + ' ').indexOf(' combokeys ') > -1) {
+	    return false
+	  }
+
+	  var tagName = element.tagName.toLowerCase()
+
+	  // stop for input, select, and textarea
+	  return tagName === 'input' || tagName === 'select' || tagName === 'textarea' || element.isContentEditable
+	}
+
+
+/***/ },
+/* 126 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * handles a character key event
+	 *
+	 * @param {string} character
+	 * @param {Array} modifiers
+	 * @param {Event} e
+	 * @returns void
+	 */
+	module.exports = function (character, modifiers, e) {
+	  var self = this
+	  var callbacks
+	  var j
+	  var doNotReset = {}
+	  var maxLevel = 0
+	  var processedSequenceCallback = false
+	  var isModifier
+	  var ignoreThisKeypress
+
+	  callbacks = self.getMatches(character, modifiers, e)
+	  // Calculate the maxLevel for sequences so we can only execute the longest callback sequence
+	  for (j = 0; j < callbacks.length; ++j) {
+	    if (callbacks[j].seq) {
+	      maxLevel = Math.max(maxLevel, callbacks[j].level)
+	    }
+	  }
+
+	  // loop through matching callbacks for this key event
+	  for (j = 0; j < callbacks.length; ++j) {
+	    // fire for all sequence callbacks
+	    // this is because if for example you have multiple sequences
+	    // bound such as "g i" and "g t" they both need to fire the
+	    // callback for matching g cause otherwise you can only ever
+	    // match the first one
+	    if (callbacks[j].seq) {
+	      // only fire callbacks for the maxLevel to prevent
+	      // subsequences from also firing
+	      //
+	      // for example 'a option b' should not cause 'option b' to fire
+	      // even though 'option b' is part of the other sequence
+	      //
+	      // any sequences that do not match here will be discarded
+	      // below by the resetSequences call
+	      if (callbacks[j].level !== maxLevel) {
+	        continue
+	      }
+
+	      processedSequenceCallback = true
+
+	      // keep a list of which sequences were matches for later
+	      doNotReset[callbacks[j].seq] = 1
+	      self.fireCallback(callbacks[j].callback, e, callbacks[j].combo, callbacks[j].seq)
+	      continue
+	    }
+
+	    // if there were no sequence matches but we are still here
+	    // that means this is a regular match so we should fire that
+	    if (!processedSequenceCallback) {
+	      self.fireCallback(callbacks[j].callback, e, callbacks[j].combo)
+	    }
+	  }
+
+	  // if the key you pressed matches the type of sequence without
+	  // being a modifier (ie "keyup" or "keypress") then we should
+	  // reset all sequences that were not matched by this event
+	  //
+	  // this is so, for example, if you have the sequence "h a t" and you
+	  // type "h e a r t" it does not match.  in this case the "e" will
+	  // cause the sequence to reset
+	  //
+	  // modifier keys are ignored because you can have a sequence
+	  // that contains modifiers such as "enter ctrl+space" and in most
+	  // cases the modifier key will be pressed before the next key
+	  //
+	  // also if you have a sequence such as "ctrl+b a" then pressing the
+	  // "b" key will trigger a "keypress" and a "keydown"
+	  //
+	  // the "keydown" is expected when there is a modifier, but the
+	  // "keypress" ends up matching the nextExpectedAction since it occurs
+	  // after and that causes the sequence to reset
+	  //
+	  // we ignore keypresses in a sequence that directly follow a keydown
+	  // for the same character
+	  ignoreThisKeypress = e.type === 'keypress' && self.ignoreNextKeypress
+	  isModifier = __webpack_require__(127)
+	  if (e.type === self.nextExpectedAction && !isModifier(character) && !ignoreThisKeypress) {
+	    self.resetSequences(doNotReset)
+	  }
+
+	  self.ignoreNextKeypress = processedSequenceCallback && e.type === 'keydown'
+	}
+
+
+/***/ },
+/* 127 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * determines if the keycode specified is a modifier key or not
+	 *
+	 * @param {string} key
+	 * @returns {boolean}
+	 */
+	module.exports = function (key) {
+	  return key === 'shift' || key === 'ctrl' || key === 'alt' || key === 'meta'
+	}
+
+
+/***/ },
+/* 128 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* eslint-env node, browser */
+	'use strict'
+	module.exports = function () {
+	  var self = this
+	  var on = __webpack_require__(129)
+	  var element = self.element
+
+	  self.eventHandler = __webpack_require__(130).bind(self)
+
+	  on(element, 'keypress', self.eventHandler)
+	  on(element, 'keydown', self.eventHandler)
+	  on(element, 'keyup', self.eventHandler)
+	}
+
+
+/***/ },
+/* 129 */
+/***/ function(module, exports) {
+
+	module.exports = on;
+	module.exports.on = on;
+	module.exports.off = off;
+
+	function on (element, event, callback, capture) {
+	  !element.addEventListener && (event = 'on' + event);
+	  (element.addEventListener || element.attachEvent).call(element, event, callback, capture);
+	  return callback;
+	}
+
+	function off (element, event, callback, capture) {
+	  !element.removeEventListener && (event = 'on' + event);
+	  (element.removeEventListener || element.detachEvent).call(element, event, callback, capture);
+	  return callback;
+	}
+
+
+/***/ },
+/* 130 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * handles a keydown event
+	 *
+	 * @param {Event} e
+	 * @returns void
+	 */
+	module.exports = function (e) {
+	  var self = this
+	  var characterFromEvent
+	  var eventModifiers
+
+	  // normalize e.which for key events
+	  // @see http://stackoverflow.com/questions/4285627/javascript-keycode-vs-charcode-utter-confusion
+	  if (typeof e.which !== 'number') {
+	    e.which = e.keyCode
+	  }
+	  characterFromEvent = __webpack_require__(131)
+	  var character = characterFromEvent(e)
+
+	  // no character found then stop
+	  if (!character) {
+	    return
+	  }
+
+	  // need to use === for the character check because the character can be 0
+	  if (e.type === 'keyup' && self.ignoreNextKeyup === character) {
+	    self.ignoreNextKeyup = false
+	    return
+	  }
+
+	  eventModifiers = __webpack_require__(134)
+	  self.handleKey(character, eventModifiers(e), e)
+	}
+
+
+/***/ },
+/* 131 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * takes the event and returns the key character
+	 *
+	 * @param {Event} e
+	 * @return {string}
+	 */
+	module.exports = function (e) {
+	  var SPECIAL_KEYS_MAP,
+	  SPECIAL_CHARACTERS_MAP
+	  SPECIAL_KEYS_MAP = __webpack_require__(132)
+	  SPECIAL_CHARACTERS_MAP = __webpack_require__(133)
+
+	  // for keypress events we should return the character as is
+	  if (e.type === 'keypress') {
+	    var character = String.fromCharCode(e.which)
+
+	    // if the shift key is not pressed then it is safe to assume
+	    // that we want the character to be lowercase.  this means if
+	    // you accidentally have caps lock on then your key bindings
+	    // will continue to work
+	    //
+	    // the only side effect that might not be desired is if you
+	    // bind something like 'A' cause you want to trigger an
+	    // event when capital A is pressed caps lock will no longer
+	    // trigger the event.  shift+a will though.
+	    if (!e.shiftKey) {
+	      character = character.toLowerCase()
+	    }
+
+	    return character
+	  }
+
+	  // for non keypress events the special maps are needed
+	  if (SPECIAL_KEYS_MAP[e.which]) {
+	    return SPECIAL_KEYS_MAP[e.which]
+	  }
+
+	  if (SPECIAL_CHARACTERS_MAP[e.which]) {
+	    return SPECIAL_CHARACTERS_MAP[e.which]
+	  }
+
+	  // if it is not in the special map
+
+	  // with keydown and keyup events the character seems to always
+	  // come in as an uppercase character whether you are pressing shift
+	  // or not.  we should make sure it is always lowercase for comparisons
+	  return String.fromCharCode(e.which).toLowerCase()
+	}
+
+
+/***/ },
+/* 132 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+	/**
+	 * mapping of special keycodes to their corresponding keys
+	 *
+	 * everything in this dictionary cannot use keypress events
+	 * so it has to be here to map to the correct keycodes for
+	 * keyup/keydown events
+	 *
+	 * @type {Object}
+	 */
+	module.exports = {
+	  8: 'backspace',
+	  9: 'tab',
+	  13: 'enter',
+	  16: 'shift',
+	  17: 'ctrl',
+	  18: 'alt',
+	  20: 'capslock',
+	  27: 'esc',
+	  32: 'space',
+	  33: 'pageup',
+	  34: 'pagedown',
+	  35: 'end',
+	  36: 'home',
+	  37: 'left',
+	  38: 'up',
+	  39: 'right',
+	  40: 'down',
+	  45: 'ins',
+	  46: 'del',
+	  91: 'meta',
+	  93: 'meta',
+	  187: 'plus',
+	  189: 'minus',
+	  224: 'meta'
+	}
+
+	/**
+	 * loop through the f keys, f1 to f19 and add them to the map
+	 * programatically
+	 */
+	for (var i = 1; i < 20; ++i) {
+	  module.exports[111 + i] = 'f' + i
+	}
+
+	/**
+	 * loop through to map numbers on the numeric keypad
+	 */
+	for (i = 0; i <= 9; ++i) {
+	  module.exports[i + 96] = i
+	}
+
+
+/***/ },
+/* 133 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+	/**
+	 * mapping for special characters so they can support
+	 *
+	 * this dictionary is only used incase you want to bind a
+	 * keyup or keydown event to one of these keys
+	 *
+	 * @type {Object}
+	 */
+	module.exports = {
+	  106: '*',
+	  107: '+',
+	  109: '-',
+	  110: '.',
+	  111: '/',
+	  186: ';',
+	  187: '=',
+	  188: ',',
+	  189: '-',
+	  190: '.',
+	  191: '/',
+	  192: '`',
+	  219: '[',
+	  220: '\\',
+	  221: ']',
+	  222: "'"
+	}
+
+
+/***/ },
+/* 134 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * takes a key event and figures out what the modifiers are
+	 *
+	 * @param {Event} e
+	 * @returns {Array}
+	 */
+	module.exports = function (e) {
+	  var modifiers = []
+
+	  if (e.shiftKey) {
+	    modifiers.push('shift')
+	  }
+
+	  if (e.altKey) {
+	    modifiers.push('alt')
+	  }
+
+	  if (e.ctrlKey) {
+	    modifiers.push('ctrl')
+	  }
+
+	  if (e.metaKey) {
+	    modifiers.push('meta')
+	  }
+
+	  return modifiers
+	}
+
+
+/***/ },
+/* 135 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * binds a single keyboard combination
+	 *
+	 * @param {string} combination
+	 * @param {Function} callback
+	 * @param {string=} action
+	 * @param {string=} sequenceName - name of sequence if part of sequence
+	 * @param {number=} level - what part of the sequence the command is
+	 * @returns void
+	 */
+	module.exports = function (combination, callback, action, sequenceName, level) {
+	  var self = this
+
+	  // store a direct mapped reference for use with Combokeys.trigger
+	  self.directMap[combination + ':' + action] = callback
+
+	  // make sure multiple spaces in a row become a single space
+	  combination = combination.replace(/\s+/g, ' ')
+
+	  var sequence = combination.split(' ')
+	  var info
+
+	  // if this pattern is a sequence of keys then run through this method
+	  // to reprocess each pattern one key at a time
+	  if (sequence.length > 1) {
+	    self.bindSequence(combination, sequence, callback, action)
+	    return
+	  }
+
+	  info = self.getKeyInfo(combination, action)
+
+	  // make sure to initialize array if this is the first time
+	  // a callback is added for this key
+	  self.callbacks[info.key] = self.callbacks[info.key] || []
+
+	  // remove an existing match if there is one
+	  self.getMatches(info.key, info.modifiers, {type: info.action}, sequenceName, combination, level)
+
+	  // add this call back to the array
+	  // if it is a sequence put it at the beginning
+	  // if not put it at the end
+	  //
+	  // this is important because the way these are processed expects
+	  // the sequence ones to come first
+	  self.callbacks[info.key][sequenceName ? 'unshift' : 'push']({
+	    callback: callback,
+	    modifiers: info.modifiers,
+	    action: info.action,
+	    seq: sequenceName,
+	    level: level,
+	    combo: combination
+	  })
+	}
+
+
+/***/ },
+/* 136 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * Gets info for a specific key combination
+	 *
+	 * @param  {string} combination key combination ("command+s" or "a" or "*")
+	 * @param  {string=} action
+	 * @returns {Object}
+	 */
+	module.exports = function (combination, action) {
+	  var self = this
+	  var keysFromString
+	  var keys
+	  var key
+	  var j
+	  var modifiers = []
+	  var SPECIAL_ALIASES
+	  var SHIFT_MAP
+	  var isModifier
+
+	  keysFromString = __webpack_require__(137)
+	  // take the keys from this pattern and figure out what the actual
+	  // pattern is all about
+	  keys = keysFromString(combination)
+
+	  SPECIAL_ALIASES = __webpack_require__(138)
+	  SHIFT_MAP = __webpack_require__(139)
+	  isModifier = __webpack_require__(127)
+	  for (j = 0; j < keys.length; ++j) {
+	    key = keys[j]
+
+	    // normalize key names
+	    if (SPECIAL_ALIASES[key]) {
+	      key = SPECIAL_ALIASES[key]
+	    }
+
+	    // if this is not a keypress event then we should
+	    // be smart about using shift keys
+	    // this will only work for US keyboards however
+	    if (action && action !== 'keypress' && SHIFT_MAP[key]) {
+	      key = SHIFT_MAP[key]
+	      modifiers.push('shift')
+	    }
+
+	    // if this key is a modifier then add it to the list of modifiers
+	    if (isModifier(key)) {
+	      modifiers.push(key)
+	    }
+	  }
+
+	  // depending on what the key combination is
+	  // we will try to pick the best event for it
+	  action = self.pickBestAction(key, modifiers, action)
+
+	  return {
+	    key: key,
+	    modifiers: modifiers,
+	    action: action
+	  }
+	}
+
+
+/***/ },
+/* 137 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * Converts from a string key combination to an array
+	 *
+	 * @param  {string} combination like "command+shift+l"
+	 * @return {Array}
+	 */
+	module.exports = function (combination) {
+	  if (combination === '+') {
+	    return ['+']
+	  }
+
+	  return combination.split('+')
+	}
+
+
+/***/ },
+/* 138 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+	/**
+	 * this is a list of special strings you can use to map
+	 * to modifier keys when you specify your keyboard shortcuts
+	 *
+	 * @type {Object}
+	 */
+	module.exports = {
+	  'option': 'alt',
+	  'command': 'meta',
+	  'return': 'enter',
+	  'escape': 'esc',
+	  'mod': /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'meta' : 'ctrl'
+	}
+
+
+/***/ },
+/* 139 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+	/**
+	 * this is a mapping of keys that require shift on a US keypad
+	 * back to the non shift equivelents
+	 *
+	 * this is so you can use keyup events with these keys
+	 *
+	 * note that this will only work reliably on US keyboards
+	 *
+	 * @type {Object}
+	 */
+	module.exports = {
+	  '~': '`',
+	  '!': '1',
+	  '@': '2',
+	  '#': '3',
+	  '$': '4',
+	  '%': '5',
+	  '^': '6',
+	  '&': '7',
+	  '*': '8',
+	  '(': '9',
+	  ')': '0',
+	  '_': '-',
+	  '+': '=',
+	  ':': ';',
+	  '"': "'",
+	  '<': ',',
+	  '>': '.',
+	  '?': '/',
+	  '|': '\\'
+	}
+
+
+/***/ },
+/* 140 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * picks the best action based on the key combination
+	 *
+	 * @param {string} key - character for key
+	 * @param {Array} modifiers
+	 * @param {string=} action passed in
+	 */
+	module.exports = function (key, modifiers, action) {
+	  var self = this
+
+	  // if no action was picked in we should try to pick the one
+	  // that we think would work best for this key
+	  if (!action) {
+	    action = self.getReverseMap()[key] ? 'keydown' : 'keypress'
+	  }
+
+	  // modifier keys don't work as expected with keypress,
+	  // switch to keydown
+	  if (action === 'keypress' && modifiers.length) {
+	    action = 'keydown'
+	  }
+
+	  return action
+	}
+
+
+/***/ },
+/* 141 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * reverses the map lookup so that we can look for specific keys
+	 * to see what can and can't use keypress
+	 *
+	 * @return {Object}
+	 */
+	module.exports = function () {
+	  var self = this
+	  var constructor = self.constructor
+	  var SPECIAL_KEYS_MAP
+
+	  if (!constructor.REVERSE_MAP) {
+	    constructor.REVERSE_MAP = {}
+	    SPECIAL_KEYS_MAP = __webpack_require__(132)
+	    for (var key in SPECIAL_KEYS_MAP) {
+	      // pull out the numeric keypad from here cause keypress should
+	      // be able to detect the keys from the character
+	      if (key > 95 && key < 112) {
+	        continue
+	      }
+
+	      if (SPECIAL_KEYS_MAP.hasOwnProperty(key)) {
+	        constructor.REVERSE_MAP[SPECIAL_KEYS_MAP[key]] = key
+	      }
+	    }
+	  }
+	  return constructor.REVERSE_MAP
+	}
+
+
+/***/ },
+/* 142 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * finds all callbacks that match based on the keycode, modifiers,
+	 * and action
+	 *
+	 * @param {string} character
+	 * @param {Array} modifiers
+	 * @param {Event|Object} e
+	 * @param {string=} sequenceName - name of the sequence we are looking for
+	 * @param {string=} combination
+	 * @param {number=} level
+	 * @returns {Array}
+	 */
+	module.exports = function (character, modifiers, e, sequenceName, combination, level) {
+	  var self = this
+	  var j
+	  var callback
+	  var matches = []
+	  var action = e.type
+	  var isModifier
+	  var modifiersMatch
+
+	  if (action === 'keypress') {
+	    // 'any-character' callbacks are only on `keypress`
+	    var anyCharCallbacks = self.callbacks['any-character'] || []
+	    anyCharCallbacks.forEach(function (callback) {
+	      matches.push(callback)
+	    })
+	  }
+
+	  if (!self.callbacks[character]) {return matches}
+
+	  isModifier = __webpack_require__(127)
+	  // if a modifier key is coming up on its own we should allow it
+	  if (action === 'keyup' && isModifier(character)) {
+	    modifiers = [character]
+	  }
+
+	  // loop through all callbacks for the key that was pressed
+	  // and see if any of them match
+	  for (j = 0; j < self.callbacks[character].length; ++j) {
+	    callback = self.callbacks[character][j]
+
+	    // if a sequence name is not specified, but this is a sequence at
+	    // the wrong level then move onto the next match
+	    if (!sequenceName && callback.seq && self.sequenceLevels[callback.seq] !== callback.level) {
+	      continue
+	    }
+
+	    // if the action we are looking for doesn't match the action we got
+	    // then we should keep going
+	    if (action !== callback.action) {
+	      continue
+	    }
+
+	    // if this is a keypress event and the meta key and control key
+	    // are not pressed that means that we need to only look at the
+	    // character, otherwise check the modifiers as well
+	    //
+	    // chrome will not fire a keypress if meta or control is down
+	    // safari will fire a keypress if meta or meta+shift is down
+	    // firefox will fire a keypress if meta or control is down
+	    modifiersMatch = __webpack_require__(143)
+	    if ((action === 'keypress' && !e.metaKey && !e.ctrlKey) || modifiersMatch(modifiers, callback.modifiers)) {
+	      // when you bind a combination or sequence a second time it
+	      // should overwrite the first one.  if a sequenceName or
+	      // combination is specified in this call it does just that
+	      //
+	      // @todo make deleting its own method?
+	      var deleteCombo = !sequenceName && callback.combo === combination
+	      var deleteSequence = sequenceName && callback.seq === sequenceName && callback.level === level
+	      if (deleteCombo || deleteSequence) {
+	        self.callbacks[character].splice(j, 1)
+	      }
+
+	      matches.push(callback)
+	    }
+	  }
+
+	  return matches
+	}
+
+
+/***/ },
+/* 143 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * checks if two arrays are equal
+	 *
+	 * @param {Array} modifiers1
+	 * @param {Array} modifiers2
+	 * @returns {boolean}
+	 */
+	module.exports = function (modifiers1, modifiers2) {
+	  return modifiers1.sort().join(',') === modifiers2.sort().join(',')
+	}
+
+
+/***/ },
+/* 144 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * resets all sequence counters except for the ones passed in
+	 *
+	 * @param {Object} doNotReset
+	 * @returns void
+	 */
+	module.exports = function (doNotReset) {
+	  var self = this
+
+	  doNotReset = doNotReset || {}
+
+	  var activeSequences = false
+	  var key
+
+	  for (key in self.sequenceLevels) {
+	    if (doNotReset[key]) {
+	      activeSequences = true
+	      continue
+	    }
+	    self.sequenceLevels[key] = 0
+	  }
+
+	  if (!activeSequences) {
+	    self.nextExpectedAction = false
+	  }
+	}
+
+
+/***/ },
+/* 145 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * actually calls the callback function
+	 *
+	 * if your callback function returns false this will use the jquery
+	 * convention - prevent default and stop propogation on the event
+	 *
+	 * @param {Function} callback
+	 * @param {Event} e
+	 * @returns void
+	 */
+	module.exports = function (callback, e, combo, sequence) {
+	  var self = this
+	  var preventDefault
+	  var stopPropagation
+
+	  // if this event should not happen stop here
+	  if (self.stopCallback(e, e.target || e.srcElement, combo, sequence)) {
+	    return
+	  }
+
+	  if (callback(e, combo) === false) {
+	    preventDefault = __webpack_require__(146)
+	    preventDefault(e)
+	    stopPropagation = __webpack_require__(147)
+	    stopPropagation(e)
+	  }
+	}
+
+
+/***/ },
+/* 146 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * prevents default for this event
+	 *
+	 * @param {Event} e
+	 * @returns void
+	 */
+	module.exports = function (e) {
+	  if (e.preventDefault) {
+	    e.preventDefault()
+	    return
+	  }
+
+	  e.returnValue = false
+	}
+
+
+/***/ },
+/* 147 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * stops propogation for this event
+	 *
+	 * @param {Event} e
+	 * @returns void
+	 */
+	module.exports = function (e) {
+	  if (e.stopPropagation) {
+	    e.stopPropagation()
+	    return
+	  }
+
+	  e.cancelBubble = true
+	}
+
+
+/***/ },
+/* 148 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	/**
+	 * binds a key sequence to an event
+	 *
+	 * @param {string} combo - combo specified in bind call
+	 * @param {Array} keys
+	 * @param {Function} callback
+	 * @param {string=} action
+	 * @returns void
+	 */
+	module.exports = function (combo, keys, callback, action) {
+	  var self = this
+
+	  // start off by adding a sequence level record for this combination
+	  // and setting the level to 0
+	  self.sequenceLevels[combo] = 0
+
+	  /**
+	   * callback to increase the sequence level for this sequence and reset
+	   * all other sequences that were active
+	   *
+	   * @param {string} nextAction
+	   * @returns {Function}
+	   */
+	  function increaseSequence (nextAction) {
+	    return function () {
+	      self.nextExpectedAction = nextAction
+	      ++self.sequenceLevels[combo]
+	      self.resetSequenceTimer()
+	    }
+	  }
+
+	  /**
+	   * wraps the specified callback inside of another function in order
+	   * to reset all sequence counters as soon as this sequence is done
+	   *
+	   * @param {Event} e
+	   * @returns void
+	   */
+	  function callbackAndReset (e) {
+	    var characterFromEvent
+	    self.fireCallback(callback, e, combo)
+
+	    // we should ignore the next key up if the action is key down
+	    // or keypress.  this is so if you finish a sequence and
+	    // release the key the final key will not trigger a keyup
+	    if (action !== 'keyup') {
+	      characterFromEvent = __webpack_require__(131)
+	      self.ignoreNextKeyup = characterFromEvent(e)
+	    }
+
+	    // weird race condition if a sequence ends with the key
+	    // another sequence begins with
+	    setTimeout(
+	      function () {
+	        self.resetSequences()
+	      },
+	      10
+	    )
+	  }
+
+	  // loop through keys one at a time and bind the appropriate callback
+	  // function.  for any key leading up to the final one it should
+	  // increase the sequence. after the final, it should reset all sequences
+	  //
+	  // if an action is specified in the original bind call then that will
+	  // be used throughout.  otherwise we will pass the action that the
+	  // next key in the sequence should match.  this allows a sequence
+	  // to mix and match keypress and keydown events depending on which
+	  // ones are better suited to the key provided
+	  for (var j = 0; j < keys.length; ++j) {
+	    var isFinal = j + 1 === keys.length
+	    var wrappedCallback = isFinal ? callbackAndReset : increaseSequence(action || self.getKeyInfo(keys[j + 1]).action)
+	    self.bindSingle(keys[j], wrappedCallback, action, combo, j)
+	  }
+	}
+
+
+/***/ },
+/* 149 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+	/**
+	 * called to set a 1 second timeout on the specified sequence
+	 *
+	 * this is so after each key press in the sequence you have 1 second
+	 * to press the next key before you have to start over
+	 *
+	 * @returns void
+	 */
+	module.exports = function () {
+	  var self = this
+
+	  clearTimeout(self.resetTimer)
+	  self.resetTimer = setTimeout(
+	    function () {
+	      self.resetSequences()
+	    },
+	    1000
+	  )
+	}
+
+
+/***/ },
+/* 150 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var off = __webpack_require__(129).off
+	module.exports = function () {
+	  var self = this
+	  var element = self.element
+
+	  off(element, 'keypress', self.eventHandler)
+	  off(element, 'keydown', self.eventHandler)
+	  off(element, 'keyup', self.eventHandler)
+	}
+
+
+/***/ },
+/* 151 */
+/***/ function(module, exports) {
+
+	/* eslint-env node, browser */
+	'use strict'
+
+	module.exports = function () {
+	  var self = this
+
+	  self.instances.forEach(function (combokeys) {
+	    combokeys.reset()
+	  })
+	}
+
+
+/***/ },
+/* 152 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Behavior = __webpack_require__(79);
+	var App = __webpack_require__(2);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var Drop = __webpack_require__(94);
+	var App = __webpack_require__(2);
+	var namespace = App.prototype.namespace('dropdown');
+
+	var _Drop = Drop.createContext({
+	  classPrefix: namespace
+	});
+
+	var defaults = {
+	  position: 'bottom left',
+	  openOn: 'click',
+	  classes: namespace + '-theme-basic',
+	  remove: true
+	};
+
+	var Dropdown = Behavior.extend({
+
+	  _initialized: [],
+
+	  initialize: function(options){
+	    this.options = _.extend({}, defaults, options);
+
+	    _.bindAll(this, 'onOpen', 'onClose', 'onSelect', 'onKeydown');
+
+	    // define ui
+	    this.ui = {
+	      target: '*[data-toggle="' + namespace + '"]'
+	    };
+	  },
+
+	  events: {
+	    'click @ui.target': 'onClick'
+	  },
+
+	  onBeforeRender: function(){
+	    // close open dropdowns on re-render
+	    this.close();
+	  },
+
+	  onClick: function(e){
+	    var target = e.currentTarget;
+
+	    if(this._initialized.indexOf(target) !== -1) {
+	      return;
+	    }
+
+	    var drop = this.initDrop(target);
+	    this._initialized.push(target);
+
+	    // first open
+	    drop.open();
+	  },
+
+	  initDrop: function(target){
+
+	    // default is .dropdown-list
+	    var content = this.view.dropdownContent || this.view.$('.dropdown-list')[0];
+
+	    // drop instance
+	    var options = _.extend({}, this.options, {
+	      target  : target,
+	      content : content
+	    });
+	    this.drop = new _Drop(options);
+
+	    // drop events
+	    this.drop.on('open', this.onOpen);
+	    this.drop.on('close', this.onClose);
+	    $('li', this.drop.content).on('click', this.onSelect);
+	    $(target).on('keydown', this.onKeydown);
+
+	    return this.drop;
+
+	  },
+
+	  open: function(){
+	    if(this.drop){
+	      this.drop.open();
+	    }
+	  },
+
+	  close: function(){
+	    if(this.drop){
+	      this.drop.close();
+	    }
+	  },
+
+	  onOpen: function(){
+	    this.view.triggerMethod('dropdown:open');
+	  },
+
+	  onClose: function(){
+	    this.view.triggerMethod('dropdown:close');
+	  },
+
+	  onSelect: function(e){
+	    this.view.triggerMethod('dropdown:select', e);
+	    this.close();
+	  },
+
+	  onKeydown: function(e){
+
+	    // esc
+	    if(e.which === 27){
+	      return this.close();
+	    }
+
+	    // pass keypress if open
+	    if( this.drop.isOpened() ){
+	      return this.view.triggerMethod('target:keydown', e);
+	    }
+
+	    this.open();
+
+	  }
+
+	});
+
+	module.exports = Dropdown;
+	App.prototype.set('Behaviors.Dropdown', Dropdown);
+
+/***/ },
+/* 153 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var Tooltip = __webpack_require__(93);
+	var Radio = __webpack_require__(4);
+	var App = __webpack_require__(2);
+	var polyglot = __webpack_require__(10);
+
+	var View = ItemView.extend({
+	  template: 'modals.hotkeys',
+
+	  initialize: function () {
+	    this.hotkeys = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'hotkeys'
+	    });
+
+	    this.modal = {
+	      header: {
+	        title: polyglot.t('titles.hotkeys')
+	      },
+	      footer: {
+	        show: false
+	      }
+	    };
+	  },
+
+	  behaviors: {
+	    Tooltip: {
+	      behaviorClass: Tooltip
+	    }
+	  },
+
+	  templateHelpers: function(){
+	    return this.hotkeys;
+	  }
+
+	});
+
+	module.exports = View;
+	App.prototype.set('HeaderApp.Views.HelpModal', View);
+
+/***/ },
+/* 154 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var App = __webpack_require__(2);
+	var Radio = __webpack_require__(4);
+	var hbs = __webpack_require__(7);
+	var Tmpl = __webpack_require__(155);
+
+	var View = ItemView.extend({
+	  tagName: 'ul',
+	  template: hbs.compile( Tmpl ),
+
+	  initialize: function(){
+	    _.bindAll(this, 'open', 'close');
+	  },
+
+	  templateHelpers: function(){
+	    return Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'menu'
+	    });
+	  },
+
+	  ui: {
+	    menuItem: 'li a'
+	  },
+
+	  events: {
+	    'click @ui.menuItem': 'close'
+	  },
+
+	  open: function(){
+	    // open menu & append backdrop
+	    $('body').addClass('menu-open');
+	    this.backdrop = $('<div class="modal-backdrop in"></div>');
+	    this.backdrop.height('100%');
+	    $('body').append(this.backdrop);
+
+	    // listen for clicks on backdrop
+	    this.backdrop.on('click', this.close);
+	  },
+
+	  close: function(){
+	    // close menu
+	    $('body').removeClass('menu-open');
+
+	    // teardown backdrop
+	    if(this.backdrop) {
+	      this.backdrop.remove();
+	      delete this.backdrop;
+	    }
+	  }
+
+	});
+
+	module.exports = View;
+	App.prototype.set('HeaderApp.Views.Menu', View);
+
+/***/ },
+/* 155 */
+/***/ function(module, exports) {
+
+	module.exports = "{{#each []}}\n<li class=\"{{id}}\">\n  <a href=\"{{href}}\">\n    <i class=\"icon-{{id}} icon-lg\"></i>\n    {{label}}\n  </a>\n</li>\n{{/each}}"
+
+/***/ },
+/* 156 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var Radio = __webpack_require__(4);
+	var App = __webpack_require__(2);
+	var $ = __webpack_require__(6);
+	var polyglot = __webpack_require__(10);
+
+	var View = ItemView.extend({
+	  template: function(){
+	    return '<i class="icon icon-spinner"></i>';
+	  },
+
+	  modal: {
+	    footer: {
+	      buttons: [
+	        { action: 'close' }
+	      ]
+	    }
+	  },
+
+	  initialize: function(){
+	    var self = this,
+	      ajaxurl = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'ajaxurl'
+	    });
+
+	    $.get( ajaxurl, {
+	      'action'  : 'wc_pos_get_modal',
+	      'template': 'browser'
+	    }).always(function(template){
+	      self.update(template);
+	    });
+
+	    this.modal.header = {
+	      title: polyglot.t('messages.browser')
+	    };
+	  },
+
+	  update: function(template){
+	    this.$el.html(template);
+	  }
+	});
+
+	module.exports = View;
+	App.prototype.set('HeaderApp.Views.BrowserModal', View);
+
+/***/ },
+/* 157 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Service = __webpack_require__(20);
+	var Drop = __webpack_require__(94);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var Mn = __webpack_require__(3);
+	var App = __webpack_require__(2);
+	var namespace = App.prototype.namespace('popover');
+
+	var _Drop = Drop.createContext({
+	  classPrefix: namespace
+	});
+
+	var defaults = {
+	  position: 'bottom center',
+	  openOn: undefined, // manual trigger
+	  classes: namespace + '-theme-arrows',
+	  constrainToWindow: true,
+	  constrainToScrollParent: false
+	};
+
+	module.exports = Service.extend({
+	  channelName: 'popover',
+
+	  initialize: function(){
+
+	    this.channel.reply({
+	      'open' : this.open,
+	      'close' : this.close
+	    }, this);
+
+	    _.bindAll(this, 'onClick');
+
+	  },
+
+	  open: function(options) {
+	    options = _.extend({}, defaults, options);
+
+	    // close any open popovers
+	    this.close();
+
+	    // new Drop instance
+	    this.drop = new _Drop(options);
+
+	    // attach region
+	    this.drop.region = new Mn.Region({
+	      el: this.drop.content
+	    });
+
+	    // listeners
+	    $(document).on('click', this.onClick);
+	    options.view.on('show', this.drop.open, this.drop);
+
+	    // show
+	    this.drop.region.show(options.view);
+
+	    // return the drop instance
+	    return this.drop;
+	  },
+
+	  close: function(){
+	    if( this.drop ){
+	      this.drop.region.empty();
+	      this.drop.destroy();
+	      this.drop = undefined;
+	      $(document).off('click', this.onClick);
+	    }
+	  },
+
+	  onClick: function(e){
+	    if( e.target === this.drop.target ||
+	      $(e.target).closest('.popover').length ){
+	      return;
+	    }
+
+	    this.close();
+	  }
+
+	});
+
+/***/ },
+/* 158 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Service = __webpack_require__(20);
+	var hbs = __webpack_require__(7);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var debug = __webpack_require__(13)('print');
+	var Radio = __webpack_require__(4);
+	var App = __webpack_require__(2);
+
+	module.exports = Service.extend({
+	  channelName: 'print',
+
+	  initialize: function(){
+	    _.bindAll(this, 'mediaQueryListener', 'beforePrint', 'afterPrint');
+	    this.start();
+	  },
+
+	  onStart: function(){
+	    this.channel.reply({
+	      'print' : this.print
+	    }, this);
+	  },
+
+	  onStop: function(){
+	    this.channel.reset();
+	  },
+
+	  /* jshint -W071 */
+	  print: function(options){
+	    var template = this.template(options),
+	        iframe = this.init();
+
+	    this.deferred = $.Deferred();
+
+	    // insert template
+	    iframe.document.write(template);
+
+	    // print once loaded
+	    var loaded = function(){
+	      iframe.focus(); // required for IE
+	      iframe.print();
+	    };
+
+	    // get the first image, ie: logo
+	    var logo = iframe.document.getElementsByTagName('img')[0];
+
+	    if( logo ){
+	      logo.onload = loaded;
+	    } else {
+	      loaded();
+	    }
+
+	    return this.deferred;
+	  },
+	  /* jshint +W071 */
+
+	  /**
+	   * creates an iframe and stores reference
+	   * returns a reference to the iframe window
+	   */
+	  init: function(){
+	    if(this.iframe){
+	      this.iframe.remove();
+	    }
+
+	    this.iframe = $('<iframe>')
+	      .attr('name', 'iframe')
+	      .css({visibility:'hidden',position:'-fixed',right:'0',bottom:'0'})
+	      .appendTo('body');
+
+	    // print events for Chrome 9+ & Safari 5.1+
+	    if (frames['iframe'].matchMedia) {
+	      var mediaQueryList = frames['iframe'].matchMedia('print');
+	      mediaQueryList.addListener(this.mediaQueryListener);
+	    }
+
+	    return frames['iframe'];
+	  },
+
+	  mediaQueryListener: function(mql){
+	    if (mql.matches) {
+	      this.beforePrint();
+	    } else {
+	      // delay fixes weird behavior
+	      // mediaQueryList seems to trigger both events on init
+	      _.delay(this.afterPrint);
+	    }
+	  },
+
+	  beforePrint: function(){
+	    debug('printing ...');
+	  },
+
+	  afterPrint: function(){
+	    this.iframe.remove();
+	    this.iframe = undefined;
+	    debug('printing finished');
+	    this.deferred.resolve();
+	  },
+
+	  /* jshint -W074 */
+	  /* todo: refactor print service with view */
+	  template: function(options){
+	    options = options || {};
+
+	    if(!options.model){
+	      return;
+	    }
+
+	    var tax = Radio.request('entities', 'get', {
+	        type: 'option',
+	        name: 'tax'
+	      }) || {};
+	    var ReceiptView = App.prototype.ReceiptView.prototype;
+	    var data = ReceiptView.prepare( options.model.toJSON(), tax );
+	    var template = _.get(hbs.Templates, ['print', 'receipt'], '');
+	    return hbs.compile( template )( data );
+	  }
+	  /* jshint +W074 */
+
+	});
+
+/***/ },
+/* 159 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Service = __webpack_require__(20);
+	var View = __webpack_require__(160);
+
+	module.exports = Service.extend({
+
+	  channelName: 'numpad',
+
+	  initialize: function(){
+	    this.channel.reply({
+	      'view' : this.view
+	    }, this);
+	  },
+
+	  view: function(options){
+	    return new View(options);
+	  }
+
+	});
+
+/***/ },
+/* 160 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var FormView = __webpack_require__(88);
+	var App = __webpack_require__(2);
+	var hbs = __webpack_require__(7);
+	var Tmpl = __webpack_require__(161);
+	var Model = __webpack_require__(162);
+	var _ = __webpack_require__(5);
+	var $ = __webpack_require__(6);
+	var accounting = __webpack_require__(9);
+	var Radio = __webpack_require__(4);
+	var AutoGrow = __webpack_require__(163);
+	var cashKeys = __webpack_require__(164);
+	var Utils = __webpack_require__(8);
+
+	// numpad header input btns
+	// - could be improved if _.result allowed custom bind?
+	var inputBtns = {
+	  amount: function(){
+	    return {
+	      left: { addOn: this.symbol }
+	    };
+	  },
+	  discount: function(){
+	    return {
+	      left: { btn: this.symbol },
+	      right: { btn: '%' },
+	      toggle: true
+	    };
+	  },
+	  cash: function(){
+	    return {
+	      left: { addOn: this.symbol }
+	    };
+	  },
+	  quantity: function(){
+	    return {
+	      left: { btn: '<i class="icon icon-minus"></i>' },
+	      right: { btn: '<i class="icon icon-plus"></i>' }
+	    };
+	  }
+	};
+
+	// numpad extra keys
+	// - could be improved if _.result allowed custom bind?
+	var extraKeys = {
+	  amount: function(){},
+	  discount: function(){
+	    var discountKeys = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'discount_keys'
+	    }) || {};
+	    return _.map(discountKeys, function(n){ return n + '%'; });
+	  },
+	  cash: function(value){
+	    var denominations = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'denominations'
+	    }) || {};
+	    return _.map(cashKeys(value, denominations), function(n){
+	      if(this.value === 0){ return n; }
+	      return Utils.formatNumber(n);
+	    }, this);
+	  },
+	  quantity: function(){}
+	};
+
+
+	var View = FormView.extend({
+	  template: hbs.compile(Tmpl),
+
+	  viewOptions: [
+	    'numpad', 'label', 'value', 'decimal', 'symbol'
+	  ],
+
+	  initialize: function(options){
+	    options = options || {};
+
+	    options = _.defaults(options, {
+	      label   : 'Numpad',
+	      numpad  : 'amount',
+	      value   : 0,
+	      decimal : accounting.settings.currency.decimal,
+	      symbol  : accounting.settings.currency.symbol
+	    });
+
+	    this.mergeOptions(options, this.viewOptions);
+
+	    this.model = new Model({}, options);
+	  },
+
+	  behaviors: {
+	    AutoGrow: {
+	      behaviorClass: AutoGrow
+	    }
+	  },
+
+	  bindings: {
+	    'input[name="value"]': {
+	      observe: ['value', 'percentage', 'active'],
+	      onGet: function(arr){
+	        var val = arr[2] === 'percentage' ? arr[1] : arr[0];
+	        //var precision;
+	        //if(arr[2] === 'percentage' || this.numpad === 'quantity'){
+	        //  precision = 'auto';
+	        //}
+	        //return Utils.formatNumber(val, precision);
+	        return val;
+	      },
+	      onSet: function(val, opts){
+	        opts.view.model.setActive(val);
+	      }
+	    },
+	    '.numpad-discount [data-btn="left"]': {
+	      updateMethod: 'html',
+	      observe: ['value', 'percentage', 'active'],
+	      onGet: function(arr){
+	        if(arr[2] === 'percentage'){
+	          return Utils.formatMoney(arr[0]);
+	        } else {
+	          return this.symbol;
+	        }
+	      }
+	    },
+	    '.numpad-discount [data-btn="right"]': {
+	      updateMethod: 'html',
+	      observe: ['percentage', 'value', 'active'],
+	      onGet: function(arr){
+	        if(arr[2] === 'percentage'){
+	          return '%';
+	        } else {
+	          return accounting.toFixed(arr[0], 0) + '%';
+	        }
+	      }
+	    }
+	  },
+
+	  templateHelpers: function(){
+	    var data = {
+	      numpad  : this.numpad,
+	      label   : this.label,
+	      input   : inputBtns[this.numpad].call(this),
+	      keys    : extraKeys[this.numpad].call(this, this.value),
+	      decimal : this.decimal,
+	      'return': 'return'
+	    };
+
+	    return data;
+	  },
+
+	  ui: {
+	    input   : '.numpad-header input[name="value"]',
+	    toggle  : '.numpad-header .input-group',
+	    common  : '.numpad-body .common .btn',
+	    discount: '.numpad-body .discount .btn',
+	    cash    : '.numpad-body .cash .btn',
+	    keys    : '.numpad-body .btn'
+	  },
+
+	  events: {
+	    'click @ui.toggle a': 'toggle',
+	    'click @ui.common'  : 'commonKeys',
+	    'click @ui.discount': 'discountKeys',
+	    'click @ui.cash'    : 'cashKeys',
+	    'mousedown @ui.keys': 'keyPress',
+	    'keyup @ui.input'   : 'enter'
+	  },
+
+	  onRender: function(){
+	    if(window.Modernizr.touch) {
+	      this.ui.input.attr('readonly', true);
+	    }
+	  },
+
+	  toggle: function(e){
+	    e.preventDefault();
+	    var modifier = $(e.currentTarget).data('btn');
+
+	    if(this.numpad === 'quantity'){
+	      this.model.quantity( modifier === 'right' ? 'increase' : 'decrease' );
+	    }
+
+	    if(this.numpad === 'discount'){
+	      this.ui.toggle.toggleClass('toggle');
+	      this.model.toggle('percentage');
+	    }
+	  },
+
+	  /* jshint -W074 */
+	  commonKeys: function(e){
+	    e.preventDefault();
+	    var key = $(e.currentTarget).data('key');
+
+	    switch(key) {
+	      case 'ret':
+	        this.trigger('input', this.model.getFloatValue(), this.model);
+	        return;
+	      case 'del':
+	        if(this._hasSelection) {
+	          this.model.clearInput();
+	        }
+	        this.model.backSpace();
+	        break;
+	      case '+/-':
+	        this.model.plusMinus();
+	        break;
+	      case '.':
+	        this.model.decimal();
+	        break;
+	      default:
+	        if(this._hasSelection) {
+	          this.model.clearInput();
+	        }
+	        this.model.key(key);
+	    }
+
+	  },
+	  /* jshint +W074 */
+
+	  discountKeys: function(e){
+	    e.preventDefault();
+	    var key = $(e.currentTarget).data('key');
+	    this.model.set('active', 'percentage');
+	    this.model.set('percentage', key.replace('%', ''));
+	    this.ui.toggle.addClass('toggle');
+	  },
+
+	  cashKeys: function(e){
+	    e.preventDefault();
+	    var key = $(e.currentTarget).data('key');
+	    key = Utils.unformat(key);
+	    this.model.clearInput().key(key);
+	  },
+
+	  // on keypress, check if input selected
+	  keyPress: function(){
+	    var sel = window.getSelection();
+	    this._hasSelection = sel.toString() === this.ui.input.val();
+	  },
+
+	  enter: function(e){
+	    if(e.which === 13){
+	      this.trigger('input', this.model.getFloatValue(), this.model);
+	    }
+	  }
+
+	});
+
+	module.exports = View;
+	App.prototype.set('Components.Numpad.View', View);
+
+/***/ },
+/* 161 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"numpad numpad-{{numpad}}\">\n  <div class=\"popover-header numpad-header\">\n    <strong class=\"title\">{{label}}</strong>\n\n    {{#if input}}\n      <div class=\"input-group {{#if input.toggle}}btn-group-toggle{{/if}}\">\n        {{#if input.left}}\n          {{#if input.left.addOn}}<span class=\"input-group-addon\">{{{input.left.addOn}}}</span>{{/if}}\n          {{#if input.left.btn}}<span class=\"input-group-btn\"><a href=\"#\" data-btn=\"left\" class=\"btn btn-secondary\">{{{input.left.btn}}}</a></span>{{/if}}\n        {{/if}}\n        <input type=\"text\" name=\"value\" class=\"form-control autogrow\">\n        {{#if input.right}}\n          {{#if input.right.btn}}<span class=\"input-group-btn\"><a href=\"#\" data-btn=\"right\" class=\"btn btn-secondary\">{{{input.right.btn}}}</a></span>{{/if}}\n          {{#if input.right.addOn}}<span class=\"input-group-addon\">{{{input.right.addOn}}}</span>{{/if}}\n        {{/if}}\n      </div>\n    {{/if}}\n\n  </div>\n\n  <div class=\"popover-body numpad-body\">\n    <div class=\"keys common three-cols\">\n      <div class=\"row\">\n        <button data-key=\"1\" class=\"btn\">1</button>\n        <button data-key=\"2\" class=\"btn\">2</button>\n        <button data-key=\"3\" class=\"btn\">3</button>\n      </div>\n      <div class=\"row\">\n        <button data-key=\"4\" class=\"btn\">4</button>\n        <button data-key=\"5\" class=\"btn\">5</button>\n        <button data-key=\"6\" class=\"btn\">6</button>\n      </div>\n      <div class=\"row\">\n        <button data-key=\"7\" class=\"btn\">7</button>\n        <button data-key=\"8\" class=\"btn\">8</button>\n        <button data-key=\"9\" class=\"btn\">9</button>\n      </div>\n      <div class=\"row\">\n        <button data-key=\"0\" class=\"btn\">0</button>\n        <button data-key=\"00\" class=\"btn\">00</button>\n        <button data-key=\".\" class=\"btn decimal\">{{{decimal}}}</button>\n      </div>\n    </div>\n    <div class=\"keys common extra-keys\">\n      <button data-key=\"del\" class=\"btn\"><i class=\"icon-delete\"><span>del</span></i></button>\n      <button data-key=\"+/-\" class=\"btn\">+/-</button>\n      <button data-key=\"ret\" class=\"btn two-rows return\"><small>{{return}}</small></button>\n    </div>\n\n    {{#if keys}}\n      <div class=\"keys extra-keys {{numpad}}\">\n        {{#each keys}}\n          <button data-key=\"{{this}}\" class=\"btn\">{{this}}</button>\n        {{/each}}\n      </div>\n    {{/if}}\n\n  </div>\n</div>"
+
+/***/ },
+/* 162 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var bb = __webpack_require__(16);
+	var _ = __webpack_require__(5);
+
+	module.exports = bb.Model.extend({
+
+	  dec: '',
+
+	  defaults: {
+	    active: 'value'
+	  },
+
+	  precision: 4,
+
+	  initialize: function(attributes, options){
+	    options = options || {};
+	    this.numpad = options.numpad;
+
+	    this.set({ value: options.value.toString() });
+
+	    if(options.precision){
+	      this.precision = options.precision;
+	    }
+
+	    if(options.original){
+	      this.initPercentage(options);
+	    }
+	  },
+
+	  initPercentage: function(options){
+	    if(options.percentage === 'off'){
+	      this.percentageOff = true;
+	    }
+
+	    this.set({ original: options.original.toString() });
+	    this.set({ percentage: this.calcPercentage() });
+
+	    this.on({
+	      'change:value': function(){
+	        this.set({ percentage: this.calcPercentage() }, { silent: true });
+	      },
+	      'change:percentage': function(){
+	        this.set({ value: this.calcValue() }, { silent: true });
+	      }
+	    });
+	  },
+
+	  getFloatValue: function(){
+	    return parseFloat( this.get('value') );
+	  },
+
+	  getActive: function(type){
+	    var active = this.get( this.get('active') );
+	    return type === 'float' ? parseFloat(active) : active.toString();
+	  },
+
+	  setActive: function(num){
+	    if(this.dec === '.'){
+	      this.dec = '';
+	    }
+	    if( _.isNaN(num) ){
+	      num = 0;
+	    }
+	    this.set( this.get('active'), this.round(num) );
+	  },
+
+	  backSpace: function(){
+	    var num = this.getActive().slice(0, -1);
+	    // remove trailing decimal
+	    if( num.slice(-1) === '.' ){
+	      num = num.slice(0, -1);
+	    }
+	    this.setActive( num );
+	    return this;
+	  },
+
+	  plusMinus: function(){
+	    var num = this.getActive('float') * -1;
+	    this.setActive( num );
+	    return this;
+	  },
+
+	  clearInput: function(){
+	    this.setActive( '' );
+	    return this;
+	  },
+
+	  key: function(key){
+	    var num = this.getActive();
+	    if(this.decimalPlaces(num) < this.precision){
+	      this.setActive( num + this.dec + key );
+	    }
+	    return this;
+	  },
+
+	  decimal: function(){
+	    this.dec = this.getActive().indexOf('.') === -1 ? '.' : '';
+	    return this;
+	  },
+
+	  quantity: function( type ) {
+	    var num = this.getActive('float');
+	    this.setActive( (type === 'increase' ? ++num : --num) );
+	    return this;
+	  },
+
+	  calcPercentage: function(){
+	    var value      = parseFloat( this.get('value') ),
+	      original   = parseFloat( this.get('original') ),
+	      percentage = ( value / original ) * 100;
+
+	    if(this.percentageOff){
+	      return this.round(100 - percentage);
+	    }
+
+	    return this.round(percentage);
+	  },
+
+	  calcValue: function(){
+	    var percentage = parseFloat( this.get('percentage') ),
+	      original   = parseFloat( this.get('original') ),
+	      multiplier = percentage / 100;
+
+	    if(this.percentageOff){
+	      return this.round(( 1 - multiplier ) * original);
+	    }
+
+	    return this.round(multiplier * original);
+	  },
+
+	  toggle: function(attr){
+	    this.set({ active: (attr === this.get('active') ? 'value' : attr) });
+	  },
+
+	  round: function(val){
+	    val = val.toString();
+	    if(this.decimalPlaces(val) > this.precision){
+	      val = parseFloat(val).toFixed(this.precision);
+	      val = parseFloat(val).toString();
+	    }
+	    return val;
+	  },
+
+	  decimalPlaces: function(val){
+	    return val.replace(/^-?\d*\.?|0+$/g, '').length;
+	  }
+
+	});
+
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Behavior = __webpack_require__(79);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var App = __webpack_require__(2);
+
+	var AutoGrow = Behavior.extend({
+
+	  initialize: function(options){
+	    this.options = options || {};
+	    _.defaults(this.options, {
+	      padding: 20
+	    });
+
+	    this.tester = $('#autogrow-tester');
+	    if( this.tester.length === 0 ) {
+	      this.tester = $('<div id="autogrow-tester" />')
+	        .css({
+	          opacity     : 0,
+	          top         : -9999,
+	          left        : -9999,
+	          position    : 'absolute',
+	          whiteSpace  : 'nowrap'
+	        });
+	      $('body').append(this.tester);
+	    }
+
+	  },
+
+	  ui: {
+	    target: '.autogrow'
+	  },
+
+	  events: {
+	    'input @ui.target' : 'autoGrow'
+	  },
+
+	  onShow: function() {
+	    _.each( this.ui.target, function( target ) {
+	      this.autoGrow( $(target) );
+	    }, this);
+	  },
+
+	  autoGrow: function( e ) {
+	    var target  = e.target ? $(e.target) : e ;
+	    var value   = target.is('input') ? target.val() : target.text();
+
+	    value = value.replace(/&/g, '&amp;')
+	      .replace(/\s/g,'&nbsp;')
+	      .replace(/</g, '&lt;')
+	      .replace(/>/g, '&gt;');
+
+	    this.tester.html(value);
+	    var width = this.tester.width() + this.options.padding;
+	    target.css({ width: width });
+	  }
+
+	});
+
+	module.exports = AutoGrow;
+	App.prototype.set('Behaviors.AutoGrow', AutoGrow);
+
+/***/ },
+/* 164 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var _ = __webpack_require__(5);
+	var accounting = __webpack_require__(9);
+
+	/* jshint -W071 */
+
+	function round(num){
+	  return parseFloat( accounting.toFixed(num, 2) );
+	}
+
+	function nearest(num, dem){
+	  var n = Math.ceil(num / dem) * dem;
+	  return round(n);
+	}
+
+	module.exports = function(amount, denominations){
+	  var keys = [amount];
+
+	  if(amount === 0) {
+	    return denominations.notes.slice(-4);
+	  }
+
+	  // remove 1 & 2 cents
+	  _.pull( denominations.coins, 0.01, 0.02 );
+
+	  // find nearest match for coins
+	  _.each( denominations.coins, function(coin) {
+	    keys.push( nearest(amount, coin) );
+	  });
+
+	  // unique, sorted
+	  keys = _.chain(keys).uniq().sortBy().value();
+
+	  // higher rep of coin for low amounts
+	  if(amount > denominations.notes[0]){
+	    keys.slice(0, 3);
+	  }
+
+	  // find nearest match for notes
+	  _.each( denominations.notes, function(note) {
+	    keys.push( nearest(amount, note) );
+	  });
+
+	  // return 4 results - unique, sorted
+	  return _.chain(keys).uniq().sortBy().value().slice(1, 5);
+	};
+	/* jshint +W071 */
+
+/***/ },
+/* 165 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var App = __webpack_require__(2);
+	var Router = __webpack_require__(81);
+	var LayoutView = __webpack_require__(166);
+	var Products = __webpack_require__(167);
+	var CartRoute = __webpack_require__(180);
+	var CheckoutRoute = __webpack_require__(192);
+	var ReceiptRoute = __webpack_require__(200);
+	var Radio = __webpack_require__(4);
+	var bb = __webpack_require__(16);
+
+	var POSRouter = Router.extend({
+	  routes: {
+	    '(cart)(/:id)(/)'  : 'showCart',
+	    'checkout(/:id)(/)': 'showCheckout',
+	    'receipt(/:id)(/)' : 'showReceipt'
+	  },
+
+	  initialize: function(options) {
+	    this.container = options.container;
+	    this.channel.reply({
+	      'show:cart'     : this.showCart,
+	      'show:checkout' : this.showCheckout,
+	      'show:receipt'  : this.showReceipt,
+	      'add:to:cart'   : this.addToCart
+	    }, this);
+	  },
+
+	  onBeforeEnter: function() {
+	    this.layout = new LayoutView();
+	    this.container.show(this.layout);
+	    this.initOrders();
+	  },
+
+	  initOrders: function(){
+	    if(this.orders){ return; }
+
+	    // attach orders
+	    this.orders = Radio.request('entities', 'get', {
+	      type: 'collection',
+	      name: 'orders'
+	    });
+
+	    // listen to order collection
+	    this.listenTo(this.orders, {
+	      'add'    : this.addOrder,
+	      'remove' : this.removeOrder
+	    });
+	  },
+
+	  onBeforeRoute: function(){
+	    //this.setActiveTab();
+	    this.showProducts();
+	    Radio.request('header', 'update:title', '');
+	  },
+
+	  setActiveTab: function(){
+	    var tab = bb.history.getFragment() === '' ? 'left' : 'right';
+	    this.container.tabs.setActive(tab);
+	  },
+
+	  showProducts: function(){
+	    if( this.layout.getRegion('left').hasView() ){
+	      return;
+	    }
+	    var products = new Products({
+	      container : this.layout.getRegion('left')
+	    });
+	    products.enter();
+	  },
+
+	  showCart: function() {
+	    return new CartRoute({
+	      container : this.layout.getRegion('right'),
+	      collection: this.orders
+	    });
+	  },
+
+	  showCheckout: function() {
+	    return new CheckoutRoute({
+	      container : this.layout.getRegion('right'),
+	      collection: this.orders
+	    });
+	  },
+
+	  showReceipt: function() {
+	    var autoPrint = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'auto_print'
+	    });
+
+	    return new ReceiptRoute({
+	      container : this.layout.getRegion('right'),
+	      collection: this.orders,
+	      autoPrint : autoPrint
+	    });
+	  },
+
+	  /**
+	   * Add to cart only when cart route is active
+	   */
+	  addToCart: function(options){
+	    if(this._currentRoute instanceof CartRoute){
+	      this.orders.addToCart(options);
+	    }
+	  },
+
+	  addOrder: function(order){
+	    if(this._currentRoute instanceof CartRoute){
+	      //bb.history.navigate('cart/' + order.id);
+	      if(order.isEditable()){
+	        this.execute(this.showCart, [order.id]);
+	      }
+	    }
+	  },
+
+	  removeOrder: function(){
+	    if(this._currentRoute instanceof CartRoute){
+	      bb.history.navigate('');
+	      this.execute(this.showCart);
+	    }
+	  }
+
+	});
+
+	module.exports = POSRouter;
+	App.prototype.set('POSApp.Router', POSRouter);
+
+/***/ },
+/* 166 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+
+	module.exports = LayoutView.extend({
+	  columns: 2,
+
+	  template: function(){
+	    return '' +
+	      '<section id="left"></section>' +
+	      '<section id="right"></section>';
+	  },
+
+	  regions: {
+	    left: '#left',
+	    right: '#right'
+	  }
+	});
+
+/***/ },
+/* 167 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Route = __webpack_require__(82);
+	var Layout = __webpack_require__(168);
+	var Actions = __webpack_require__(169);
+	var List = __webpack_require__(171);
+	var Pagination = __webpack_require__(179);
+	var Radio = __webpack_require__(4);
+	var _ = __webpack_require__(5);
+	var polyglot = __webpack_require__(10);
+
+	module.exports = Route.extend({
+
+	  initialize: function (options) {
+	    this.container  = options.container;
+	    this.filtered   = Radio.request('entities', 'get', {
+	      type    : 'filtered',
+	      name    : 'products',
+	      perPage : 10
+	    });
+	    this.setTabLabel({
+	      tab   : 'left',
+	      label : polyglot.t('titles.products')
+	    });
+	  },
+
+	  fetch: function() {
+	    var collection = this.filtered.superset();
+	    if( collection.isNew() ){
+	      return collection.fetch()
+	        .then(function(){
+	          collection.fullSync();
+	        });
+	    } else {
+	      this.filtered
+	        .resetFilters()
+	        .removeSort()
+	        .setPage(0);
+	    }
+	  },
+
+	  render: function() {
+	    this.layout = new Layout();
+
+	    this.listenTo(this.layout, 'show', function () {
+	      this.showActions();
+	      this.showTabs();
+	      this.showProducts();
+	      this.showPagination();
+	    });
+
+	    this.container.show( this.layout );
+	  },
+
+	  showActions: function() {
+	    var view = new Actions({
+	      collection: this.filtered
+	    });
+
+	    this.layout.getRegion('actions').show(view);
+	  },
+
+	  showTabs: function() {
+	    var view = Radio.request('tabs', 'view', {
+	      tabs: this.tabsArray()
+	    });
+
+	    this.listenTo(view.collection, 'active:tab', function(model) {
+	      this.filtered.query('tab', model.id);
+	    });
+
+	    // show tabs component
+	    this.layout.getRegion('tabs').show(view);
+	    this.tabs = view;
+	  },
+
+	  showProducts: function() {
+	    var view = new List({
+	      collection: this.filtered
+	    });
+	    this.layout.getRegion('list').show(view);
+	  },
+
+	  tabsArray: function(){
+	    var tabs = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'tabs'
+	    });
+	    return _.map(tabs);
+	  },
+
+	  showPagination: function(){
+	    var view = new Pagination({
+	      collection: this.filtered
+	    });
+	    this.layout.getRegion('footer').show(view);
+	  }
+
+	});
+
+/***/ },
+/* 168 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var hbs = __webpack_require__(7);
+	var LayoutView = __webpack_require__(18);
+	var App = __webpack_require__(2);
+
+	var Layout = LayoutView.extend({
+
+	  template: hbs.compile('' +
+	    '<div class="panel-header list-actions products-header"></div>' +
+	    '<div class="products-tabs"></div>' +
+	    '<div class="panel-body list products-list list-striped"></div>' +
+	    '<div class="panel-footer products-footer"></div>'
+	  ),
+
+	  regions: {
+	    actions   : '.products-header',
+	    tabs      : '.products-tabs',
+	    list      : '.products-list',
+	    footer    : '.products-footer'
+	  },
+
+	  attributes: {
+	    'class'   : 'panel products'
+	  }
+
+	});
+
+	module.exports = Layout;
+	App.prototype.set('POSApp.Products.Layout', Layout);
+
+/***/ },
+/* 169 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var View = __webpack_require__(61);
+	var App = __webpack_require__(2);
+	var Filter = __webpack_require__(170);
+	var HotKeys = __webpack_require__(118);
+	var Radio = __webpack_require__(4);
+	var Dropdown = __webpack_require__(152);
+	var $ = __webpack_require__(6);
+
+	var Actions = View.extend({
+	  template: 'pos.products.filter',
+
+	  initialize: function(){
+	    var products = this.collection;
+	    var self = this;
+
+	    /**
+	     * match:barcode is triggered before filter is complete
+	     * this affects the filtered collection pagination
+	     * todo: refactor and fix this
+	     */
+	    this.listenTo(products.superset(), 'match:barcode', function(model){
+	      products.once('paginated:change:page', function(){
+	        self.triggerMethod('clear');
+	        self.ui.searchField.blur();
+	      });
+	      Radio.request('router', 'add:to:cart', model);
+	    });
+	  },
+
+	  behaviors: {
+	    Filter: {
+	      behaviorClass: Filter
+	    },
+	    HotKeys: {
+	      behaviorClass: HotKeys
+	    },
+	    Dropdown: {
+	      behaviorClass: Dropdown
+	    }
+	  },
+
+	  keyEvents: {
+	    'search'  : 'barcodeModeOff',
+	    'barcode' : 'barcodeModeOn'
+	  },
+
+	  ui: {
+	    modeIcon    : '*[data-toggle="dropdown"] i',
+	    searchBtn   : '*[data-action="search"]',
+	    barcodeBtn  : '*[data-action="barcode"]',
+	    searchField : 'input[type=search]'
+	  },
+
+	  onRender: function(){
+	    this.barcodeModeOff();
+	  },
+
+	  onDropdownSelect: function(e){
+	    if( $(e.currentTarget).data('action') === 'barcode' ){
+	      return this.barcodeModeOn();
+	    }
+	    this.barcodeModeOff();
+	  },
+
+	  toggleBarcodeMode: function(){
+	    if(this._mode === 'barcode'){
+	      return this.barcodeModeOff();
+	    }
+	    this.barcodeModeOn();
+	  },
+
+	  barcodeModeOn: function(e){
+	    if(e) { e.preventDefault(); }
+	    this._mode = 'barcode';
+	    this.ui.modeIcon
+	      .removeClass('icon-search')
+	      .addClass('icon-barcode');
+	    this.ui.searchField
+	      .attr('placeholder', this.ui.barcodeBtn.text())
+	      .focus()
+	      .trigger('keyup');
+	  },
+
+	  barcodeModeOff: function(e){
+	    if(e) { e.preventDefault(); }
+	    this._mode = undefined;
+	    this.ui.modeIcon
+	      .removeClass('icon-barcode')
+	      .addClass('icon-search');
+	    this.ui.searchField
+	      .attr('placeholder', this.ui.searchBtn.text())
+	      .focus()
+	      .trigger('keyup');
+	  }
+	});
+
+	module.exports = Actions;
+	App.prototype.set('POSApp.Products.Actions', Actions);
+
+/***/ },
+/* 170 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Behavior = __webpack_require__(79);
+	var _ = __webpack_require__(5);
+	var App = __webpack_require__(2);
+	var Combokeys = __webpack_require__(119);
+	var Radio = __webpack_require__(4);
+
+	var Filter = Behavior.extend({
+
+	  initialize: function(){
+
+	    this.listenTo(this.view.options.collection.superset(), {
+	      'start:fullSync': this.syncStart,
+	      'end:fullSync': this.syncEnd
+	    });
+
+	    this.hotkeys = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'hotkeys'
+	    }) || {};
+
+	    this.combokeys = new Combokeys(document.documentElement);
+	    this.combokeys.bind(this.hotkeys.sync.key, _.bind( this.sync, this ));
+
+	  },
+
+	  ui: {
+	    searchField : 'input[type=search]',
+	    clearBtn    : '.clear',
+	    clear       : '*[data-action="clear"]',
+	    sync        : '*[data-action="sync"]'
+	  },
+
+	  events: {
+	    'keyup @ui.searchField' : 'query',
+	    'click @ui.clear'       : 'clear',
+	    'click @ui.sync'        : 'sync'
+	  },
+
+	  /**
+	   *
+	   */
+	  query: function(){
+	    var value = this.ui.searchField.val();
+	    if( value === '' ){
+	      return this.clear();
+	    }
+
+	    // special case, filter mode, eg: barcode
+	    if(this.view._mode){
+	      value = [{
+	        type  : 'prefix',
+	        prefix: this.view._mode,
+	        query : value
+	      }];
+	    }
+
+	    this.ui.clearBtn.show();
+	    this._query(value);
+	  },
+
+	  /**
+	   *
+	   */
+	  _query: _.debounce( function(value){
+	    this.view.collection
+	      .query(value)
+	      .firstPage();
+	  }, 149),
+
+	  /**
+	   *
+	   */
+	  clear: function(e) {
+	    if(e) { e.preventDefault(); }
+	    this.view.collection.removeFilter('search');
+	    this.ui.searchField.val('');
+	    this.ui.clearBtn.hide();
+	  },
+
+	  /**
+	   *
+	   */
+	  onRender: function(){
+	    if(this.view.collection.hasFilter('search')){
+	      var queryStr = this.view.collection._filtered._query;
+	      if(queryStr){
+	        this.ui.searchField.val(queryStr).trigger('keyup');
+	      }
+	    }
+	  },
+
+	  sync: function(e){
+	    if(e) { e.preventDefault(); }
+	    this.view.collection.superset().fullSync();
+	  },
+
+	  syncStart: function(){
+	    this.ui.sync.children('i').addClass('icon-spin');
+	  },
+
+	  syncEnd: function(){
+	    this.ui.sync.children('i').removeClass('icon-spin');
+	  },
+
+	  onDestroy: function(){
+	    this.combokeys.unbind(this.hotkeys.sync.key);
+	  },
+
+	  onClear: function(){
+	    this.clear();
+	  }
+
+	});
+
+	module.exports = Filter;
+	App.prototype.set('Behaviors.Filter', Filter);
+
+/***/ },
+/* 171 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var InfiniteListView = __webpack_require__(172);
+	var Item = __webpack_require__(173);
+	var App = __webpack_require__(2);
+	var polyglot = __webpack_require__(10);
+
+	var Empty = ItemView.extend({
+	  tagName: 'li',
+	  className: 'empty',
+	  template: function(){
+	    return polyglot.t('messages.no-products');
+	  }
+	});
+
+	var List = InfiniteListView.extend({
+	  childView: Item,
+	  emptyView: Empty,
+	  childViewContainer: 'ul'
+	});
+
+	module.exports = List;
+	App.prototype.set('POSApp.Products.List', List);
+
+/***/ },
+/* 172 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Mn = __webpack_require__(3);
+	var app = __webpack_require__(2);
+	var _ = __webpack_require__(5);
+	//var $ = require('jquery');
+
+	module.exports = app.prototype.InfiniteListView = Mn.CompositeView.extend({
+	  className: 'list-infinite',
+	  template: function(){
+	    return '<div></div>' +
+	      '<ul></ul>' +
+	      '<div><i class="icon icon-spinner"></i>';
+	  },
+
+	  constructor: function() {
+	    Mn.CompositeView.apply(this, arguments);
+
+	    this.listenTo(this.collection.superset(), {
+	      'start:processQueue': this.startLoading,
+	      'end:processQueue': this.endLoading,
+	      'end:fullSync': this.checkOverflow
+	    });
+
+	    this.on({
+	      'all': _.debounce( this.checkOverflow, 250 )
+	    });
+
+	    _.bindAll(this, 'onScroll', 'loadMore', 'getOverflow');
+	  },
+
+	  // Marionette's default implementation ignores the index, always
+	  // appending the new view to the end. Let's be a little more clever.
+	  //appendHtml: function(collectionView, itemView, index){
+	  //  if (!index) {
+	  //    collectionView.$el.prepend(itemView.el);
+	  //  } else {
+	  //    $(collectionView.$('li')[index - 1]).after(itemView.el);
+	  //  }
+	  //},
+
+	  onShow: function(){
+	    this.container = this.$el.parent()[0];
+	    this.$el.parent().scroll( _.throttle( this.onScroll, 250 ) );
+	  },
+
+	  onScroll: function(){
+	    if(this.getOverflow() < 100){
+	      this.loadMore();
+	    }
+	  },
+
+	  checkOverflow: function(){
+	    if(this.getOverflow() < 100){
+	      this.loadMore();
+	    }
+	  },
+
+	  /**
+	   * returns overflow at bottom in px
+	   * - added clientHeight check to prevent false trigger when div not drawn
+	   * @returns {number}
+	   */
+	  getOverflow: function(){
+	    var sH = this.container.scrollHeight,
+	        cH = this.container.clientHeight,
+	        sT = this.container.scrollTop;
+	    return sH - cH - sT;
+	  },
+
+	  loadMore: function() {
+	    // get next page from filtered collection
+	    if (this.collection.hasNextPage()) {
+	      return this.collection.appendNextPage();
+	    }
+
+	    // load more from queue
+	    if (this.collection.superset().queue.length > 0) {
+	      this.remoteFetchMore();
+	    }
+	  },
+
+	  remoteFetchMore: function(){
+	    this.collection.superset().processQueue({
+	      filter: this.collection.getRemoteFilter()
+	    });
+	  },
+
+	  startLoading: function(){
+	    this.toggleLoading(true);
+	  },
+
+	  endLoading: function(){
+	    this.toggleLoading(false);
+	  },
+
+	  toggleLoading: function(loading){
+	    this.$el.toggleClass('loading', loading);
+	  }
+
+	});
+
+/***/ },
+/* 173 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var App = __webpack_require__(2);
+	var LayoutView = __webpack_require__(18);
+	var Product = __webpack_require__(174);
+	var Variations = __webpack_require__(177);
+
+	/**
+	 * @todo Abstract ListItemView
+	 */
+
+	var Layout = LayoutView.extend({
+
+	  tagName: 'li',
+
+	  className: function () {
+	    return this.model.get('type');
+	  },
+
+	  template: function () {
+	    return '' +
+	      '<div class="list-item"></div>' +
+	      '<div class="list-drawer"></div>';
+	  },
+
+	  regions: {
+	    item    : '.list-item',
+	    drawer  : '.list-drawer'
+	  },
+
+	  onRender: function(){
+	    var view = new Product({
+	      model: this.model
+	    });
+
+	    this.listenTo( view, {
+	      'open:drawer'     : this.openDrawer,
+	      'close:drawer'    : this.closeDrawer,
+	      'toggle:drawer'   : this.toggleDrawer
+	    });
+
+	    this.getRegion('item').show(view);
+	  },
+
+	  openDrawer: function(options){
+	    options = options || {};
+	    options.model = this.model;
+	    options.className = 'variations';
+	    var view = new Variations(options);
+	    this.getRegion('drawer').show(view);
+	    this.$el.addClass('drawer-open');
+	  },
+
+	  closeDrawer: function(){
+	    var drawer = this.getRegion('drawer');
+
+	    drawer.$el.slideUp( 250, function(){
+	      drawer.empty();
+	      drawer.$el.show();
+	    });
+
+	    this.$el.removeClass('drawer-open');
+	  },
+
+	  toggleDrawer: function(options){
+	    var drawer = this.getRegion('drawer'),
+	        open = drawer.hasView();
+
+	    if(open && options.filter){
+	      return drawer.currentView.filterVariations(options.filter);
+	    }
+
+	    if(open){
+	      this.closeDrawer();
+	    } else {
+	      this.openDrawer(options);
+	    }
+	  }
+
+	});
+
+	module.exports = Layout;
+	App.prototype.set('POSApp.Products.Item.Layout', Layout);
+
+/***/ },
+/* 174 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var App = __webpack_require__(2);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var Tooltip = __webpack_require__(93);
+	var Radio = __webpack_require__(4);
+	var Variations = __webpack_require__(175);
+
+	var Item = ItemView.extend({
+	  template: 'pos.products.product',
+
+	  className: 'list-row',
+
+	  ui: {
+	    add      : 'a[data-action="add"]',
+	    vpopover : 'a[data-action="variations"]',
+	    vdrawer  : '.title dl.variations dd a'
+	  },
+
+	  events: {
+	    'click @ui.add' : 'addToCart',
+	    'click @ui.vpopover' : 'variationsPopover',
+	    'click @ui.vdrawer'  : 'variationsDrawer'
+	  },
+
+	  modelEvents: {
+	    'change:updated_at': 'render'
+	  },
+
+	  behaviors: {
+	    Tooltip: {
+	      behaviorClass: Tooltip,
+	      html: true
+	    }
+	  },
+
+	  addToCart: function(e){
+	    e.preventDefault();
+	    Radio.request('router', 'add:to:cart', {model: this.model});
+	  },
+
+	  variationsPopover: function(e){
+	    e.preventDefault();
+
+	    var view = new Variations({
+	      model: this.model
+	    });
+
+	    this.listenTo(view, 'add:to:cart', function(args){
+	      var product = args.collection.models[0].toJSON();
+	      Radio.request('router', 'add:to:cart', product);
+	      Radio.request('popover', 'close');
+	    });
+
+	    var options = _.extend({
+	      view      : view,
+	      target    : e.target,
+	      position  : 'right middle'
+	    }, view.popover);
+
+	    Radio.request('popover', 'open', options);
+	  },
+
+	  variationsDrawer: function(e){
+	    e.preventDefault();
+	    var options = {};
+
+	    var name = $(e.target).data('name');
+	    if(name){
+	      options.filter = {
+	        name: name,
+	        option: $(e.target).text()
+	      };
+	    }
+
+	    this.trigger('toggle:drawer', options);
+	  },
+
+	  templateHelpers: function(){
+	    var variations = this.model.getVariations();
+	    var data = variations ? {
+	      price: variations.superset().range('price'),
+	      sale_price: variations.superset().range('sale_price'),
+	      regular_price: variations.superset().range('regular_price'),
+	      product_variations: this.model.getVariationOptions()
+	    } : {} ;
+	    data.product_attributes = this.model.productAttributes();
+	    return data;
+	  }
+
+	});
+
+	module.exports = Item;
+	App.prototype.set('POSApp.Products.Item', Item);
+
+/***/ },
+/* 175 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var Tmpl = __webpack_require__(176);
+	var App = __webpack_require__(2);
+	var hbs = __webpack_require__(7);
+	var _ = __webpack_require__(5);
+	var $ = __webpack_require__(6);
+	var polyglot = __webpack_require__(10);
+
+	// rough calculation of variation option size
+	var hasManyOptions = function(variation){
+	  var opts = variation.options.length,
+	    chars = variation.options.reduce(function(total, opt){
+	      return total + opt.length;
+	    }, 0);
+	  return (opts * 26) + (chars * 5) > 220;
+	};
+
+	var Variations = ItemView.extend({
+	  template: hbs.compile(Tmpl),
+
+	  popover: {
+	    classes: 'popover-theme-arrows popover-variations'
+	  },
+
+	  initialize: function(){
+	    this.collection = this.model.getVariations();
+	    this.collection.resetFilters();
+	  },
+
+	  templateHelpers: function(){
+	    var data = {};
+	    data.variations = _.chain( this.model.getVariationOptions() )
+	      .each(function(variation){
+	        if(hasManyOptions(variation)){
+	          variation.select = true;
+	          variation.emptyOption = polyglot.t('messages.choose');
+	        }
+	      })
+	      .value();
+	    return data;
+	  },
+
+	  ui: {
+	    add: '*[data-action="add"]',
+	    btn: '.btn-group .btn',
+	    select: 'select'
+	  },
+
+	  triggers: {
+	    'click @ui.add': 'add:to:cart'
+	  },
+
+	  events: {
+	    'click @ui.btn'     : 'onVariationSelect',
+	    'change @ui.select' : 'onVariationSelect'
+	  },
+
+	  onVariationSelect: function(e){
+	    var target = $(e.currentTarget);
+
+	    // toggle
+	    if( target.is('button') ){
+	      target
+	        .addClass('active')
+	        .siblings('.btn')
+	        .removeClass('active');
+	    }
+
+	    // filter
+	    var name = target.data('name');
+	    var option = target.val();
+	    this.collection.filterBy(name, function(model){
+	      return _.some(model.get('attributes'), function(obj){
+	        return obj.name === name && obj.option === option;
+	      });
+	    });
+	    this.ui.add.prop('disabled', this.collection.length !== 1);
+	  }
+
+	});
+
+	module.exports = Variations;
+	App.prototype.set('POSApp.Products.Variations', Variations);
+
+/***/ },
+/* 176 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"popover-body\">\n{{#variations}}\n  <strong>{{name}}</strong>\n  {{#unless this.select}}\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n    {{#each options}}\n      <button class=\"btn btn-default\" value=\"{{this}}\" data-name=\"{{../name}}\">{{this}}</button>\n    {{/each}}\n    </div>\n  {{/unless}}\n  {{#if this.select}}\n    <select data-name=\"{{name}}\">\n      <option value=\"\">{{this.emptyOption}}</option>\n    {{#each options}}\n      <option value=\"{{this}}\">{{this}}</option>\n    {{/each}}\n    </select>\n  {{/if}}\n{{/variations}}\n</div>\n<div class=\"popover-footer\">\n  <button class=\"btn btn-success\" data-action=\"add\" disabled>Add to Cart</button>\n</div>\n"
+
+/***/ },
+/* 177 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var CollectionView = __webpack_require__(70);
+	var Variation = __webpack_require__(178);
+	var _ = __webpack_require__(5);
+
+	var Empty = ItemView.extend({
+	  tagName: 'li',
+	  className: 'empty',
+	  template: 'pos.products.empty'
+	});
+
+	module.exports = CollectionView.extend({
+	  childView: Variation,
+	  emptyView: Empty,
+	  childViewContainer: 'ul',
+
+	  initialize: function(options){
+	    options = options || {};
+
+	    this.collection = this.model.getVariations();
+	    this.collection.resetFilters();
+	    this.filterVariations(options.filter);
+	  },
+
+	  onShow: function() {
+	    this.$el.hide().slideDown(250);
+	  },
+
+	  filterVariations: function(filter){
+	    if(filter){
+	      filter = filter || {};
+	      var matchMaker = function(model){
+	        var attributes = model.get('attributes');
+	        return _.any(attributes, function(attribute){
+	          return attribute.name === filter.name &&
+	            attribute.option === filter.option;
+	        });
+
+	      };
+	      this.collection.filterBy('variation', matchMaker);
+	    }
+	  }
+
+	});
+
+/***/ },
+/* 178 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var App = __webpack_require__(2);
+	var Radio = __webpack_require__(4);
+
+	var Item = ItemView.extend({
+	  template: 'pos.products.product',
+
+	  className: 'list-row',
+
+	  ui: {
+	    add : 'a[data-action="add"]'
+	  },
+
+	  events: {
+	    'click @ui.add' : 'addToCart'
+	  },
+
+	  // todo: why is this necessary?
+	  modelEvents: {
+	    'change:stock_quantity': 'render'
+	  },
+
+	  addToCart: function(e){
+	    e.preventDefault();
+	    Radio.request('router', 'add:to:cart', {model: this.model});
+	  },
+
+	  templateHelpers: function(){
+	    return {
+	      variation: true,
+	      title: this.options.model.parent.get('title')
+	    };
+	  }
+
+	});
+
+	module.exports = Item;
+	App.prototype.set('POSApp.Products.Item.Drawer.Variation', Item);
+
+/***/ },
+/* 179 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var App = __webpack_require__(2);
+	var _ = __webpack_require__(5);
+
+	var View = ItemView.extend({
+	  template: 'pagination',
+
+	  //ui: {
+	  //  prev    : '.prev',
+	  //  next    : '.next'
+	  //},
+	  //
+	  //events: {
+	  //  'click @ui.prev': 'onPrev',
+	  //  'click @ui.next': 'onNext'
+	  //},
+
+	  // todo: improve this
+	  collectionEvents: {
+	    'add remove paginated:change:page paginated:change:numPages reset':
+	      _.debounce(function(){
+	        if(!this.isDestroyed){
+	          this.render();
+	        }
+	      }, 10)
+	  },
+
+	  initialize: function(){
+	    this.listenTo(this.collection.superset(), {
+	      'end:fullSync': this.render
+	    });
+	  },
+
+	  templateHelpers: function(){
+	    var queue = this.collection.superset().queue.length;
+	    return {
+	      showing : this.collection.length,
+	      local   : this.collection.superset().length,
+	      queue   : queue,
+	      hasQueue: queue > 0
+	    };
+	  }
+
+	  //onRender: function() {
+	  //  this.$('.current').text(this.collection.getPage() + 1);
+	  //  this.$('.total').text(this.collection.getNumPages());
+	  //  this.$('.prev').prop('disabled', !this.collection.hasPrevPage());
+	  //  this.$('.next').prop('disabled', !this.collection.hasNextPage());
+	  //},
+
+	  //onPrev: function() {
+	  //  if (this.collection.hasPrevPage()) {
+	  //    this.collection.prevPage();
+	  //  }
+	  //},
+	  //
+	  //onNext: function() {
+	  //  if (this.collection.hasNextPage()) {
+	  //    this.collection.nextPage();
+	  //  }
+	  //}
+	});
+
+	module.exports = View;
+	App.prototype.set('Components.Pagination.View', View);
+
+/***/ },
+/* 180 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Route = __webpack_require__(82);
+	var LayoutView = __webpack_require__(181);
+	var ItemsView = __webpack_require__(182);
+	var TotalsView = __webpack_require__(187);
+	var NotesView = __webpack_require__(188);
+	var CustomerView = __webpack_require__(189);
+	var Buttons = __webpack_require__(76);
+	//var debug = require('debug')('cart');
+	var _ = __webpack_require__(5);
+	var App = __webpack_require__(2);
+	var Utils = __webpack_require__(8);
+	var polyglot = __webpack_require__(10);
+
+	var CartRoute = Route.extend({
+
+	  initialize: function( options ) {
+	    options = options || {};
+	    this.container  = options.container;
+	    this.collection = options.collection;
+	    this.setTabLabel({
+	      tab   : 'right',
+	      label : polyglot.t('titles.cart')
+	    });
+	  },
+
+	  fetch: function() {
+	    if (this.collection.isNew()) {
+	      return this.collection.fetch({ silent: true });
+	    }
+	  },
+
+	  onFetch: function(id){
+	    this.order = this.collection.setActiveOrder(id);
+
+	    if(this.order){
+	      this.setTabLabel({
+	        tab   : 'right',
+	        label : this.tabLabel(this.order)
+	      });
+
+	      this.listenTo( this.order, 'change:total', function(model){
+	        this.setTabLabel({
+	          tab   : 'right',
+	          label : this.tabLabel(model)
+	        });
+	      });
+	    }
+	  },
+
+	  render: function() {
+	    this.layout = new LayoutView({
+	      order: this.order
+	    });
+
+	    this.listenTo( this.layout, 'show', this.onShow );
+
+	    this.container.show( this.layout );
+	  },
+
+	  onRender: function(){
+	    if( this.order && !this.order.isEditable() ){
+	      this.navigate('receipt/' + this.order.id, { trigger: true });
+	    }
+	  },
+
+	  onShow: function(){
+	    if(!this.order){
+	      return this.noActiveOrder();
+	    }
+
+	    this.showCart();
+	    this.showTotals();
+	    this.showCustomer();
+	    this.showActions();
+	    this.showNotes();
+	  },
+
+	  /**
+	   * Empty Cart
+	   */
+	  noActiveOrder: function(){
+	    var view = new ItemsView();
+	    this.layout.getRegion('list').show(view);
+	    _.invoke([
+	      this.layout.getRegion('totals'),
+	      this.layout.getRegion('customer'),
+	      this.layout.getRegion('actions'),
+	      this.layout.getRegion('note')
+	    ], 'empty');
+	  },
+
+	  /**
+	   * Cart Items
+	   */
+	  showCart: function() {
+	    var view = new ItemsView({
+	      collection: this.order.cart
+	    });
+	    this.layout.getRegion('list').show(view);
+	  },
+
+	  /**
+	   * Cart Totals
+	   */
+	  showTotals: function() {
+	    var view = new TotalsView({
+	      model: this.order
+	    });
+	    this.on('discount:clicked', view.showDiscountRow);
+	    this.layout.getRegion('totals').show(view);
+	  },
+
+	  showCustomer: function(){
+	    var view = new CustomerView({
+	      model: this.order
+	    });
+	    this.layout.getRegion('customer').show( view );
+	  },
+
+	  /**
+	   * Actions
+	   * - order discount removed in WC 2.3
+	   */
+	  showActions: function() {
+	    var view = new Buttons({
+	      buttons: [
+	        {action: 'void',      className: 'btn-danger pull-left'},
+	        {action: 'fee',       className: 'btn-primary'},
+	        {action: 'shipping',  className: 'btn-primary'},
+	        //{action: 'discount',  className: 'btn-primary'},
+	        {action: 'note',      className: 'btn-primary'},
+	        {action: 'checkout',  className: 'btn-success'}
+	      ]
+	    });
+
+	    this.listenTo(view, {
+	      'action:void': function(btn, view){
+	        view.triggerMethod('disableButtons');
+	        this.layout.getRegion('list').currentView.voidCart( this.order );
+	      },
+	      'action:note': function(){
+	        this.layout.getRegion('note').currentView.showNoteField();
+	      },
+	      //'action:discount': function(){
+	      //  this.layout.getRegion('totals').currentView.showDiscountRow();
+	      //},
+	      'action:fee': function(){
+	        this.order.cart.addToCart({
+	          type  : 'fee',
+	          title : polyglot.t('titles.fee')
+	        });
+	      },
+	      'action:shipping': function(){
+	        this.order.cart.addToCart({
+	          type        : 'shipping',
+	          method_title: polyglot.t('titles.shipping'),
+	          method_id   : '' // todo: settings
+	        });
+	      },
+	      'action:checkout': function(){
+	        this.navigate('checkout/' + this.order.id, { trigger: true });
+	      }
+	    });
+
+	    this.layout.getRegion('actions').show( view );
+	  },
+
+	  /**
+	   * Order Notes
+	   */
+	  showNotes: function() {
+	    var view = new NotesView({
+	      model: this.order
+	    });
+	    this.on( 'note:clicked', view.showNoteField );
+	    this.layout.getRegion('note').show( view );
+	  },
+
+	  tabLabel: function(order){
+	    var prefix = polyglot.t('titles.cart'),
+	      total = order.get('total'),
+	      formatTotal = Utils.formatMoney(total);
+
+	    return prefix + ': ' + formatTotal;
+	  }
+
+	});
+
+	module.exports = CartRoute;
+	App.prototype.set('POSApp.Cart.Route', CartRoute);
+
+/***/ },
+/* 181 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+
+	module.exports = LayoutView.extend({
+	  template: 'pos.cart.panel',
+
+	  initialize: function(options){
+	    options = options || {};
+	    this.order = options.order;
+	  },
+
+	  regions: {
+	    list      : '.cart-list',
+	    totals    : '.cart-totals',
+	    customer  : '.cart-customer',
+	    actions   : '.cart-actions',
+	    note      : '.cart-notes',
+	    footer    : '.cart-footer'
+	  },
+
+	  attributes: {
+	    'class'   : 'panel cart'
+	  },
+
+	  /**
+	   * add/remove cart-empty class
+	   */
+	  onShow: function(){
+	    this.$el.toggleClass('cart-empty', !this.order);
+	  }
+
+	});
+
+/***/ },
+/* 182 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var CollectionView = __webpack_require__(70);
+	var LineItem = __webpack_require__(183);
+	var App = __webpack_require__(2);
+	var polyglot = __webpack_require__(10);
+
+	var Empty = ItemView.extend({
+	  tagName: 'li',
+	  className: 'empty',
+	  template: function(){
+	    return polyglot.t('messages.cart-empty');
+	  }
+	});
+
+	var View = CollectionView.extend({
+	  tagName: 'ul',
+	  childView: LineItem,
+	  emptyView: Empty,
+	  voidCart: function( order ){
+	    this.children.each(function(child){
+	      if( child instanceof Empty ){
+	        order.destroy();
+	      } else {
+	        child.getRegion('item').currentView.removeItem();
+	      }
+	    });
+	  }
+	});
+
+	module.exports = View;
+	App.prototype.set('POSApp.Cart.Views.Items', View);
+
+/***/ },
+/* 183 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+	var ItemView = __webpack_require__(184);
+	var DrawerView = __webpack_require__(186);
+	var $ = __webpack_require__(6);
+
+	/**
+	 * @todo Abstract ListItemView
+	 */
+
+	/* jshint -W071 */
+	$.fn.selectText = function(){
+	  var range, element = this[0];
+	  if (document.body.createTextRange) {
+	    range = document.body.createTextRange();
+	    range.moveToElementText(element);
+	    range.select();
+	  } else if (window.getSelection) {
+	    var selection = window.getSelection();
+	    range = document.createRange();
+	    range.selectNodeContents(element);
+	    selection.removeAllRanges();
+	    selection.addRange(range);
+	  }
+	};
+	/* jshint +W071 */
+
+	module.exports = LayoutView.extend({
+
+	  tagName: 'li',
+
+	  className: function() { return this.model.get('type'); },
+
+	  template: function() {
+	    return '<div class="list-item cart-item"></div>' +
+	      '<div class="list-drawer cart-drawer"></div>';
+	  },
+
+	  regions: {
+	    item    : '.list-item',
+	    drawer  : '.list-drawer'
+	  },
+
+	  modelEvents: {
+	    'pulse': 'pulse'
+	  },
+
+	  onRender: function(){
+	    var view = new ItemView({ model: this.model });
+
+	    this.listenTo( view, 'drawer:open', this.openDrawer );
+	    this.listenTo( view, 'drawer:close', this.closeDrawer );
+	    this.listenTo( view, 'drawer:toggle', this.toggleDrawer );
+
+	    this.getRegion('item').show(view);
+	  },
+
+	  openDrawer: function(){
+	    var view = new DrawerView({ model: this.model });
+	    this.getRegion('drawer').show(view);
+	    this.$el.addClass('drawer-open');
+	  },
+
+	  closeDrawer: function(){
+	    this.getRegion('drawer').empty();
+	    this.$el.removeClass('drawer-open');
+	  },
+
+	  toggleDrawer: function(){
+	    if( this.getRegion('drawer').hasView() ){
+	      this.closeDrawer();
+	    } else {
+	      this.openDrawer();
+	    }
+	  },
+
+	  pulse: function(opt) {
+	    if(opt === 'remove'){ return; }
+	    var el = this.$el, type = this.model.get( 'type' );
+
+	    // scroll to row
+	    el.addClass('pulse-in')
+	      .scrollIntoView({ complete: function(){
+	        el.animate({backgroundColor: 'transparent'}, 500, function() {
+	          $(this).removeClass('pulse-in').removeAttr('style');
+	          if( type === 'fee' || type === 'shipping' ) {
+	            $('.title strong', this).focus().selectText();
+	          }
+	        });
+	      }});
+
+	  }
+
+	});
+
+/***/ },
+/* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var FormView = __webpack_require__(88);
+	var Utils = __webpack_require__(8);
+	var bb = __webpack_require__(16);
+	var Radio = bb.Radio;
+	var AutoGrow = __webpack_require__(163);
+	var Numpad = __webpack_require__(185);
+	var _ = __webpack_require__(5);
+
+	module.exports = FormView.extend({
+	  template: 'pos.cart.item',
+
+	  className: 'list-row',
+
+	  initialize: function() {
+	    this.tax = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'tax'
+	    }) || {};
+	  },
+
+	  templateHelpers: function(){
+	    var type = this.model.get('type');
+	    return {
+	      product: (type !== 'shipping' && type !== 'fee')
+	    };
+	  },
+
+	  behaviors: {
+	    AutoGrow: {
+	      behaviorClass: AutoGrow
+	    },
+	    Numpad: {
+	      behaviorClass: Numpad
+	    }
+	  },
+
+	  ui: {
+	    remove  : '*[data-action="remove"]',
+	    more    : '*[data-action="more"]',
+	    title   : '.title'
+	  },
+
+	  events: {
+	    'click @ui.remove': 'removeItem',
+	    'click @ui.title': 'focusTitle'
+	  },
+
+	  triggers: {
+	    'click @ui.more'  : 'drawer:toggle'
+	  },
+
+	  modelEvents: {
+	    'change:title'        : 'save',
+	    'change:method_title' : 'save'
+	  },
+
+	  bindings: {
+	    'input[name="quantity"]' : {
+	      observe: 'quantity',
+	      onGet: function(value) {
+	        return Utils.formatNumber(value, 'auto');
+	      },
+	      onSet: Utils.unformat
+	    },
+	    '*[data-name="title"]' : {
+	      observe: 'title',
+	      events: ['blur']
+	    },
+	    'dl.meta': {
+	      observe: 'meta',
+	      updateMethod: 'html',
+	      onGet: function(val){
+	        var row = '';
+	        _.each(val, function(meta){
+	          row += '<dt>' + meta.label + ':</dt><dd>' + meta.value + '</dd>';
+	        });
+	        return row;
+	      }
+	    },
+	    '*[data-name="method_title"]': 'method_title',
+	    'input[name="item_price"]': {
+	      observe: 'item_price',
+	      onGet: Utils.formatNumber,
+	      onSet: Utils.unformat
+	    },
+	    '.total': {
+	      observe: ['total', 'subtotal', 'tax_class', 'taxable'],
+	      updateMethod: 'html',
+	      onGet: function(value) {
+	        if( this.tax.tax_display_cart === 'incl' ) {
+	          value[0] = this.model.sum(['total', 'total_tax']);
+	          value[1] = this.model.sum(['subtotal', 'subtotal_tax']);
+	        }
+
+	        var total     = Utils.formatMoney(value[0]),
+	            subtotal  = Utils.formatMoney(value[1]);
+
+	        if(total !== subtotal){
+	          return '<del>' + subtotal + '</del> <ins>' + total + '</ins>';
+	        } else {
+	          return total;
+	        }
+	      }
+	    }
+	  },
+
+	  save: function(){
+	    console.log(arguments);
+	    this.model.save();
+	  },
+
+	  removeItem: function(e) {
+	    if(e) { e.preventDefault(); }
+	    var self = this;
+	    this.ui.remove.attr('disabled', 'true');
+	    this.$el.addClass('pulse-out')
+	      .fadeOut(500, function(){
+	      self.model.destroy();
+	    });
+	  },
+
+	  focusTitle: function(){
+	    this.ui.title.find('strong').focus();
+	  }
+
+	});
+
+/***/ },
+/* 185 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Behavior = __webpack_require__(79);
+	var App = __webpack_require__(2);
+	var Radio = __webpack_require__(4);
+	var View = __webpack_require__(160);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+
+	var NumpadBehavior = Behavior.extend({
+
+	  ui: {
+	    target: '*[data-numpad]'
+	  },
+
+	  events: {
+	    'click @ui.target'      : 'numpadPopover',
+	    'open:numpad @ui.input' : 'numpadPopover'
+	  },
+
+	  onRender: function() {
+	    if(window.Modernizr.touch) {
+	      this.ui.target.each(function(){
+	        if( $(this).is('input') ){
+	          $(this).attr('readonly', true);
+	        }
+	      });
+	    }
+	  },
+
+	  numpadPopover: function(e){
+	    var name    = $(e.target).attr('name'),
+	        options = _.clone( $(e.target).data() );
+
+	    // numpad
+	    _.defaults( options, {
+	      value : this.view.model.get( name )
+	    });
+
+	    if( _.isString( options.original ) ){
+	      options.original = this.view.model.get(options.original);
+	    }
+
+	    var numpad = new View(options);
+
+	    this.listenTo(numpad, 'input', function(value){
+	      Radio.request('popover', 'close');
+	      this.view.model.set( name, value, { numpadChange: true } );
+	    });
+
+	    // popover
+	    this._numpadPopover(numpad, options, e.target);
+	  },
+
+	  _numpadPopover: function(numpad, options, target){
+	    _.defaults( options, {
+	      target : target,
+	      view   : numpad,
+	      classes: 'popover-theme-arrows popover-numpad'
+	    });
+
+	    Radio.request('popover', 'open', options);
+
+	    // @todo: remove this hack, popover & numpad should be uncoupled
+	    numpad.$('input').focus().select();
+	  }
+
+	});
+
+	module.exports = NumpadBehavior;
+	App.prototype.set('Behaviors.Numpad', NumpadBehavior);
+
+/***/ },
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var FormView = __webpack_require__(88);
+	var Utils = __webpack_require__(8);
+	var AutoGrow = __webpack_require__(163);
+	var Numpad = __webpack_require__(185);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var bb = __webpack_require__(16);
+	var Radio = bb.Radio;
+
+	module.exports = FormView.extend({
+
+	  template: 'pos.cart.item-drawer',
+
+	  behaviors: {
+	    AutoGrow: {
+	      behaviorClass: AutoGrow
+	    },
+	    Numpad: {
+	      behaviorClass: Numpad
+	    }
+	  },
+
+	  ui: {
+	    addMeta     : '*[data-action="add-meta"]',
+	    removeMeta  : '*[data-action="remove-meta"]',
+	    metaLabel   : 'input[name="meta.label"]',
+	    metaValue   : 'textarea[name="meta.value"]'
+	  },
+
+	  events: {
+	    'click @ui.addMeta'     : 'addMetaFields',
+	    'click @ui.removeMeta'  : 'removeMetaFields',
+	    'blur @ui.metaLabel'    : 'updateMeta',
+	    'blur @ui.metaValue'    : 'updateMeta'
+	  },
+
+	  modelEvents: {
+	    'pulse': 'pulse'
+	  },
+
+	  bindings: {
+	    'input[name="regular_price"]' : {
+	      observe: 'regular_price',
+	      onGet: Utils.formatNumber,
+	      onSet: Utils.unformat
+	    },
+	    'input[name="taxable"]' : 'taxable',
+	    'select[name="tax_class"]' : {
+	      observe: 'tax_class',
+	      selectOptions: {
+	        collection: function(){
+	          return Radio.request('entities', 'get', {
+	            type: 'option',
+	            name: 'tax_classes'
+	          });
+	        }
+	      },
+	      attributes: [{
+	        name: 'disabled',
+	        observe: 'taxable',
+	        onGet: function(val) {
+	          return !val;
+	        }
+	      }]
+	    },
+	    'select[name="method_id"]': {
+	      observe: 'method_id',
+	      selectOptions: {
+	        collection: function(){
+	          return Radio.request('entities', 'get', {
+	            type: 'option',
+	            name: 'shipping'
+	          });
+	        },
+	        comparator: function(){}
+	      }
+	    }
+	  },
+
+	  onShow: function() {
+	    this.$el.hide().slideDown(250);
+	  },
+
+	  remove: function() {
+	    this.$el.slideUp( 250, function() {
+	      FormView.prototype.remove.call(this);
+	    }.bind(this));
+	  },
+
+	  pulse: function(type){
+	    if(type === 'remove'){
+	      return this.$el.slideUp(250);
+	    }
+	  },
+
+	  updateMeta: function(e) {
+	    var el        = $(e.target),
+	        name      = el.attr('name').split('.'),
+	        attribute = name[0],
+	        value     = el.val(),
+	        data      = {},
+	        self      = this;
+
+	    var newValue = function(){
+	      var key = el.parent('span').data('key');
+	      var meta = ( self.model.get('meta') || [] );
+
+	      // select row (or create new one)
+	      var row = _.where( meta, { 'key': key } );
+	      row = row.length > 0 ? row[0] : { 'key': key };
+	      row[ name[1] ] = value;
+
+	      // add the change row and make unique on key
+	      meta.push(row);
+	      return _.uniq( meta, 'key' );
+	    };
+
+	    if( name.length > 1 && attribute === 'meta' ) {
+	      value = newValue();
+	    }
+
+	    data[ attribute ] = value;
+
+	    this.model.save(data);
+	  },
+
+	  addMetaFields: function(e){
+	    e.preventDefault();
+
+	    var row = $(e.currentTarget).prev('span').data('key');
+	    var i = row ? row + 1 : 1 ;
+
+	    $('<span data-key="'+ i +'" />')
+	      .append('' +
+	        '<input class="form-control" type="text" name="meta.label">' +
+	        '<textarea class="form-control" name="meta.value"></textarea>' +
+	        '<a href="#" data-action="remove-meta">' +
+	        '<i class="icon-remove icon-lg"></i>' +
+	        '</a>'
+	      )
+	      .insertBefore( $(e.currentTarget) );
+	  },
+
+	  removeMetaFields: function(e){
+	    e.preventDefault();
+
+	    var row = $(e.currentTarget).parent('span'),
+	        meta = ( this.model.get('meta') || [] ),
+	        index = _.findIndex( meta, { 'key': row.data('key') } );
+
+	    if( index >= 0 ){
+	      meta.splice( index, 1 );
+	      this.model.save({ 'meta': meta });
+	      this.model.trigger('change:meta');
+	    }
+
+	    row.remove();
+	  }
+
+	});
+
+/***/ },
+/* 187 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(88);
+	var Radio = __webpack_require__(4);
+
+	module.exports = ItemView.extend({
+	  tagName: 'ul',
+	  template: 'pos.cart.totals',
+
+	  initialize: function() {
+	    this.tax = Radio.request('entities', 'get', {
+	      type : 'option',
+	      name : 'tax'
+	    }) || {};
+	  },
+
+	  // todo: why is this necessary?!
+	  // view should re-render automatically on model change
+	  modelEvents: {
+	    'change': 'render'
+	  },
+
+	  /**
+	   *
+	   */
+	  templateHelpers: function(){
+	    var data = {
+	      itemized: this.tax.tax_total_display === 'itemized',
+	      has_discount: 0 !== this.model.get('cart_discount')
+	    };
+
+	    if( this.tax.tax_display_cart === 'incl' ) {
+	      data.subtotal = this.model.sum(['subtotal', 'subtotal_tax']);
+	      data.cart_discount = this.model.sum(
+	        ['cart_discount', 'cart_discount_tax']
+	      );
+	      data.incl_tax = true;
+	    }
+
+	    return data;
+	  }
+
+	});
+
+/***/ },
+/* 188 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var _ = __webpack_require__(5);
+
+	module.exports = ItemView.extend({
+	  template: _.template( '<%= note %>' ),
+
+	  modelEvents: {
+	    'change:note': 'render'
+	  },
+
+	  events: {
+	    'click'   : 'edit',
+	    'keypress'  : 'saveOnEnter',
+	    'blur'    : 'save'
+	  },
+
+	  onShow: function() {
+	    this.showOrHide();
+	  },
+
+	  showOrHide: function() {
+	    if( this.model.get('note') === '' ) {
+	      this.$el.hide();
+	    }
+	  },
+
+	  edit: function() {
+	    this.$el.attr('contenteditable','true').focus();
+	  },
+
+	  save: function() {
+	    var value = this.$el.text();
+
+	    // validate and save
+	    this.model.save({ note: value });
+	    this.$el.attr('contenteditable','false');
+	    this.showOrHide();
+	  },
+
+	  saveOnEnter: function(e) {
+	    // save note on enter
+	    if (e.which === 13) {
+	      e.preventDefault();
+	      this.$el.blur();
+	    }
+	  },
+
+	  showNoteField: function() {
+	    this.$el.show();
+	    this.$el.attr('contenteditable','true').focus();
+	  }
+	});
+
+/***/ },
+/* 189 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var View = __webpack_require__(61);
+	var App = __webpack_require__(2);
+	var _ = __webpack_require__(5);
+	var Radio = __webpack_require__(4);
+	var Customers = __webpack_require__(190);
+	var Dropdown = __webpack_require__(152);
+	var Mn = __webpack_require__(3);
+
+	var View = View.extend({
+	  template: 'pos.cart.customer',
+
+	  className: 'list-row',
+
+	  initialize: function(){
+	    this.customers = Radio.request('entities', 'get', {
+	      type: 'filtered',
+	      name: 'customers',
+	      perPage : 10
+	    });
+
+	    this.mergeOptions({
+	      guest: this.customers.superset().getGuestCustomer()
+	    }, ['guest']);
+
+	    /**
+	     * @todo customer attr relation direct to customer model
+	     */
+	    this.listenTo(this.customers.superset(), 'modal:save', this.onModalSave);
+
+	    _.bindAll( this, 'dropdownContent' );
+	  },
+
+	  behaviors: {
+	    Dropdown: {
+	      behaviorClass: Dropdown
+	    }
+	  },
+
+	  ui: {
+	    searchField     : 'input',
+	    removeCustomer  : '*[data-action="remove"]'
+	  },
+
+	  events: {
+	    'input @ui.searchField'   : 'query',
+	    'click @ui.removeCustomer': 'removeCustomer'
+	  },
+
+	  query: function(){
+	    var value = this.ui.searchField.val();
+	    this._query(value);
+	  },
+
+	  _query: _.debounce( function(value){
+	    this.customers
+	      .query(value)
+	      .firstPage();
+	  }, 149),
+
+	  modelEvents: {
+	    'change:customer': 'render'
+	  },
+
+	  dropdownContent: function( drop ){
+	    this.customersRegion = new Mn.Region({
+	      el: drop.content
+	    });
+
+	    // reposition on filter
+	    this.listenTo( this.customers, 'reset', function(){
+	      drop.position.call(drop);
+	    });
+
+	    // reposition on show
+	    this.listenTo( this.customersRegion, 'show', function(){
+	      drop.position.call(drop);
+	    });
+
+	    return ''; // return empty content
+	  },
+
+	  onDropdownOpen: function(){
+	    var view = new Customers({
+	      collection: this.customers,
+	      filter: this.$('input').val()
+	    });
+
+	    this.listenTo(view, 'childview:customer:selected', function(view){
+	      this.saveCustomer( view.model.toJSON() );
+	    });
+
+	    this.customersRegion.show(view);
+	  },
+
+	  onDropdownClose: function(){
+	    this.customersRegion.empty();
+	  },
+
+	  onTargetKeydown: function(e){
+	    this.customersRegion.currentView.moveFocus(e.which);
+	  },
+
+	  removeCustomer: function(){
+	    this.saveCustomer( this.getOption('guest') );
+	  },
+
+	  saveCustomer: function(customer){
+	    this.model.unset('customer', { silent: true });
+	    this.model.save({
+	      customer_id: customer.id,
+	      customer: customer
+	    });
+	  }
+
+	});
+
+	module.exports = View;
+	App.prototype.set('POSApp.Cart.Views.Customer', View);
+
+/***/ },
+/* 190 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var InfiniteListView = __webpack_require__(172);
+	var polyglot = __webpack_require__(10);
+	var Tmpl = __webpack_require__(191);
+	var hbs = __webpack_require__(7);
+	var _ = __webpack_require__(5);
+
+	var Customer = ItemView.extend({
+	  template: hbs.compile(Tmpl),
+	  tagName: 'li',
+	  triggers: {
+	    'click': 'customer:selected'
+	  },
+	  addFocus: function(){
+	    this.$el.addClass('focus').scrollIntoView();
+	  },
+	  removeFocus: function(){
+	    this.$el.removeClass('focus');
+	  },
+	  hasFocus: function(){
+	    return this.$el.hasClass('focus');
+	  }
+	});
+
+	var NoCustomer = ItemView.extend({
+	  tagName: 'li',
+	  className: 'empty',
+	  template: function(){
+	    return polyglot.t('messages.no-customer');
+	  }
+	});
+
+	var Customers = InfiniteListView.extend({
+	  childView: Customer,
+	  emptyView: NoCustomer,
+	  childViewContainer: 'ul',
+	  className: 'list-infinite dropdown-list',
+
+	  initialize: function(options){
+	    options = options || {};
+	    var filtered = this.collection;
+	    var customers = this.collection.superset();
+
+	    if( customers.isNew() ){
+	      return customers.fetch()
+	        .then(function(){
+	          customers.fullSync();
+	        });
+	    } else {
+	      filtered.query(options.filter);
+	    }
+	  },
+
+	  childEvents: {
+	    focus: 'onChildFocus'
+	  },
+
+	  onChildFocus: function(){
+	    this.children.each(function(view){
+	      view.removeFocus();
+	    });
+	  },
+
+	  moveFocus: function(keyCode) {
+	    if(keyCode === 40){
+	      this.moveFocusDown();
+	    }
+	    if(keyCode === 38){
+	      this.moveFocusUp();
+	    }
+	    if(keyCode === 13){
+	      this.getFocusedChild().trigger('customer:selected');
+	    }
+	  },
+
+	  moveFocusDown: function(){
+	    var next, nextChild, focused = this.getFocusedChild();
+	    if(!focused){
+	      return this.children.first().addFocus();
+	    }
+
+	    _.each(this.children._views, function(child){
+	      if(next){
+	        nextChild = child;
+	        next = false;
+	      }
+	      next = child === focused;
+	    });
+
+	    if(nextChild){
+	      focused.removeFocus();
+	      nextChild.addFocus();
+	    }
+	  },
+
+	  moveFocusUp: function(){
+	    var next, nextChild, focused = this.getFocusedChild();
+	    if(!focused){
+	      return this.children.last().addFocus();
+	    }
+
+	    _.eachRight(this.children._views, function(child){
+	      if(next){
+	        nextChild = child;
+	        next = false;
+	      }
+	      next = child === focused;
+	    });
+
+	    if(nextChild){
+	      focused.removeFocus();
+	      nextChild.addFocus();
+	    }
+	  },
+
+	  getFocusedChild: function(){
+	    return this.children.find(function(view){
+	      return view.hasFocus();
+	    });
+	  }
+
+	});
+
+
+	module.exports = Customers;
+
+/***/ },
+/* 191 */
+/***/ function(module, exports) {
+
+	module.exports = "<strong>{{formatCustomerName this}}</strong>\n<small>#{{id}}{{#if email}} - {{email}}{{/if}}</small>"
+
+/***/ },
+/* 192 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Route = __webpack_require__(82);
+	//var debug = require('debug')('checkout');
+	var App = __webpack_require__(2);
+	var LayoutView = __webpack_require__(193);
+	var StatusView = __webpack_require__(194);
+	var GatewaysView = __webpack_require__(196);
+	var polyglot = __webpack_require__(10);
+	var Radio = __webpack_require__(4);
+
+	var CheckoutRoute = Route.extend({
+
+	  initialize: function(options){
+	    options = options || {};
+	    this.container = options.container;
+	    this.collection = options.collection;
+	    this.setTabLabel({
+	      tab   : 'right',
+	      label : polyglot.t('titles.checkout')
+	    });
+	  },
+
+	  fetch: function(){
+	    if(this.collection.isNew()){
+	      return this.collection.fetch();
+	    }
+	  },
+
+	  onFetch: function(id){
+	    this.order = this.collection.setActiveOrder(id);
+
+	    if(this.order){
+	      this.listenTo( this.order, 'change:status', function(model){
+	        if(!model.isEditable() && model.get('status') !== 'failed'){
+	          this.navigate('receipt/' + model.id, { trigger: true });
+	        }
+	      });
+	    }
+	  },
+
+	  render: function(){
+	    this.layout = new LayoutView();
+
+	    this.listenTo( this.layout, 'show', function(){
+	      this.showStatus();
+	      this.showGateways();
+	      this.showActions();
+	    });
+
+	    this.container.show(this.layout);
+	  },
+
+	  onRender: function(){
+	    if( this.order && !this.order.isEditable() ){
+	      this.navigate('receipt/' + this.order.id, { trigger: true });
+	    }
+	  },
+
+	  showStatus: function(){
+	    var view = new StatusView({
+	      model: this.order
+	    });
+	    this.layout.getRegion('status').show(view);
+	  },
+
+	  showGateways: function(){
+	    this.order.gateways.order = this.order;
+	    var view = new GatewaysView({
+	      collection: this.order.gateways
+	    });
+	    this.layout.getRegion('list').show(view);
+	  },
+
+	  showActions: function(){
+	    var view = Radio.request('buttons', 'view', {
+	      buttons: [{
+	        action: 'return-to-sale',
+	        className: 'btn pull-left'
+	      },{
+	        action: 'process-payment',
+	        className: 'btn btn-success',
+	        icon: 'prepend'
+	      }]
+	    });
+
+	    this.listenTo(view, {
+	      'action:return-to-sale': function(){
+	        this.navigate('cart/' + this.order.id, { trigger: true });
+	      },
+	      'action:process-payment': function(btn){
+	        btn.trigger('state', 'loading');
+	        this.order.process()
+	          .always(function(){
+	            btn.trigger('state', 'reset');
+	          });
+	      }
+	    });
+
+	    this.layout.getRegion('actions').show(view);
+	  }
+
+	});
+
+	module.exports = CheckoutRoute;
+	App.prototype.set('POSApp.Checkout.Route', CheckoutRoute);
+
+/***/ },
+/* 193 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+	var App = __webpack_require__(2);
+	var hbs = __webpack_require__(7);
+
+	var Layout = LayoutView.extend({
+
+	  initialize: function(){
+	    this.template = hbs.compile('' +
+	      '<div class="panel-header checkout-status"></div>' +
+	      '<div class="panel-body list checkout-list"></div>' +
+	      '<div class="list-actions checkout-actions"></div>'
+	    );
+	  },
+
+	  regions: {
+	    status  : '.checkout-status',
+	    list    : '.checkout-list',
+	    actions : '.checkout-actions'
+	  },
+
+	  attributes: {
+	    'class' : 'panel checkout'
+	  }
+
+	});
+
+	module.exports = Layout;
+	App.prototype.set('POSApp.Checkout.Views.Layout', Layout);
+
+/***/ },
+/* 194 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var App = __webpack_require__(2);
+	var hbs = __webpack_require__(7);
+	//var $ = require('jquery');
+	var polyglot = __webpack_require__(10);
+	var Tmpl = __webpack_require__(195);
+	var _ = __webpack_require__(5);
+
+	var View = ItemView.extend({
+	  template: hbs.compile(Tmpl),
+
+	  initialize: function(){
+
+	  },
+
+	  templateHelpers: function(){
+	    return {
+	      status: this.getStatus(),
+	      message: this.getMessage()
+	    };
+	  },
+
+	  modelEvents: {
+	    'change:payment_details': 'render'
+	  },
+
+	  getStatus: function(){
+	    if(this.model.get('payment_details.paid') === false){
+	      this.$el.addClass('fail');
+	      return polyglot.t('titles.unpaid');
+	    }
+	    return polyglot.t('titles.to-pay');
+	  },
+
+	  getMessage: function(){
+	    var messages = this.model.get('payment_details.message');
+	    if( _.isArray(messages) ){
+	      return _.last(messages);
+	    }
+	    return messages;
+	  }
+
+	});
+
+	module.exports = View;
+	App.prototype.set('POSApp.Checkout.Views.Status', View);
+
+/***/ },
+/* 195 */
+/***/ function(module, exports) {
+
+	module.exports = "<h4>{{status}}: {{{money total}}}</h4>\n{{#if message}}\n  <p>{{{message}}}</p>\n{{/if}}"
+
+/***/ },
+/* 196 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var CollectionView = __webpack_require__(70);
+	var Gateway = __webpack_require__(197);
+	var App = __webpack_require__(2);
+	var polyglot = __webpack_require__(10);
+
+	var EmptyView = ItemView.extend({
+	  tagName: 'li',
+	  className: 'empty',
+	  template: function(){
+	    return polyglot.t('messages.no-gateway');
+	  }
+	});
+
+	var View = CollectionView.extend({
+	  tagName: 'ul',
+	  childView: Gateway,
+	  emptyView: EmptyView
+	});
+
+	module.exports = View;
+	App.prototype.set('POSApp.Checkout.Views.Gateways', View);
+
+/***/ },
+/* 197 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+	var GatewayView = __webpack_require__(198);
+	var DrawerView = __webpack_require__(199);
+
+	module.exports = LayoutView.extend({
+	  tagName: 'li',
+
+	  template: function() {
+	    return '<div class="gateway"></div><div class="drawer"></div>';
+	  },
+
+	  regions: {
+	    gatewayRegion: '.gateway',
+	    drawerRegion: '.drawer'
+	  },
+
+	  initialize: function(){
+	    this.listenTo(this.model, 'change:active', this.toggleDrawer);
+	  },
+
+	  onRender: function(){
+	    var view = new GatewayView({
+	      model: this.model
+	    });
+	    this.gatewayRegion.show(view);
+	  },
+
+	  onShow: function(){
+	    if(this.model.get('active')){
+	      this.openDrawer();
+	    }
+	  },
+
+	  openDrawer: function(){
+	    var view = new DrawerView({
+	      model: this.model
+	    });
+	    this.drawerRegion.show(view);
+	    this.$el.addClass('active');
+	  },
+
+	  closeDrawer: function(){
+	    this.drawerRegion.empty();
+	    this.$el.removeClass('active');
+	  },
+
+	  toggleDrawer: function(){
+	    if( this.drawerRegion.hasView() ){
+	      this.closeDrawer();
+	    } else {
+	      this.openDrawer();
+	    }
+	  }
+	});
+
+/***/ },
+/* 198 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var hbs = __webpack_require__(7);
+	//var $ = require('jquery');
+
+	module.exports = ItemView.extend({
+	  tagName: 'h5',
+	  template: hbs.compile('' +
+	    '{{method_title}}' +
+	    '{{#if icon}}<img src="{{icon}}">{{/if}}'
+	  ),
+
+	  events: {
+	    'click': 'makeActive'
+	  },
+
+	  makeActive: function(){
+	    this.model.set({
+	      active: true
+	    });
+	  }
+	});
+
+/***/ },
+/* 199 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var FormView = __webpack_require__(88);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	var Numpad = __webpack_require__(185);
+	var Utils = __webpack_require__(8);
+	var polyglot = __webpack_require__(10);
+
+	module.exports = FormView.extend({
+
+	  initialize: function() {
+	    this.template = 'pos.checkout.gateways.' + this.model.id;
+	    this.order_total = this.model.collection.order.get('total');
+	    this.updateStatusMessage();
+	  },
+
+	  templateHelpers: function(){
+	    return {
+	      total: this.order_total
+	    };
+	  },
+
+	  behaviors: {
+	    Numpad: {
+	      behaviorClass: Numpad
+	    }
+	  },
+
+	  modelEvents: {
+	    'change:message': 'updateStatusMessage'
+	  },
+
+	  onRender: function(){
+	    var self = this;
+
+	    if(this.model.id === 'pos_cash'){
+	      return this.posCashRender();
+	    }
+
+	    if(this.model.id === 'pos_card'){
+	      return this.posCardRender();
+	    }
+
+	    /**
+	     * bind form elements
+	     */
+	    this.$('input, select, textarea').each(function(){
+	      var name = $(this).attr('name'),
+	        id = $(this).attr('id'),
+	        data = $(this).data();
+
+	      if(name){
+	        return self.addBinding(null, '*[name="' + name + '"]', name);
+	      }
+	      if(id){
+	        return self.addBinding(null, '#' + id, id);
+	      }
+	      if(_.size(data) === 1){
+	        var prop = Object.keys(data)[0];
+	        return self.addBinding(
+	          null,
+	          '*[data-' + prop + '="' + data[prop] + '"]',
+	          data[prop]
+	        );
+	      }
+
+	    });
+	  },
+
+	  posCashRender: function(){
+	    this.addBinding(null, {
+	      '#pos-cash-tendered': {
+	        observe: 'pos-cash-tendered',
+	        onGet: function(value){
+	          this.calcChange(value);
+	          return Utils.formatNumber(value);
+	        },
+	        onSet: function(value){
+	          var val = Utils.unformat(value);
+	          this.calcChange(val);
+	          return val;
+	        },
+	        initialize: function($el, model){
+	          if(!model.get('pos-cash-tendered')){
+	            model.set({ 'pos-cash-tendered': this.order_total });
+	          }
+	        }
+	      }
+	    });
+	  },
+
+	  posCardRender: function(){
+	    this.addBinding(null, {
+	      '#pos-cashback': {
+	        observe: 'pos-cashback',
+	        onGet: Utils.formatNumber,
+	        onSet: Utils.unformat
+	      }
+	    });
+	  },
+
+	  onShow: function() {
+	    this.$el.hide().slideDown(250);
+
+	    if(window.Modernizr.touch){
+	      this.$('#pos-cash-tendered').attr('readonly', true);
+	      this.$('#pos-cashback').attr('readonly', true);
+	    }
+	  },
+
+	  remove: function() {
+	    this.$el.slideUp( 250, function() {
+	      FormView.prototype.remove.call(this);
+	    }.bind(this));
+	  },
+
+	  calcChange: function(tendered){
+	    var change = tendered - this.order_total;
+	    var msg = polyglot.t('titles.change') + ': ' + Utils.formatMoney(change);
+	    this.model.set({ message: msg, 'pos-cash-change': change });
+	  },
+
+	  updateStatusMessage: function(){
+	    this.model.collection.order.set({
+	      'payment_details.message': this.model.get('message')
+	    });
+	  }
+
+	});
+
+/***/ },
+/* 200 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Route = __webpack_require__(82);
+	var Radio = __webpack_require__(4);
+	//var debug = require('debug')('receipt');
+	var App = __webpack_require__(2);
+	var LayoutView = __webpack_require__(201);
+	var StatusView = __webpack_require__(202);
+	var ItemsView = __webpack_require__(204);
+	var TotalsView = __webpack_require__(206);
+	var EmailView = __webpack_require__(207);
+	var polyglot = __webpack_require__(10);
+	var Buttons = __webpack_require__(76);
+	var $ = __webpack_require__(6);
+
+	var ReceiptRoute = Route.extend({
+
+	  initialize: function( options ) {
+	    options = options || {};
+	    this.container = options.container;
+	    this.collection = options.collection;
+	    this.autoPrint = options.autoPrint;
+	    this.setTabLabel({
+	      tab   : 'right',
+	      label : polyglot.t('titles.receipt')
+	    });
+	    this.tax = Radio.request('entities', 'get', {
+	      type: 'option',
+	      name: 'tax'
+	    }) || {};
+	  },
+
+	  fetch: function() {
+	    if(this.collection.isNew()){
+	      return this.collection.fetch();
+	    }
+	  },
+
+	  onFetch: function(id){
+	    this.order = this.collection.get(id);
+	    this.order.clearCart();
+
+	    // redirect, ie: offsite payment
+	    var redirect = this.order.get('payment_details.redirect');
+	    if(redirect && redirect !== ''){
+	      window.open(redirect, '_blank');
+	    }
+
+	    // update products
+	    var products = Radio.request('entities', 'get', {
+	      type: 'collection',
+	      name: 'products'
+	    });
+	    products.fetchUpdated();
+	  },
+
+	  render: function() {
+	    this.layout = new LayoutView({
+	      model: this.order
+	    });
+
+	    this.listenTo( this.layout, 'show', function() {
+	      this.showStatus();
+	      this.showItems();
+	      this.showTotals();
+	      this.showActions();
+	      if(this.autoPrint){
+	        this.print();
+	      }
+	    });
+
+	    this.container.show( this.layout );
+	  },
+
+	  showStatus: function(){
+	    var view = new StatusView({
+	      model: this.order
+	    });
+	    this.layout.getRegion('status').show(view);
+	  },
+
+	  showItems: function(){
+	    var view = new ItemsView({
+	      model: this.order
+	    });
+
+	    this.layout.getRegion('list').show(view);
+	  },
+
+	  showTotals: function(){
+	    var view = new TotalsView({
+	      model: this.order
+	    });
+
+	    this.layout.getRegion('totals').show(view);
+	  },
+
+	  showActions: function(){
+	    var view = new Buttons({
+	      buttons: [{
+	        action: 'print',
+	        className: 'btn-primary pull-left'
+	      }, {
+	        action: 'email',
+	        className: 'btn-primary pull-left'
+	      }, {
+	        action: 'new-order',
+	        className: 'btn-success'
+	      }]
+	    });
+
+	    this.listenTo(view, {
+	      'action:print': this.print,
+	      'action:email': this.email,
+	      'action:new-order': function(){
+	        this.navigate('', { trigger: true });
+	      }
+	    });
+
+	    this.layout.getRegion('actions').show(view);
+	  },
+
+	  print: function(){
+	    Radio.request('print', 'print', {
+	      template: 'receipt',
+	      model: this.order
+	    });
+	  },
+
+	  email: function(){
+	    var self = this;
+
+	    var view = new EmailView({
+	      order_id: this.order.get('id'),
+	      email: this.order.get('customer.email')
+	    });
+
+	    Radio.request('modal', 'open', view)
+	      .then(function(args){
+	        var buttons = args.view.getButtons();
+	        self.listenTo(buttons, 'action:send', function(btn, view){
+	          var email = args.view.getRegion('content').currentView.getEmail();
+	          self.send(btn, view, email);
+	        });
+	      });
+
+	  },
+
+	  // todo: refactor
+	  send: function(btn, view, email){
+	    var order_id = this.order.get('id'),
+	        ajaxurl = Radio.request('entities', 'get', {
+	          type: 'option',
+	          name: 'ajaxurl'
+	        });
+
+	    btn.trigger('state', [ 'loading', '' ]);
+
+	    function onSuccess(resp){
+	      if(resp.result === 'success'){
+	        btn.trigger('state', [ 'success', resp.message ]);
+	      } else {
+	        btn.trigger('state', [ 'error', resp.message ]);
+	      }
+	    }
+
+	    function onError(jqxhr){
+	      var message = null;
+	      if(jqxhr.responseJSON && jqxhr.responseJSON.errors){
+	        message = jqxhr.responseJSON.errors[0].message;
+	      }
+	      btn.trigger('state', ['error', message]);
+	    }
+
+	    $.getJSON( ajaxurl, {
+	      action: 'wc_pos_email_receipt',
+	      order_id: order_id,
+	      email : email
+	    })
+	    .done(onSuccess)
+	    .fail(onError);
+	  }
+
+	});
+
+	module.exports = ReceiptRoute;
+	App.prototype.set('POSApp.Receipt.Route', ReceiptRoute);
+
+/***/ },
+/* 201 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+
+	module.exports = LayoutView.extend({
+	  template: 'pos.receipt.panel',
+
+	  regions: {
+	    status  : '.receipt-status',
+	    list    : '.receipt-list',
+	    totals  : '.receipt-totals',
+	    actions : '.receipt-actions'
+	  },
+
+	  className: function(){
+	    return 'panel receipt ' + this.model.get('status');
+	  }
+
+	});
+
+/***/ },
+/* 202 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var App = __webpack_require__(2);
+	var hbs = __webpack_require__(7);
+	//var $ = require('jquery');
+	var polyglot = __webpack_require__(10);
+	var Tmpl = __webpack_require__(203);
+	var _ = __webpack_require__(5);
+
+	var View = ItemView.extend({
+
+	  template: hbs.compile(Tmpl),
+
+	  className: function(){
+	    return this.model.get('payment_details.paid') ? 'paid' : 'unpaid';
+	  },
+
+	  initialize: function(){
+	    var status = this.model.get('payment_details.paid') ? 'paid' : 'unpaid';
+	    this.status = polyglot.t('titles.' + status);
+
+	    var message = this.model.get('payment_details.message');
+	    if( _.isArray(message) ){
+	      this.message = _.last(message);
+	    } else {
+	      this.message = message;
+	    }
+	  },
+
+	  templateHelpers: function(){
+	    return {
+	      status: this.status,
+	      message: this.message
+	    };
+	  }
+
+	});
+
+	module.exports = View;
+	App.prototype.set('POSApp.Receipt.Views.Status', View);
+
+/***/ },
+/* 203 */
+/***/ function(module, exports) {
+
+	module.exports = "<h4>{{status}}: {{{money total}}}</h4>\n{{#if message}}\n  <p>{{{message}}}</p>\n{{/if}}"
+
+/***/ },
+/* 204 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ReceiptView = __webpack_require__(205);
+	var App = __webpack_require__(2);
+
+	var View = ReceiptView.extend({
+	  tagName: 'ul',
+	  template: 'pos.receipt.items'
+	});
+
+	module.exports = View;
+	App.prototype.set('POSApp.Receipt.Views.Items', View);
+
+/***/ },
+/* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Prepare order JSON for display on receipts
+	 */
+	var ItemView = __webpack_require__(61);
+	var App = __webpack_require__(2);
+	var Radio = __webpack_require__(4);
+	var _ = __webpack_require__(5);
+
+	/* jshint  -W101, -W071, -W074 */
+	module.exports = App.prototype.ReceiptView = ItemView.extend({
+
+	  viewOptions: ['data'],
+
+	  initialize: function() {
+	    var tax = Radio.request('entities', 'get', {
+	        type: 'option',
+	        name: 'tax'
+	      }) || {};
+	    var data = this.prepare( this.model.toJSON(), tax );
+	    this.mergeOptions({ data: data }, this.viewOptions);
+	  },
+
+	  templateHelpers: function(){
+	    return this.data;
+	  },
+
+	  prepare: function(data, settings){
+	    data.incl_tax = settings.tax_display_cart === 'incl';
+	    data.itemized = settings.tax_total_display === 'itemized';
+
+	    /**
+	     * Line Items
+	     */
+	      // - add regular_price
+	    _.each( data.line_items, function(item) {
+	      item.on_sale = item.subtotal !== item.total;
+	      if(!item.regular_price){
+	        var quantity = item.quantity || 1;
+	        item.regular_price = parseFloat(item.subtotal) / quantity;
+	      }
+	    });
+
+	    if( data.incl_tax ) {
+	      _.each( data.line_items, function(item) {
+	        var quantity = item.quantity || 1;
+	        item.subtotal = parseFloat(item.subtotal) + parseFloat(item.subtotal_tax);
+	        item.total = parseFloat(item.total) + parseFloat(item.total_tax);
+	        item.regular_price = item.subtotal / quantity;
+	        item.price = item.total / quantity;
+	      });
+	    }
+
+	    /**
+	     * Totals
+	     */
+	    if( data.itemized ){
+	      _.each( data.tax_lines, function(line) {
+	        line.has_tax = 0 !== parseFloat(line.total);
+	      });
+	    }
+
+	    // WC 2.3 changed cart_discount to total_discount
+	    data.cart_discount = data.cart_discount || data.total_discount;
+
+	    if( data.incl_tax ) {
+	      data.subtotal = parseFloat(data.subtotal) + parseFloat(data.subtotal_tax);
+	      data.cart_discount = parseFloat(data.cart_discount) +
+	      parseFloat(data.cart_discount_tax);
+
+	      _.each( data.shipping_lines, function(item) {
+	        item.total = parseFloat(item.total) + parseFloat(item.total_tax);
+	      });
+
+	      _.each( data.fee_lines, function(item) {
+	        item.total = parseFloat(item.total) + parseFloat(item.total_tax);
+	      });
+	    }
+
+	    data.has_tax = data.total_tax && 0 !== parseFloat(data.total_tax);
+	    data.has_discount = data.cart_discount && 0 !== parseFloat(data.cart_discount);
+	    data.has_order_discount = data.order_discount && 0 !== parseFloat(data.order_discount);
+
+	    return data;
+	  }
+
+	});
+	/* jshint  +W101, +W071, +W074 */
+
+/***/ },
+/* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ReceiptView = __webpack_require__(205);
+	var App = __webpack_require__(2);
+
+	var View = ReceiptView.extend({
+	  tagName: 'ul',
+	  template: 'pos.receipt.totals'
+	});
+
+	module.exports = View;
+	App.prototype.set('POSApp.Receipt.Views.Totals', View);
+
+/***/ },
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var App = __webpack_require__(2);
+	var hbs = __webpack_require__(7);
+	var polyglot = __webpack_require__(10);
+	var Tmpl = __webpack_require__(208);
+
+	var View = ItemView.extend({
+
+	  template: hbs.compile(Tmpl),
+
+	  viewOptions: ['email'],
+
+	  initialize: function(options){
+	    this.mergeOptions(options, this.viewOptions);
+	    this.modal = {
+	      header: {
+	        title: polyglot.t('titles.email-receipt')
+	      },
+	      footer: {
+	        buttons: [
+	          {
+	            type: 'message'
+	          }, {
+	            action: 'send',
+	            className: 'btn-success',
+	            icon: 'prepend'
+	          }
+	        ]
+	      }
+	    };
+	  },
+
+	  ui: {
+	    email: 'input'
+	  },
+
+	  templateHelpers: function(){
+	    var data = {
+	      email: this.email
+	    };
+	    return data;
+	  },
+
+	  getEmail: function(){
+	    return this.ui.email.val() || this.email;
+	  }
+
+	});
+
+	module.exports = View;
+	App.prototype.set('POSApp.Receipt.Views.Email', View);
+
+/***/ },
+/* 208 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"input-group\">\n  <span class=\"input-group-addon\">@</span>\n  <input type=\"text\" class=\"form-control\" placeholder=\"{{email}}\">\n</div>"
+
+/***/ },
+/* 209 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Router = __webpack_require__(81);
+	var LayoutView = __webpack_require__(210);
+	var FormRoute = __webpack_require__(211);
+	var StatusRoute = __webpack_require__(214);
+	var Radio = __webpack_require__(4);
+	var Collection = __webpack_require__(24);
+	var $ = __webpack_require__(6);
+
+	module.exports = Router.extend({
+
+	  routes: {
+	    'support' : 'showStatus'
+	  },
+
+	  initialize: function(options) {
+	    this.container = options.container;
+	    this.collection = new Collection();
+	  },
+
+	  onBeforeEnter: function() {
+	    this.layout = new LayoutView();
+	    this.container.show(this.layout);
+	    this.updateTitle();
+	    this.showForm();
+	  },
+
+	  updateTitle: function(){
+	    // TODO: put menu into params
+	    var title = $('#menu li.support').text();
+	    Radio.request('header', 'update:title', title);
+	  },
+
+	  showForm: function(){
+	    var route = new FormRoute({
+	      container  : this.layout.getRegion('left')
+	    });
+	    route.enter();
+	  },
+
+	  showStatus: function(){
+	    return new StatusRoute({
+	      container  : this.layout.getRegion('right'),
+	      collection : this.collection
+	    });
+	  }
+
+	});
+
+/***/ },
+/* 210 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+
+	module.exports = LayoutView.extend({
+
+	  columns: 2,
+
+	  template: function(){
+	    return '' +
+	      '<section id="left"></section>' +
+	      '<section id="right"></section>';
+	  },
+
+	  regions: {
+	    left: '#left',
+	    right: '#right'
+	  }
+
+	});
+
+/***/ },
+/* 211 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Route = __webpack_require__(82);
+	var App = __webpack_require__(2);
+	var Layout = __webpack_require__(212);
+	var Form = __webpack_require__(213);
+	var $ = __webpack_require__(6);
+	var Radio = __webpack_require__(4);
+	var Buttons = __webpack_require__(76);
+	var _ = __webpack_require__(5);
+	var polyglot = __webpack_require__(10);
+
+	var FormRoute = Route.extend({
+
+	  initialize: function(options){
+	    this.container = options.container;
+	    this.setTabLabel({
+	      tab   : 'left',
+	      label : polyglot.t('titles.support-form')
+	    });
+	  },
+
+	  fetch: function(){
+
+	  },
+
+	  render: function(){
+	    this.layout = new Layout();
+
+	    this.listenTo(this.layout, 'show', function(){
+	      this.showForm();
+	      this.showActions();
+	    });
+
+	    this.container.show(this.layout);
+	  },
+
+	  showForm: function(){
+	    var view = new Form();
+	    this.layout.getRegion('form').show( view );
+	  },
+
+	  showActions: function(){
+	    var view = new Buttons({
+	      buttons: [{
+	        type: 'message'
+	      },{
+	        action: 'send',
+	        className: 'btn-success',
+	        icon: 'prepend'
+	      }]
+	    });
+
+	    this.listenTo(view, 'action:send', this.email);
+
+	    this.layout.getRegion('actions').show(view);
+	  },
+
+	  email: function(btn, view){
+	    var form = this.layout.getRegion('form').currentView,
+	        data = {
+	          action  : 'wc_pos_send_support_email',
+	          name    : form.$('[data-name="name"]').text(),
+	          email   : form.$('[data-name="email"]').text(),
+	          message : form.$('[data-name="message"]').text(),
+	          status  : form.$('#pos_status').val()
+	        },
+	        ajaxurl = Radio.request('entities', 'get', {
+	          type: 'option',
+	          name: 'ajaxurl'
+	        });
+
+	    btn.trigger('state', 'loading');
+	    view.triggerMethod('message', 'reset');
+
+	    var onError = function(message){
+	      btn.trigger('state', 'error');
+	      view.triggerMethod('message', message, 'error');
+	    };
+
+	    var onSuccess = function(data){
+	      if(!_.isObject(data) || data.result !== 'success'){
+	        return onError(data.message);
+	      }
+	      btn.trigger('state', 'success');
+	      view.triggerMethod('message', data.message, 'success');
+	    };
+
+	    $.post( ajaxurl, data )
+	    .done(onSuccess)
+	    .fail(onError);
+	  }
+
+	});
+
+	module.exports = FormRoute;
+	App.prototype.set('SupportApp.Form.Route', FormRoute);
+
+
+/***/ },
+/* 212 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+	var App = __webpack_require__(2);
+	var polyglot = __webpack_require__(10);
+
+	var Layout = LayoutView.extend({
+	  template: function(){
+	    var title = polyglot.t('titles.support-form');
+	    return '' +
+	      '<div class="panel-header support-header">' +
+	      '<div><h4>' + title + '</h4></div></div>' +
+	      '<div class="panel-body list support-list"></div>' +
+	      '<div class="list-actions support-actions"></div>';
+	  },
+
+	  regions: {
+	    header   : '.support-header',
+	    form     : '.support-list',
+	    actions  : '.support-actions'
+	  },
+
+	  attributes: {
+	    'class'  : 'panel support'
+	  }
+
+	});
+
+	module.exports = Layout;
+	App.prototype.set('SupportApp.Views.Layout', Layout);
+
+/***/ },
+/* 213 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var $ = __webpack_require__(6);
+
+	module.exports = ItemView.extend({
+	  tagName: 'ul',
+	  template: 'support.form',
+
+	  ui: {
+	    toggle : '.toggle',
+	    status : '#pos_status',
+	    message: 'div[data-name="message"]'
+	  },
+
+	  events: {
+	    'click @ui.toggle': 'toggleReport',
+	    'focusout @ui.message': 'focusout'
+	  },
+
+	  onRender: function(){
+	    this.ui.status.append('\n*** Browser Info ***\n\n' +
+	      navigator.userAgent + '; ' + $('html').attr('class') + '\n\n');
+	  },
+
+	  toggleReport: function(e) {
+	    e.preventDefault();
+	    $(e.currentTarget).next('textarea').toggle();
+	  },
+
+	  focusout: function(e){
+	    var element = $(e.target);
+	    if (!element.text().replace(' ', '').length) {
+	      element.empty();
+	    }
+	  }
+
+	});
+
+/***/ },
+/* 214 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Route = __webpack_require__(82);
+	var App = __webpack_require__(2);
+	var Layout = __webpack_require__(215);
+	var Status = __webpack_require__(216);
+	var $ = __webpack_require__(6);
+	var _ = __webpack_require__(5);
+	//var Modernizr = global['Modernizr'];
+	var Radio = __webpack_require__(4);
+	var polyglot = __webpack_require__(10);
+	//var debug = require('debug')('systemStatus');
+
+	var StatusRoute = Route.extend({
+
+	  databases: ['products', 'orders', 'cart', 'customers'],
+
+	  initialize: function(options){
+	    this.container = options.container;
+	    this.collection = options.collection;
+	    this.setTabLabel({
+	      tab   : 'right',
+	      label : polyglot.t('titles.system-status')
+	    });
+
+	    //this.ajaxurl = Radio.request('entities', 'get', {
+	    //  type: 'option',
+	    //  name: 'ajaxurl'
+	    //});
+	    //
+	    //this.nonce = Radio.request('entities', 'get', {
+	    //  type: 'option',
+	    //  name: 'nonce'
+	    //});
+	  },
+
+	  fetch: function(){
+	    // if not fetched, need to fetch all local records
+	    var fetched = _.map(this.databases, this.fetchDB, this);
+	    // add the server tests
+	    //fetched.push( this._fetch() );
+	    return $.when.apply($, fetched);
+	  },
+
+	  _fetch: function(){
+	    //var self = this;
+	    //return $.getJSON( this.ajaxurl, {
+	    //  action: 'wc_pos_system_status',
+	    //  security: this.nonce
+	    //}, function( resp ){
+	    //  self.tests = resp;
+	    //});
+	  },
+
+	  render: function(){
+	    this.layout = new Layout();
+
+	    this.listenTo(this.layout, 'show', function(){
+	      this.showStatus();
+	    });
+
+	    this.container.show(this.layout);
+	  },
+
+	  showStatus: function(){
+	    var view = new Status({
+	      storage: this.storageStatus()
+	    });
+
+	    this.listenTo(view, {
+	      'action:clear'  : this.clearDB
+	    });
+
+	    this.layout.getRegion('status').show( view );
+	  },
+
+	  storageStatus: function(){
+	    return _.map(this.databases, function(db){
+	      var title = polyglot.t('titles.' + db),
+	          count = this[db].length,
+	          message = title + ': ' + count + ' ' +
+	            polyglot.t('plural.records', count);
+	      return {
+	        message : message,
+	        button  : {
+	          action: 'clear-' + db,
+	          label : 'Clear'
+	        }
+	      };
+	    }, this);
+	  },
+
+	  fetchDB: function(db){
+	    this[db] = Radio.request('entities', 'get', {
+	      type: 'collection',
+	      name: db
+	    });
+
+	    if(this[db].isNew()){
+	      return this[db].fetch();
+	    }
+	  },
+
+	  clearDB: function(db){
+	    var collection = this[db],
+	        self = this;
+
+	    collection.clear()
+	      .then(function(){
+	        self.render();
+	      });
+	  }
+
+	});
+
+	module.exports = StatusRoute;
+	App.prototype.set('SupportApp.Status.Route', StatusRoute);
+
+/***/ },
+/* 215 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+	var App = __webpack_require__(2);
+	var polyglot = __webpack_require__(10);
+
+	var Layout = LayoutView.extend({
+	  template: function(){
+	    var title = polyglot.t('titles.system-status');
+	    return '' +
+	      '<div class="panel-header status-header">' +
+	      '<div><h4>' + title + '</h4></div></div>' +
+	      '<div class="panel-body list status-list"></div>';
+	  },
+
+	  regions: {
+	    header   : '.status-header',
+	    status   : '.status-list'
+	  },
+
+	  attributes: {
+	    'class'  : 'panel status'
+	  }
+
+	});
+
+	module.exports = Layout;
+	App.prototype.set('SupportApp.Views.Layout', Layout);
+
+/***/ },
+/* 216 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ItemView = __webpack_require__(61);
+	var $ = __webpack_require__(6);
+	var EmulateHTTP = __webpack_require__(106);
+	var Tmpl = __webpack_require__(217);
+	var hbs = __webpack_require__(7);
+
+	module.exports = ItemView.extend({
+	  tagName: 'ul',
+	  template: 'support.status',
+
+	  ui: {
+	    toggle      : '.toggle',
+	    btn         : '.btn',
+	    subHeading  : '.sub-heading'
+	  },
+
+	  events: {
+	    'click @ui.toggle': 'toggleReport',
+	    'click @ui.btn'   : 'buttonClick'
+	  },
+
+	  behaviors: {
+	    EmulateHTTP: {
+	      behaviorClass: EmulateHTTP
+	    }
+	  },
+
+	  onRender: function(){
+	    var storage = hbs.compile(Tmpl)({ storage: this.options.storage });
+	    this.ui.subHeading.after(storage);
+	  },
+
+	  toggleReport: function(e){
+	    e.preventDefault();
+	    $(e.currentTarget).next('textarea').toggle();
+	  },
+
+	  buttonClick: function(e){
+	    var action = $(e.target).data('action').split('-'),
+	        key = action.shift();
+
+	    if(key){
+	      e.preventDefault();
+	      this.trigger('action:' + key, action[0]);
+	    }
+	  }
+
+	});
+
+/***/ },
+/* 217 */
+/***/ function(module, exports) {
+
+	module.exports = "{{#each storage}}\n<li class=\"list-row\">\n  {{#if icon}}\n  <div class=\"shrink\">\n    <i class=\"icon-{{icon}} icon-lg\"></i>\n  </div>\n  {{/if}}\n  {{#if title}}\n  <div class=\"title\">{{title}}</div>\n  {{/if}}\n  <div class=\"message\">\n    {{{message}}}\n    {{#if button}}\n      <button class=\"btn btn-default\" data-action=\"{{button.action}}\">{{button.label}}</button>\n    {{/if}}\n  </div>\n</li>\n{{/each}}"
+
+/***/ },
+/* 218 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var App = __webpack_require__(2);
+	var Router = __webpack_require__(81);
+	var LayoutView = __webpack_require__(219);
+	var ReceiptRoute = __webpack_require__(220);
+	var Radio = __webpack_require__(4);
+
+	var PrintRouter = Router.extend({
+	  routes: {
+	    'print(/:id)(/)' : 'showReceipt'
+	  },
+
+	  initialize: function(options) {
+	    this.container = options.container;
+	  },
+
+	  onBeforeEnter: function() {
+	    this.layout = new LayoutView();
+	    this.container.show(this.layout);
+	  },
+
+	  onBeforeRoute: function(){
+	    this.showActions();
+	  },
+
+	  showReceipt: function(){
+	    return new ReceiptRoute({
+	      container: this.layout.getRegion('iframe')
+	    });
+	  },
+
+	  showActions: function(){
+	    var buttons = Radio.request('buttons', 'view', {
+	      buttons: [{
+	        action: 'print',
+	        className: 'btn-success'
+	      }]
+	    });
+
+	    this.listenTo(buttons, 'action:print', function(){
+	      this.layout.getRegion('iframe').currentView.print();
+	    });
+
+	    this.layout.getRegion('actions').show(buttons);
+	  }
+
+	});
+
+	module.exports = PrintRouter;
+	App.prototype.set('Print.Router', PrintRouter);
+
+/***/ },
+/* 219 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var LayoutView = __webpack_require__(18);
+
+	module.exports = LayoutView.extend({
+
+	  tagName: 'section',
+
+	  className: 'panel print-preview',
+
+	  template: function(){
+	    return '' +
+	      '<div class="panel-body print-preview-iframe"></div>' +
+	      '<div class="print-preview-actions"></div>';
+	  },
+
+	  regions: {
+	    iframe  : '.print-preview-iframe',
+	    actions : '.print-preview-actions'
+	  }
+
+	});
+
+/***/ },
+/* 220 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Route = __webpack_require__(82);
+	var Radio = __webpack_require__(4);
+	var View = __webpack_require__(221);
+
+	var ReceiptRoute = Route.extend({
+
+	  initialize: function( options ) {
+	    options = options || {};
+	    this.container = options.container;
+	    this.collection = Radio.request('entities', 'get', {
+	      name: 'orders',
+	      type: 'collection'
+	    });
+	  },
+
+	  fetch: function() {
+	    if (this.collection.length === 0) {
+	      return this.collection.fetch({ remote: true });
+	    }
+	  },
+
+	  render: function() {
+	    var view = new View({
+	      model: this.collection.at(0)
+	    });
+	    this.container.show(view);
+	  }
+
+	});
+
+	module.exports = ReceiptRoute;
+
+/***/ },
+/* 221 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ReceiptView = __webpack_require__(205);
+	var hbs = __webpack_require__(7);
+
+	module.exports = ReceiptView.extend({
+
+	  tagName: 'iframe',
+
+	  template: function(){},
+
+	  onShow: function(){
+	    var template = hbs.compile( hbs.Templates.print.receipt ) ;
+	    this.window = this.el.contentWindow;
+	    this.window.document.write(template( this.data ));
+	  },
+
+	  print: function(){
+	    this.window.focus(); // required for IE
+	    this.window.print();
+	  }
+
+	});
 
 /***/ }
 /******/ ]);

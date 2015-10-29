@@ -48,7 +48,7 @@
       width: 100%;
     }
     table tr {
-      border-bottom: 1px solid #bbb;
+      border-bottom: 1px solid #dddddd;
     }
     table th, table td {
       padding: 6px 12px;
@@ -97,6 +97,12 @@
     tfoot th {
       width: 70%;
     }
+    tfoot tr.order-total {
+      font-weight: bold;
+    }
+    tfoot tr.pos_cash-tendered th, tfoot tr.pos_cash-tendered td {
+      border-top: 1px solid #000;
+    }
   </style>
 </head>
 
@@ -121,6 +127,12 @@
     <th><?php _e( 'Order Date', 'woocommerce-pos' ); ?></th>
     <td>{{formatDate completed_at format="MMMM Do YYYY, h:mm:ss a"}}</td>
   </tr>
+  {{#if cashier}}
+  <tr>
+    <th><?php _e( 'Cashier', 'woocommerce-pos' ); ?></th>
+    <td>{{cashier.first_name}} {{cashier.last_name}}</td>
+  </tr>
+  {{/if}}
   <tr>
     <th><?php _e( 'Payment Method', 'woocommerce-pos' ); ?></th>
     <td>{{payment_details.method_title}}</td>
@@ -163,8 +175,7 @@
       <td class="qty">{{number quantity precision="auto"}}</td>
       <td class="price">
         {{#if on_sale}}
-        <del>{{{money subtotal}}}</del>
-        <ins>{{{money total}}}</ins>
+        <del>{{{money subtotal}}}</del> {{{money total}}}
         {{else}}
         {{{money total}}}
         {{/if}}
@@ -230,6 +241,16 @@
       <th colspan="2"><?php  /* translators: woocommerce */ _e( 'Order Total', 'woocommerce' ); ?>:</th>
       <td colspan="1">{{{money total}}}</td>
     </tr>
+    {{#if payment_details.method_pos_cash}}
+    <tr class="pos_cash-tendered">
+      <th colspan="2"><?php _e( 'Amount Tendered', 'woocommerce-pos' ); ?>:</th>
+      <td colspan="1">{{{money payment_details.method_pos_cash.tendered}}}</td>
+    </tr>
+    <tr class="pos_cash-change">
+      <th colspan="2"><?php _ex('Change', 'Money returned from cash sale', 'woocommerce-pos'); ?>:</th>
+      <td colspan="1">{{{money payment_details.method_pos_cash.change}}}</td>
+    </tr>
+    {{/if}}
   </tfoot>
 </table>
 <div class="order-notes">{{note}}</div>
